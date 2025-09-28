@@ -1,0 +1,115 @@
+
+
+Section 1- 1 - What is Cloud, Cloud Services, Cloud Providers, Pros _ Cons of Cloud Technologies
+Section 1 - 2 Azure Account Creation, Region, Location, Subscription, Support Plan, Help _ Support from Azure
+
+
+
+Section 2-1. IAM - User-Creation
+Section 2 - 2. Management Groups Explanation
+
+
+Section 3.1 - RBAC in Azure AD
+Sec-3.2-Guest User Access in Azure AD.mp4
+
+
+
+Section 4-A Azure AD Deleted Users Recovery, User Sign-in logs, Audit Logs
+4-B Azure AD MFA
+4-C Azure Virtualization overview, Spot & On-Demand Machines & Azure Networking
+
+
+
+Section-5-1. IP Addresses
+Section-5-2. IP Address Classes
+Section-5-3. Creating Virtual Network
+Section-5-4. Creating a virtual machine
+
+
+
+Sec-6-Auto shutdown vm
+Sec-6-Setting Static Private IP to VM
+Sec-6-1-Stopped vs Deallocate
+Sec-6-Changing VM Subnet
+Sec-6-Disassociating Public IP Address
+
+
+
+Section 8-1. Managed Disk vs Unmanaged disk SSD vs HDD
+Section 8-2. Azure Locks
+
+
+
+Sec-9-Backup of vm using snapshot _ Restoring vm using snapshot
+Sec-9-Creating, Attaching and detaching a datadisk
+
+
+
+
+Section 10_ Router _ Route Table, Default _ User-Defined Routing, VNET Peering Practicals
+
+
+
+
+Section 11-1. Azure Reservations
+Section 11-3. What is Spot - Pros _ Cons of Spot - How to create it
+Section 11-3. Azure Invoice - Budget - Creating Budgets Alerts
+
+
+
+
+Sec-12-Backup and Restore VM
+Sec-12-Soft delete
+
+
+
+Section 13_ Azure Site Recovery Working, Recovery Service Vault Creation, Perform Failover Operation
+
+
+
+Section 14-1. How to request for free credits for students
+
+
+
+Section 15_ Public _ Private Load Balancers, Basic _ Standard Load Balancers, Installing IIS _ Testing
+
+
+Sec-16-Azure Traffic Manager _ Routing Methods _ DNS
+
+
+
+Section 17_ VM Scale Set, Creating Scale In-Out Policy _ Testing Scale Set
+
+
+
+Sec-18-Storage Account Performance Kind _ Acces Tier
+Sec-18-Azure Storage replication types
+
+
+
+Section 19_ Storage Account SAS, Access Keys, Static Website _ File Share
+
+
+
+Section 20 - How to create Snapshot, how to deploy VM using powershell
+
+
+
+Sec-21-Syncing On-prem AD with Azure AD
+
+
+
+Section 22-A Azure VPN Gateway
+
+
+
+Section 22-B Azure Cloud & On-Prem Connectivity
+
+
+Section 23-A - What is Azure Monitoring
+
+
+Sec-24-AWS VM Migration to Azure Cloud
+
+
+
