@@ -1,0 +1,51 @@
+
+**Course Overview**
+
+* A Brief Overview of the Course
+* Goals and Objectives of the Course
+* Skills and Career Opportunities (Outcomes of the Course)
+
+**Chapter 1 – Introduction to Linear Algebra**
+
+1. Introduction to Linear Algebra
+2. Applications of Linear Algebra
+3. Linear Combinations and Linear Equations
+
+**Chapter 2 – Systems of Linear Equations**
+4\. Introduction to Systems of Linear Equations
+5\. Solutions of Linear Systems – Elementary Methods
+6\. Linear System Examples
+
+**Chapter 3 – Vectors**
+7\. What are Vectors?
+8\. Basic Operations on Vectors
+9\. Interconversion between Polar and Rectangular Coordinates
+10\. Norm of a Vector
+11\. Dot Product
+12\. Applications of the Dot Product
+13\. Linear Combination of Vectors
+14\. Span and Linear Independence
+
+**Chapter 4 – Matrices**
+15\. Systems of Linear Equations and Matrices
+16\. Origin and Evolution of Matrices
+17\. Basic Operations and Properties
+
+**Chapter 5 – Linear Transformations**
+18\. Linear Transformation – Part 1: Geometry and Intuition
+19\. Linear Transformation – Part 2: Common Transformations
+20\. Linear Transformation – Part 3: Mathematics of Linear Transformation
+21\. Composition of Transformations
+
+**Chapter 6 – Determinants and Equation Solutions**
+22\. Determinants
+23\. Solving Equations – Cramer’s Rule
+24\. Solving Equations – Using Matrix Inverse
+25\. Reduced Row Echelon Form (RREF)
+26\. Solving Equations – Using RREF
+
+**Chapter 7 – Eigenvalues and Eigenvectors**
+27\. Eigenvalues and Eigenvectors
+28\. Eigenvalues and Eigenvectors for 3×3 Systems
+
+-

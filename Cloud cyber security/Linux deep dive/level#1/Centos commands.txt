@@ -1,0 +1,146 @@
+# to check date
+date
+
+# to check calender
+cal
+
+# to check disk space
+df
+
+# to check where you stand(print working directory)
+pwd
+
+ # to check all directories
+~ /user
+
+# to check files in reverse
+ls -lt --reverse
+
+# to check files along with time option
+ls -lt
+
+# to lists all files and directories, including hidden ones. Start with dot(.)
+ls -a
+
+# lists all files and directories, excluding the . (current directory) and .. (parent directory) entries.
+ls -A
+
+# to show all directories
+ls -d
+
+# to appends a character to each listed item to indicate its type, such as / for directories, * for executable files, and @ for symbolic links.
+ls -F
+
+# to lists the details of directories themselves, rather than their contents, in a long format that includes permissions, 
+# number of links, owner, group, size, and modification date
+ls -d -l
+
+# to displays file sizes in a human-readable format, using units like KB, MB, and GB, instead of just bytes
+ls -h
+
+# to reverse the order
+ls -r
+
+# to sorts files and directories by size, displaying the largest files first.
+ls -S
+
+# to sorts files and directories by modification time, showing the most recently modified files first
+ls -t
+
+# to show amount of files
+ls -li
+
+# to show files bit by bit
+less /etc/passwd 
+
+------------------------------------------------------------------------------------------------------------
+# to make single directory
+mkdir directoryname
+
+# to make multiplr directories
+mkdir directoryname1 directoryname2
+
+# to make files
+touch filename
+
+# to copy directories
+cp -r pathofsource pathofdestination
+
+# to copy files
+cp file1 file2
+
+
+# to remove files
+rm file1 file2 file3
+
+# to remove directories
+rmdir dir1 dir2 
+
+# to rename files
+mv filename newfilename
+
+# to check type
+type
+
+------------------------------------------------------------------------------------------
+##REDIRECTING THINGS
+# it will ists the detailed contents of the /usr/bin/ directory and appends the output to the file ls-output.txt. If ls-output.txt does not exist, it will be created. 
+#If it does exist, the new output will be added to the end of the file without overwriting the existing content.
+ls -l/usr/bin/ >> ls-output.txt
+
+# to show content in file
+cat 
+
+# to show file in pieces and in alphabetical order
+ls /usr/bin/ |sort | less
+
+# it will show all content without duplicates
+ls /usr/bin/ |sort | uniq | less
+
+# to findout word count of a file
+wc filename
+
+# to show particular files
+ls /usr/bin/ |sort | uniq | grep filename
+
+# to show first 5 rows
+head -n 5
+
+# to show last 5 rows
+tail -n 5
+
+# to show latest changes in system
+tail -f /var/log/messages
+
+--------------------------------------------------------------------
+
+## Configuring linux
+
+---------------------------------------
+# to print something like python
+echo this will be printed
+
+# to show all items (files and directories)
+echo *
+echo p*   #(all files start with p)
+
+# to check updated files
+echo .[!.]*
+
+# to show foo accounts
+echo !foo
+
+# to check accounts
+echo -ahmad
+
+# to do calculation
+echo $((2+2))
+-------------------------------------------------------------------
+##Permission in linux for files
+
+# to show id
+id
+
+
+
+

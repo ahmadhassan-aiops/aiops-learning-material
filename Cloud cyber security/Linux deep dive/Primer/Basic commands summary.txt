@@ -1,0 +1,392 @@
+Two kinds of users
+
+standard = alnafi
+
+admin/root =
+-----------------------
+
+useradd abdullah
+
+--------------
+useradd -m abdullah
+
+-----------------------
+
+useradd -m -s "/bin/bash" abdullah
+
+----------------------------------
+
+useradd -c "Abullah Ibn Az Zubyar" -m -s "/bin/bash" abdullah
+
+-------------
+
+passwd abdullah
+
+-----------------------
+
+
+userdel abdullah
+
+
+------------------------
+
+
+usermod -L abdullah
+
+locking the account
+----------------------------
+
+usermod -U abdullah
+
+uncking the account
+
+----------------------------
+usermod -c "Abullah ibn Umer" abdullah
+
+---------------------------
+
+Difference between su and sudo
+su command moves you to root without terminating your session.
+
+sudo simply borrows the root powers until you run your session.
+
+
+----------------
+
+
+usermod -L abdullah
+
+
+sudo usermod -L abdullah
+
+-----------------------------
+
+How to view key files
+
+cat/etc/sudoers
+
+-------------------------
+
+#How to view log files
+
+cat/etc/var/auth.log
+
+--------------------------------
+
+#2 Types of groups
+
+#user group
+#admin group
+
+-----------------------------
+
+#creating a group
+
+groudpadd mujahid
+
+
+---------------------------
+
+#adding user to a group
+
+usermod -G mujahid umer
+
+-----------------------
+
+#removing a user from a group
+
+gpasswd -d umer mujahid
+
+-----------------------
+#deleting a group
+
+groupdel mujahid
+
+--------------------------
+
+#Changing owners
+
+chown abdullah file name
+
+chown abdullah /home/abdullah/file name
+
+
+___________________________
+#without changing the user to root user
+
+sudo chown -R alnafi file name
+
+_________________________
+
+#changing group
+
+chgrp alnafi file name
+
+
+___________________________
+#without changing the user to root user
+
+sudo chgrp -R alnafi file name
+
+
+_________________________
+#changing permission
+
+chmod u+x filename
+
+_________________________________
+
+#Execute permission on a group
+
+chmod g+x filename
+
+__________________________________
+
+#Give permission to everyone
+
+chmod o+x filename
+
+_____________________
+
+#Give permission for all the priviliges
+
+chmod u+x,g+x,o+x file name
+
+_____________________
+
+#taking away priviliges
+
+chmod u-x,g-x,o-x file name
+
+-----------------------
+
+#creating a blank file
+
+ls -l >> data
+
+_______________
+
+#directing all the input to that file
+
+touch data
+
+
+_______________________
+
+#how to check file using pause feature
+
+cat documentname | more
+
+
+________________________-
+
+#how to search for a specific name within a file
+
+cat filename | grep keyword
+
+# keyword can be anything you are looking for
+
+_________________________
+# how to count number of lines in a document
+
+cat -b documentname
+
+__________________________________
+# view to beginning of the text file
+
+head doucmentname
+
+_______________________
+
+# how to view number of lines
+
+head -n doucmentname
+
+running example
+
+head -10 documentname
+
+
+note: where n can be any number. it can be 4 or 5 or 6 etc
+
+______________________________
+
+
+#this will display the final 5 lines in a document
+
+tail document name
+
+_______________________
+
+
+# how to view number of lines while tailing.
+
+tail -10 document name
+
+
+_____________________
+
+
+#displaying file with less command
+
+
+less document name
+
+____________________________
+
+#editing text file (very important to know)
+
+#if you type
+
+vi
+
+#you will be in an empty file
+
+# but to exit the file, press Esc key and then press shift :q
+
+_____________________________
+
+#to check IP address details
+
+ifconfig
+
+____________________________
+#if you ifconfig doesnt work then run this
+
+sudo apt install net-tools
+
+
+_________________________
+
+ifconfig | grep _____
+
+
+________________________
+
+#how to check default gateway
+
+ip route
+
+_________________________
+
+dhclient
+
+
+___________________________-
+
+#for finding disk space usage
+
+df
+
+______________________
+
+# for finding disk space usage in gig and mbs
+
+df -h
+
+
+_______________________
+
+#for checking the filesystem
+
+df -th
+
+
+_____________________
+
+#for checking the permssions to the target files and directories
+
+du -sh /var
+
+_____________________________
+
+
+#unmounting removable media disks
+
+unmount /media/USBDRIVE
+
+
+____________________
+
+#forcing usb to unmount
+
+unmount -f /media/USBDRIVE
+
+
+_______________________
+#checking running processes
+
+ps
+
+_________________________
+#checking extended running processes
+ps-e
+
+______________________
+#checking extended running processes with listing
+
+ps -el
+
+________________________________
+#checking extended running processes with listing and display date
+
+ps -elf
+
+
+
+_______________________________
+
+#top command to check CPU and memory usage among other things.
+
+top
+
+________________________
+# to kill a process
+
+kill (type here the PID number)
+
+
+_______________________________________
+# to install a package
+
+dpkg -i (installer.deb name)
+
+dpkg -i installer.deb
+
+
+_______________________________________
+# to uninstall
+
+dpkg -r installer.deb
+
+
+_______________________________________
+#installing advance package tools
+
+apt-get install (name of the package)
+
+apt-get remove (name of the package)
+
+_______________________________________
+#installing RPM packages
+
+rpm -i installer.rpm
+
+
+rpm -e installer.rpm
+
+_________________________
+# yellow dog updater
+
+
+yum install (name of the package)
+
+
+yum remove (name of the package)
+
+
+_________________________________-
+
+#getting help
+
+apropos ext3

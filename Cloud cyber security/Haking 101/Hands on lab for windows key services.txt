@@ -1,0 +1,205 @@
+
+
+C:\Windows\system32>net view \\127.0.0.1
+There are no entries in the list.
+
+
+C:\Windows\system32>net session
+There are no entries in the list.
+
+
+
+
+C:\Windows\system32>net use
+New connections will be remembered.
+There are no entries in the list.
+
+
+
+
+
+
+C:\Windows\system32>nbtstat -S
+
+Ethernet 2:
+Node IpAddress: [192.168.56.1] Scope Id: []
+
+    No Connections
+
+Ethernet:
+Node IpAddress: [0.0.0.0] Scope Id: []
+
+    No Connections
+
+Bluetooth Network Connection:
+Node IpAddress: [0.0.0.0] Scope Id: []
+
+    No Connections
+
+
+
+
+C:\Windows\system32>netsh advfirewall show currentprofile
+
+Public Profile Settings:
+----------------------------------------------------------------------
+State                                 ON
+Firewall Policy                       BlockInbound,AllowOutbound
+LocalFirewallRules                    N/A (GPO-store only)
+LocalConSecRules                      N/A (GPO-store only)
+InboundUserNotification               Enable
+RemoteManagement                      Disable
+UnicastResponseToMulticast            Enable
+
+Logging:
+LogAllowedConnections                 Disable
+LogDroppedConnections                 Disable
+FileName                              %systemroot%\system32\LogFiles\Firewall\pfirewall.log
+MaxFileSize                           4096
+
+Ok.
+
+
+
+
+-----------------------------------------------------------
+
+
+
+				(enquiring processes)
+
+
+C:\Windows\system32>netstat -?
+
+Displays protocol statistics and current TCP/IP network connections.
+
+NETSTAT [-a] [-b] [-e] [-f] [-n] [-o] [-p proto] [-r] [-s] [-t] [-x] [-y] [interval]
+
+  -a            Displays all connections and listening ports.
+  -b            Displays the executable involved in creating each connection or
+                listening port. In some cases well-known executables host
+                multiple independent components, and in these cases the
+                sequence of components involved in creating the connection
+                or listening port is displayed. In this case the executable
+                name is in [] at the bottom, on top is the component it called,
+                and so forth until TCP/IP was reached. Note that this option
+                can be time-consuming and will fail unless you have sufficient
+                permissions.
+  -e            Displays Ethernet statistics. This may be combined with the -s
+                option.
+  -f            Displays Fully Qualified Domain Names (FQDN) for foreign
+                addresses.
+  -n            Displays addresses and port numbers in numerical form.
+  -o            Displays the owning process ID associated with each connection.
+  -p proto      Shows connections for the protocol specified by proto; proto
+                may be any of: TCP, UDP, TCPv6, or UDPv6.  If used with the -s
+                option to display per-protocol statistics, proto may be any of:
+                IP, IPv6, ICMP, ICMPv6, TCP, TCPv6, UDP, or UDPv6.
+  -q            Displays all connections, listening ports, and bound
+                nonlistening TCP ports. Bound nonlistening ports may or may not
+                be associated with an active connection.
+  -r            Displays the routing table.
+  -s            Displays per-protocol statistics.  By default, statistics are
+                shown for IP, IPv6, ICMP, ICMPv6, TCP, TCPv6, UDP, and UDPv6;
+                the -p option may be used to specify a subset of the default.
+  -t            Displays the current connection offload state.
+  -x            Displays NetworkDirect connections, listeners, and shared
+                endpoints.
+  -y            Displays the TCP connection template for all connections.
+                Cannot be combined with the other options.
+  interval      Redisplays selected statistics, pausing interval seconds
+                between each display.  Press CTRL+C to stop redisplaying
+                statistics.  If omitted, netstat will print the current
+                configuration information once.
+
+-----------------------------------------------------------
+
+
+C:\Windows\system32>tasklist (task manager)
+
+
+
+-----------------------------------------------------------
+
+C:\Windows\system32>tasklist -m /fi "pid eq 4"
+
+Image Name                     PID Modules
+========================= ======== ============================================
+System                           4 N/A
+
+
+-----------------------------------------------------------
+
+C:\Windows\system32>wmic process list brief |more
+
+
+
+
+C:\Windows\system32>wmic process list full |more
+
+
+
+wmic process get Name,ParentProcessId
+
+
+C:\Windows\system32>wmic process where processid=7036 get CommandLine
+CommandLine
+"C:\Windows\system32\cmd.exe"
+
+-----------------------------------------------------------
+
+
+				(How to examine services)
+
+
+
+C:\Windows\system32>services.msc
+
+C:\Windows\system32>sc query
+
+
+-----------------------------------------------------------
+
+https://learn.microsoft.com/en-us/sysinternals/
+
+
+(autoruns)
+
+-----------------------------------------------------------
+
+regedit
+
+-----------------------------------------------------------
+start msconfig.exe
+C:\Windows\system32>lusrmgr.msc
+
+-----------------------------------------------------------
+-----------------------------------------------------------
+
+
+
+C:\Windows\system32>net user
+
+User accounts for \\DESKTOP-8BL3MIG
+
+-------------------------------------------------------------------------------
+Administrator            DefaultAccount           Guest
+PMYLS                    test                     WDAGUtilityAccount
+The command completed successfully.
+
+
+-----------------------------------------------------------
+
+
+C:\Windows\system32>net localgroup administrator
+System error 1376 has occurred.
+
+The specified local group does not exist.
+
+
+-----------------------------------------------------------
+
+schtasks
+
+
+

@@ -1,0 +1,11 @@
+
+
+reg query HKLM/Software/Microsoft/Windows/CurrentVersion/Run
+
+reg query HKLM/Software/Microsoft/Windows/CurrentVersion/RunOnce
+
+reg query HKLM/Software/Microsoft/Windows/CurrentVersion/RunOnceExit
+
+
+
+Windows Sisternals!!

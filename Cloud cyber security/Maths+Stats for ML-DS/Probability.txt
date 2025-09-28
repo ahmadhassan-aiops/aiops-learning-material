@@ -1,0 +1,37 @@
+
+
+**Chapter 0 – Introduction**
+
+* Introduction to the Course
+* Skills & Opportunities
+
+**Chapter 1 – Foundations of Probability**
+
+1. History of Probability
+2. Introduction to Probability
+3. Random Experiments and Probability
+4. Assigning Probabilities
+5. Counting Techniques – Fundamental Counting Principle
+6. Counting Techniques – Combinations and Permutations
+7. Axiomatic Definition and Basic Rules
+
+**Chapter 2 – Conditional and Joint Probability**
+8\. Conditional Probability
+9\. Joint Probability
+10\. Marginal Probability
+11\. Bayes’ Theorem
+
+**Chapter 3 – Discrete Random Variables**
+12\. Introduction to Discrete Random Variables
+13\. Probability Mass Function (PMF)
+14\. Cumulative Distribution Function (CDF)
+15\. Expectation and Variance
+16\. Uniform Distribution
+17\. Binomial Distribution
+18\. Poisson Distribution
+
+**Chapter 4 – Continuous Random Variables**
+19\. Probability Density Function (PDF) and Cumulative Distribution Function (CDF)
+20\. Normal Distribution – Part 1 (PDF, CDF)
+21\. Normal Distribution – Part 2 (Computations)
+

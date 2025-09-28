@@ -1,0 +1,28 @@
+
+**Course Overview**
+
+1. Introduction to the Course
+2. Skills & Career Opportunities
+
+**Chapter 1 – Descriptive Statistics**
+
+1. Introduction to Statistics and Basic Terminology
+2. Measures of Location – Mean, Median, Mode
+3. Measures of Location – Percentiles and Quartiles
+4. Measures of Variability – Range, Interquartile Range (IQR)
+5. Measures of Variability – Variance and Standard Deviation
+6. Measures of Correlation between Variables
+
+**Chapter 2 – Inferential Statistics**
+7\. Introduction to Inferential Statistics
+8\. Hypothesis Testing – Null and Alternative Hypotheses
+9\. Errors and Significance Level in Hypothesis Testing
+10\. Hypothesis Test (Sigma Known) – One-Tailed Test
+11\. Hypothesis Test (Sigma Known) – Two-Tailed Test
+12\. Hypothesis Test (Sigma Unknown)
+
+**Chapter 3 – Simple Linear Regression**
+13\. Introduction to Regression
+14\. Simple Linear Regression Procedure
+15\. Goodness of Fit
+
