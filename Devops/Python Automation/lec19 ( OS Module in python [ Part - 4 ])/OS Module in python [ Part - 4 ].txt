@@ -1,0 +1,176 @@
+Lecture 19 : OS Module in python [ Part - 4 ]
+
+
+
+#os.path.isfile()
+#os.path.isdir()
+import os
+mypath="C:\\Users\\AbdealiDodiya\\Desktop\\DevOps\\Python\\Lecture 19"
+print(mypath)
+print(os.path.isdir(mypath))
+print(os.path.isfile(mypath))
+Output :-
+C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 19
+True
+False
+
+
+
+
+import os
+mypath="C:\\Users\\AbdealiDodiya\\Desktop\\DevOps\\Python\\Lecture 19"
+if os.path.isfile(mypath):
+print(f"{mypath} is file")
+else:
+print(f"{mypath} is directory")
+
+
+
+import os
+mypath="C:\\Users\\AbdealiDodiya\\Desktop\\DevOps\\Python\\Lecture 19"
+if os.path.isdir(mypath):
+print(f"{mypath} is directory ")
+else:
+print(f"{mypath} is file")
+
+Output :-
+C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 19 is directory
+
+
+
+import os
+mypath="/root/lect19"
+if os.path.isdir(mypath):
+print(f"{mypath} is directory ")
+else:
+print(f"{mypath} is file")
+
+
+
+
+#os.path.exists()
+import os
+mypath="C:\\Users\\AbdealiDodiya\\Desktop\\DevOps\\Python\\Lecture "
+
+if os.path.exists(mypath):
+if os.path.isdir(mypath):
+print(f"{mypath} is directory ")
+else:
+print(f"{mypath} is file")
+else:
+print(f"{mypath} is not valid please type your correct path")
+
+
+
+
+#os.path.islink()
+import os
+mypath="/root/lect19/myabd.txt"
+if os.path.isfile(mypath):
+print(f"{mypath} is file")
+if os.path.islink(mypath):
+print(f"{mypath} is Link")
+else:
+print(f"{mypath} is directory")
+
+
+
+
+
+#os.path.join()
+#Linux
+root@abdealidodia:~/lect19# cat os_path.py
+import os
+mypath="/root"
+mychildpath="lect19"
+
+print(mypath+mychildpath)
+print(mychildpath)
+print(os.path.join(mypath,mychildpath))
+
+
+#Windows
+import os
+mypath="C:\\Users"
+mychildpath="AbdealiDodiya"
+
+#print(mypath)
+#print(mypath+"\\"+mychildpath)
+
+print(os.path.join(mypath,mychildpath))
+
+Output:-
+C:\Users\AbdealiDodiya
+
+
+
+#os.path.sep
+
+print(os.path.sep)
+\
+
+
+root@abdealidodia:~/lect19# cat os_path.py
+import os
+mypath="/root"
+mychildpath="lect19"
+
+print(mypath+mychildpath)
+print(mychildpath)
+print(os.path.join(mypath,mychildpath))
+print(os.path.sep)
+
+
+
+
+#os.path.getsize()
+import os
+mypath="C:\\Users\\AbdealiDodiya\\Desktop\\DevOps\\Python\\Lecture 19\\os_path.py"
+print(mypath)
+print(os.path.getsize(mypath))
+
+#output:-
+147
+you will get sixe in bytes
+
+
+
+#os.path.normpath()
+import os
+mypath="C:\\Users\\AbdealiDodiya\\\Desktop\\\DevOps\\Python\\Lecture 19\\os_path.py"
+print(mypath)
+print(os.path.normpath(mypath))
+
+
+Output:-
+C:\Users\AbdealiDodiya\\Desktop\\DevOps\Python\Lecture 19\os_path.py
+C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 19\os_path.py
+
+
+
+
+#os.path.normcase()
+
+
+import os
+mypath="C:\\Users\\AbdealiDodiya\\Desktop\\DevOps\\Python\\Lecture 19\\os_path.py"
+print(mypath)
+print(os.path.normcase(mypath))
+Output:-
+C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 19\os_path.py
+c:\users\abdealidodiya\desktop\devops\python\lecture 19\os_path.py
+
+
+
+
+
+
+#os.path.samefile()
+import os
+mypath1="/root/lect19/test1.txt"
+mypath2="/root/lect19/test1.txt"
+print(os.path.samefile(mypath1,mypath2))
+
+
+Output:-
+True

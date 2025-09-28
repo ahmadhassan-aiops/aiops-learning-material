@@ -1,0 +1,114 @@
+# Jenkins Automating a Job (from GitHub Repo Change Perspective)
+
+### 1️ What does it mean?
+
+* You have some code in **GitHub**.
+* Whenever someone **pushes new code** (a commit) → Jenkins should **automatically run a job** (build/test/deploy).
+* This is called **CI (Continuous Integration)** automation.
+
+---
+
+### 2️ Flow of Events
+
+1. Developer pushes code → GitHub repo.
+2. GitHub sends a **webhook** to Jenkins (a signal saying: “Hey, code changed!”).
+3. Jenkins receives it and runs a **Job/Pipeline**.
+4. Jenkins pulls the latest code → builds/tests/deploys it.
+
+---
+
+### 3️ Step-by-Step Setup
+
+#### (A) Create a Job in Jenkins
+
+1. Login to Jenkins → **New Item**.
+2. Choose: **Freestyle Project** (simple) OR **Pipeline** (advanced).
+3. Give it a name: `My-GitHub-AutoJob`.
+
+---
+
+#### (B) Connect Job with GitHub
+
+* In the job config → **Source Code Management** → Select **Git**.
+* Add your **GitHub repo URL**. Example:
+
+  ```
+  https://github.com/username/myapp.git
+  ```
+* Provide GitHub credentials (if private repo).
+
+---
+
+#### (C) Automate Trigger (important part 🚨)
+
+* In job config → **Build Triggers**:
+
+  * Tick: **GitHub hook trigger for GITScm polling**.
+
+Now Jenkins knows it should listen for GitHub changes.
+
+---
+
+#### (D) Set Webhook in GitHub
+
+1. Go to GitHub → Repo → Settings → Webhooks.
+2. Add new webhook:
+
+   * **Payload URL** → `http://<your-jenkins-server>:8080/github-webhook/`
+   * **Content type** → `application/json`
+   * **Events** → Just the push event (or all events).
+
+Now GitHub will notify Jenkins on every push.
+
+---
+
+#### (E) Define What Job Should Do
+
+In **Build Steps**, you can add commands. Example:
+
+```bash
+echo "Pulling latest code..."
+git pull
+echo "Building project..."
+mvn clean install   # if Java project
+echo "Running tests..."
+mvn test
+```
+
+Or if **Pipeline job**, write a `Jenkinsfile` in your repo like:
+
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage('Clone Repo') {
+            steps {
+                git 'https://github.com/username/myapp.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+    }
+}
+```
+
+---
+
+### 4️ Simple Example in Plain Words
+
+* You push code → GitHub.
+* GitHub pings Jenkins (via webhook).
+* Jenkins pulls your new code.
+* Jenkins runs your build/test steps automatically.
+* If all is good → it can even deploy to server.
+
+---
+

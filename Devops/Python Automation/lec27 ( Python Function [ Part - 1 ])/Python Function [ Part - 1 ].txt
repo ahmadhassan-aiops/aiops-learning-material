@@ -1,0 +1,223 @@
+
+
+Lecture 27:-
+
+
+Function :-
+A function is a block of code which only runes when its called.
+
+It also called method or procedure. 
+
+Function help to break out program into smaller and moduler chunks and its avoid repeation and make code reusable.
+
+
+Function syntax:-
+
+def functionName():
+	statement 
+
+functionName()
+
+Example:-
+def abd():
+    print("Abdeali dodiya")
+    print("Bangalore")
+print("@@@@@@@@@@@@@This is first call@@@@@@@@@@")
+abd()
+print("@@@@@@@@@@This is second call@@@@@@@@@@")
+abd()
+print("@@@@@@@@@@This is third call@@@@@@@@@@")
+abd()
+
+
+O/p:-
+@@@@@@@@@@@@This is first call@@@@@@@@@@
+Abdeali dodiya
+Bangalore
+@@@@@@@@@@This is second call@@@@@@@@@@
+Abdeali dodiya
+Bangalore
+@@@@@@@@@@This is third call@@@@@@@@@@
+Abdeali dodiya
+Bangalore
+
+
+
+
+def _abd()	#Valid
+def _abd_()	#Valid
+def 1abd()	#Not Valid
+def abd1()	#Valid
+def abd1_abd()	#Valid
+def 123()	#Not Valid
+
+
+
+
+Types Of function :-
+
+1. Buitin function 
+2. User define function :-
+
+
+1.  Buitin function 
+
+import os
+
+os.system("dir")
+input ,
+
+
+2. User define function :
+
+def abd():
+    print("Abdeali dodiya")
+    print("Bangalore")
+
+abd()
+
+
+
+
+def first():
+    print("My first  function")
+
+def second():
+    print("My second function")
+
+first()
+second()
+
+
+
+
+
+def myban(abd):
+    print("*"*30)
+    print("\t\t" + abd)
+    print("*" * 30)
+
+myban("Thisis example of function")
+myban("This is demo function")
+myban("This is test function")
+
+
+O/p:-
+******************************
+		Thisis example of function
+******************************
+******************************
+		This is demo function
+******************************
+******************************
+		This is test function
+******************************
+
+
+
+def first():
+    print("My first function")
+    print("My first function value is " , ali)
+    
+    
+
+ali=52
+first()
+
+o/p:-
+My first function
+My first function value is  52
+
+
+
+
+def main():
+    print("My first function")
+    print("My first function value is " , ali)
+    second()
+
+def second():
+    print("Second function")
+    print("My second function value is ", ali)
+
+
+ali=52
+main()
+
+
+
+
+
+def first():
+    ali = 1
+    print("My first function")
+    print("My first function value is " , ali)
+
+
+def second():
+    print("Second function")
+    print("My second function value is ", ali)
+
+
+ali=2
+first()
+second()
+print("outside",ali)
+
+
+
+
+
+def first():
+    ali = 1
+    print("My first function")
+    print("My first function value is " , ali)
+def second():
+    global ali
+    ali=2
+    print("Second function")
+    print("My second function value is ", ali)
+
+first()
+second()
+print("Outside",ali)
+
+
+
+
+def first(ali):
+    print("my first function")
+    print("my first function value is ",ali)
+
+def second():
+    ali=2
+    print("my second function")
+    print("my second function value is ", ali)
+    first(ali)
+
+second()
+
+
+
+def first(abd):		#parameter
+    print("my first function")
+    print("my first function value is ",abd)
+
+def second():
+    ali=2
+    print("my second function")
+    print("my second function value is ", ali)
+    first(ali)			#Arguments
+
+second()
+
+
+
+A parameter is variable listed inside the parentheses in the function definition
+
+An arguments is value that are send to the function when its called.
+
+
+
+
+

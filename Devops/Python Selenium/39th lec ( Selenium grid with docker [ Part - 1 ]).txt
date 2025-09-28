@@ -1,0 +1,407 @@
+You need to work on your pytest project , if not then you need to setup everything on your project, If any doubt for pytest so you need naviagate our pytest lecture 
+
+(PYTEST with SELENIUM GRID)
+
+
+import pytest
+from allure_commons.types import AttachmentType
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+import  time
+
+def setup_function():
+    global driver
+    hub_url = "http://192.168.1.7:4444/wd/hub"
+    driver = webdriver.Remote(command_executor=hub_url , desired_capabilities={"browserName":"chrome"})
+    driver.get('https://alnafi.com/auth/signin')
+    driver.maximize_window()
+
+def teardown_function():
+    driver.quit()
+
+def my_cred():
+    return [
+        ('abdeali@gmail.com', 'abdeali@123'),
+        ('ali@gmail.com', 'ali@123'),
+        ('abd@gmail.com', 'abd@123')
+    ]
+@pytest.mark.parametrize("username,password",my_cred())
+def test_login(username,password):
+    print("My pytest login")
+    driver.find_element(By.ID,'Username/ Email').send_keys(username)
+    time.sleep(10)
+    driver.find_element(By.ID, 'Password').send_keys(password)
+    time.sleep(10)
+
+
+
+pytest.ini
+
+[pytest]
+addopts = -n3
+markers =
+        phase1
+        phase2
+
+
+
+#Now you need to copy chromedriver or firefox driver at your pytest project 
+
+Check hub location then will show all three mode a=connection will be active. 
+
+
+##########################################################################
+
+Selenium grid integrated with docker 
+
+
+Website :-
+
+https://hub.docker.com/r/selenium/standalone-chrome
+
+you can pull your docker image from docker hub :-
+#docker pull selenium/standalone-chrome
+
+# docker run -d -p 4444:4444 -v /dev/shm:/dev/shm selenium/standalone-chrome
+
+now you can check your docker client ip address and access from your node machine.
+
+
+http://192.168.0.109:4444
+
+
+Now we will run our selenium code from your node machine :-
+
+import time
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+# Selenium Grid Hub URL
+hub_url = "http://192.168.0.109:4444/wd/hub"
+
+chrome_options = Options()
+chrome_options.browser_name = "chrome"
+
+driver = webdriver.Remote(command_executor=hub_url, options=chrome_options)
+
+# Open website
+driver.get("https://www.website.com/?source=SC")
+driver.maximize_window()
+
+# Print page title
+print("Page Title:", driver.title)
+
+# Keep session open
+print("Browser will remain open. Close manually when done.")
+while True:
+    time.sleep(10)  # Keep script running
+
+###########################
+Then you can check node session at hub location.
+http://192.168.1.11:4444/ui
+
+session --> connect -->
+password --> secret 
+
+################# 
+
+(i do not use firefox!!)
+Please remove your chrome container avoid to conflict 
+#docker pull selenium/standalone-firefox
+
+#docker run -d -p 4444:4444 -v /dev/shm:/dev/shm selenium/standalone-firefox
+
+
+
+NODE CODE :-
+
+import time
+from selenium import webdriver
+from selenium.webdriver.firefox.service import Service
+from webdriver_manager.firefox import GeckoDriverManager
+from selenium.webdriver.firefox.options import Options
+
+# Selenium Grid Hub URL
+hub_url = "http://192.168.1.11:4444/wd/hub"
+
+# Configure Firefox options
+firefox_options = Options()
+firefox_options.browser_name = "firefox"
+
+# Initialize WebDriver
+driver = webdriver.Remote(command_executor=hub_url, options=firefox_options)
+
+# Open website
+driver.get("https://alnafi.com")
+
+# Maximize window and set implicit wait
+driver.maximize_window()
+driver.implicitly_wait(5)
+
+# Print page title
+print("Page Title:", driver.title)
+
+# Wait for 2 seconds before quitting
+time.sleep(2)
+driver.quit()
+
+
+
+
+Then you can check node session at hub location.
+http://192.168.1.11:4444/ui
+
+session --> connect -->
+password --> secret 
+
+
+#########################
+Now vanish everything from your container 
+
+We will open vnc port in same image 
+
+
+# docker run -d -p 4444:4444 -p 7900:7900 -v /dev/shm:/dev/shm selenium/standalone-chrome
+
+VNC Password : secret 
+
+CODE : 
+
+import time
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+# Selenium Grid Hub URL
+hub_url = "http://192.168.0.109:4444/wd/hub"
+
+chrome_options = Options()
+chrome_options.browser_name = "chrome"
+
+driver = webdriver.Remote(command_executor=hub_url, options=chrome_options)
+
+# Open website
+driver.get("https://www.website.com/?source=SC")
+driver.maximize_window()
+
+# Print page title
+print("Page Title:", driver.title)
+
+# Keep session open
+print("Browser will remain open. Close manually when done.")
+while True:
+    time.sleep(10)  # Keep script running
+
+
+Now you can check both URL :-
+VNC --> http://192.168.1.11:7900/
+HUB --> http://192.168.1.11:4444
+
+
+
+############################
+
+
+
+
+Now we will create docker compose 
+venish everything 
+
+
+root@abdealidodia:~/lecture39_selenium_grid# cat docker-compose-sel_grid.yml
+version: "3"
+services:
+        chrome:
+                image: selenium/standalone-chrome
+                privileged: true
+                hostname: chrome
+                volumes:
+                        - /dev/shm:/dev/shm
+                ports:
+                        - "4444:4444"
+                        - "7900:7900"
+
+
+
+
+root@abdealidodia:~/lecture39_selenium_grid# docker-compose -f docker-compose-sel_grid.yml up
+WARNING: The Docker Engine you're using is running in swarm mode.
+
+
+
+http://192.168.1.11:4444/ui#
+
+
+CODE :-
+
+import time
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+# Selenium Grid Hub URL
+hub_url = "http://192.168.0.109:4444/wd/hub"
+
+chrome_options = Options()
+chrome_options.browser_name = "chrome"
+
+driver = webdriver.Remote(command_executor=hub_url, options=chrome_options)
+
+# Open website
+driver.get("https://www.website.com/?source=SC")
+driver.maximize_window()
+
+# Print page title
+print("Page Title:", driver.title)
+
+# Keep session open
+print("Browser will remain open. Close manually when done.")
+while True:
+    time.sleep(10)  # Keep script running
+
+Now we need to down our docker-compose file 
+
+#docker-compose -f docker-compose-sel_grid.yml down
+
+
+
+
+
+####################
+We are combining two image in docker-compose 
+
+root@abdealidodia:~/lecture39_selenium_grid# cat docker-compose-sel_grid_two.yml
+version: "3"
+services:
+  chrome:
+    image: selenium/standalone-chrome
+    privileged: true
+    hostname: chrome
+    volumes:
+      - /dev/shm:/dev/shm
+    ports:
+      - "4441:4444"
+      - "7901:7900"
+
+  edge:
+    image: selenium/standalone-edge
+    privileged: true
+    hostname: edge
+    volumes:
+      - /dev/shm:/dev/shm
+    ports:
+      - "4442:4444"
+      - "7902:7900"
+
+# docker-compose -f docker-compose-sel_grid_two.yml up
+#docker ps 
+
+Edge     --> PORT --> 4440
+Edge VNC --> PORT --> 7900
+
+
+Chrome PORT --> 4441
+Chrome VNC port --> 7901
+
+
+
+FREFOX :-
+###################
+
+Now we will run chrome code :-
+
+
+import time
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+# Selenium Grid Hub URL
+hub_url = "http://192.168.0.109:4441/wd/hub"
+
+chrome_options = Options()
+chrome_options.browser_name = "chrome"
+
+driver = webdriver.Remote(command_executor=hub_url, options=chrome_options)
+
+# Open website
+driver.get("https://www.website.com/?source=SC")
+driver.maximize_window()
+
+# Print page title
+print("Page Title:", driver.title)
+
+# Keep session open
+print("Browser will remain open. Close manually when done.")
+while True:
+    time.sleep(10)  # Keep script running
+
+
+Now you can checkyour session with below URL :-
+
+http://192.168.1.11:4440/ui#
+http://192.168.1.11:7900/
+
+
+####
+You can do same as edge it will access from node 
+
+import time
+from selenium import webdriver
+from selenium.webdriver.edge.service import Service
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
+from selenium.webdriver.edge.options import Options
+
+service = Service(EdgeChromiumDriverManager().install())
+driver = webdriver.Edge(service=service)
+
+# Selenium Grid Hub URL
+hub_url = "http://192.168.0.109:4442/wd/hub"
+
+edge_options = Options()
+edge_options.browser_name = "MicrosoftEdge"
+
+driver = webdriver.Remote(command_executor=hub_url, options=edge_options)
+
+# Open website
+driver.get("https://www.website.com/?source=SC")
+driver.maximize_window()
+
+# Print page title
+print("Page Title:", driver.title)
+
+# Keep session open
+print("Browser will remain open. Close manually when done.")
+while True:
+    time.sleep(10)  # Keep script running
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,26 @@
+
+
+etcd (pronounced "et-cee-dee") is an open-source, strongly consistent, distributed key-value store used for configuration management, 
+service discovery, and coordination of distributed systems.
+
+
+
+=> Open source independent project not just for kubernetes! Graduate from cncf
+=> Stores data as nosql (save memory) - Data store as document
+
+
+-----------------------------------------------
+
+
+http://play.etcd.io/play
+
+-----------------------------------------------
+
+
+
+
+
+
+
+
+

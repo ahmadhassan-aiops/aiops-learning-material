@@ -1,0 +1,237 @@
+Lecture 14 : Dictionary data structure in Python [ Part - 2 ]
+
+#POP
+>>> cred={"uname":"ABDEALI","pass":"Abd@123"}
+>>> print(cred)
+{'uname': 'ABDEALI', 'pass': 'Abd@123'}
+>>> cred={"uname":"ABDEALI","pass":"Abd@123"}
+>>> print(cred)
+{'uname': 'ABDEALI', 'pass': 'Abd@123'}
+>>> cred.pop()
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+TypeError: pop expected at least 1 argument, got 0
+>>> cred.pop("pass")
+'Abd@123'
+>>> print(cred)
+{'uname': 'ABDEALI'}
+>>> cred={"uname":"ABDEALI","pass":"Abd@123"}
+>>> cred.pop("uname")
+'ABDEALI'
+>>> print(cred)
+{'pass': 'Abd@123'}
+
+
+#popitem
+randomly will remove
+>>> cred={"uname":"ABDEALI","pass":"Abd@123"}
+>>> print(cred)
+{'uname': 'ABDEALI', 'pass': 'Abd@123'}
+>>> cred.popitem()
+('pass', 'Abd@123')
+>>> print(cred)
+{'uname': 'ABDEALI'}
+>>> cred={"uname":"ABDEALI","pass":"Abd@123"}
+>>> cred.popitem('uname')
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+TypeError: dict.popitem() takes no arguments (1 given)
+
+
+
+
+#DEL
+>>> cred={"uname":"ABDEALI","pass":"Abd@123","server1":"192.168.1.1"}
+>>> print(cred)
+{'uname': 'ABDEALI', 'pass': 'Abd@123', 'server1': '192.168.1.1'}
+>>> del cred
+>>> print(cred)
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+NameError: name 'cred' is not defined
+
+>>> cred={"uname":"ABDEALI","pass":"Abd@123","server1":"192.168.1.1"}
+>>> print(cred)
+{'uname': 'ABDEALI', 'pass': 'Abd@123', 'server1': '192.168.1.1'}
+
+>>> print(cred['server1'])
+192.168.1.1
+>>> del cred['server1']
+>>> print(cred)
+{'uname': 'ABDEALI', 'pass': 'Abd@123'}
+
+
+
+#Convert list to dictionary
+>>> abd1=['one','two','three']
+>>> print(abd1)
+['one', 'two', 'three']
+>>> print(type(abd1))
+<class 'list'>
+>>> abd2=[1,2,3]
+>>> print(type(abd2))
+<class 'list'>
+>>> print(abd2)
+[1, 2, 3]
+>>> mydata=zip(abd1,abd2)
+>>> print(mydata)
+<zip object at 0x0000013B55D54400>
+>>> print(dict(mydata))
+{'one': 1, 'two': 2, 'three': 3}
+
+
+
+#Fromkeys
+>>> abd1=['a','e','i','o','u']
+>>> print(abd1)
+['a', 'e', 'i', 'o', 'u']
+>>> values="vowel"
+>>> mydata=dict.fromkeys(abd1,values)
+>>> print(mydata)
+{'a': 'vowel', 'e': 'vowel', 'i': 'vowel', 'o': 'vowel', 'u': 'vowel'}
+
+
+
+#setdefault
+>>> username={}
+>>> username.setdefault("username",'ABD')
+'ABD'
+>>> print(username)
+{'username': 'ABD'}
+>>> username.setdefault("password",'ABD@#134')
+'ABD@#134'
+>>> print(username)
+{'username': 'ABD', 'password': 'ABD@#134'}
+
+
+
+>>> username.setdefault("username",'ABD')
+'ABD'
+>>> print(username)
+{'username': 'ABD', 'password': 'ABD@#134'}
+
+
+
+#MAX #MIN  #SUM
+>>> dict1={1:3,5:10}
+>>> print(dict1)
+{1: 3, 5: 10}
+
+
+
+#SORTED
+>>> cred={'username': 'ABD', 'password': 'ABD@#134'}
+>>> print(cred)
+{'username': 'ABD', 'password': 'ABD@#134'}
+>>> print(sorted(cred))
+['password', 'username']
+>>> cred={'username': 'ABD', 'password': 'ABD@#134',"ABD":"abd"}
+>>> print(sorted(cred))
+['ABD', 'password', 'username']
+>>>
+
+
+
+
+
+#How do i check if keys exists in a dictionary
+cred={'username': 'ABD', 'password': 'ABD@#134'}
+print(cred)
+
+if "username" in cred:
+print(cred['username'])
+print("Data is present")
+else:
+print("sorry your data is not available")
+~
+
+
+
+#Nested dictionary:-
+myinfo = {'username': 'ABD', 'password': 'ABD@#134'}
+
+myinfo= {
+1 : {'uname':'abd','pass':'ABD@123','server1':'Linux'},
+2 : {'uname':'ali','pass':'ali@123','server1':'AIX'},
+3 : {'uname':'kazim','pass':'kazim@123','server1':'windows'}
+}
+
+>>> print(myinfo[1])
+{'uname': 'abd', 'pass': 'ABD@123', 'server1': 'Linux'}
+
+>>> print(myinfo[2])
+{'uname': 'ali', 'pass': 'ali@123', 'server1': 'AIX'}
+
+>>> print(myinfo[3])
+{'uname': 'kazim', 'pass': 'kazim@123', 'server1': 'windows'}
+
+>>> print(myinfo[3])
+{'uname': 'kazim', 'pass': 'kazim@123', 'server1': 'windows'}
+>>> print(myinfo[3]['pass'])
+kazim@123
+
+
+>>> print(dict1.keys())
+dict_keys([1, 5])
+>>> print(dict1.values())
+dict_values([3, 10])
+>>> print(dict1)
+{1: 3, 5: 10}
+>>> print(max(dict1))
+5
+>>> print(max(dict1.values()))
+10
+>>> print(max(dict1))
+5
+>>> print(min(dict1))
+1
+>>> print(min(dict1.values()))
+3
+>>> print(min(dict1.keys()))
+1
+>>> print(sum(dict1.keys()))
+6
+>>> print(sum(dict1.values()))
+
+
+
+#nested diction with list
+myinfo = {
+"server1" : ["192.168.1.1","192.168.1.2","192.168.1.3"],
+"server2" : ["192.168.2.1","192.168.2.2","192.168.2.3"],
+"server3" : ["192.168.3.1","192.168.3.2","192.168.3.3"]
+}
+
+>>> print(myinfo)
+{'server1': ['192.168.1.1', '192.168.1.2', '192.168.1.3'], 'server2': ['192.168.2.1', '192.168.2.2', '192.168.2.3'], 'server3': ['192.168.3.1', '192.168.3.2', '192.168.3.3']}
+>>> print(myinfo['server2'])
+['192.168.2.1', '192.168.2.2', '192.168.2.3']
+>>> print(myinfo['server2'][0])
+192.168.2.1
+>>> print(myinfo['server2'][1])
+192.168.2.2
+>>> print(myinfo['server2'][2])
+192.168.2.3
+>>> print(myinfo['server3'][2])
+192.168.3.3
+
+
+
+############################TASK TIME############################
+
+input :-
+myinfo = {
+"server1" : {
+"IBM": {
+"datacenter":"Bangalore",
+"env": {
+"PR": "192.168.1.1",
+"DR": "192.168.1.2"
+}
+}
+    }
+}
+
+Output :-
+Bangalore datacenter PR address is : 192.168.1.1
+Bangalore datacenter DR address is : 192.168.1.2

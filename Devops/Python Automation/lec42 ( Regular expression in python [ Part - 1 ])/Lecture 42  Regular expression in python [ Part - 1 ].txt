@@ -1,0 +1,93 @@
+Lecture 42 : Regular expression in python [ Part - 1 ]
+
+
+Regular expression :-
+its also called regex
+
+A regex is sequence of character that forms a search programs.
+
+
+A regular expression is special sequence of character that help you match or find other string. In UNIX env regex is widely used now a days.
+
+
+regex operation :-
+
+1. match()
+2. search()
+3. findall()
+4. sub()
+5. subn()
+6. split()
+7. compile()
+
+
+
+
+1. Findall ()
+syntax:
+re.findall(pattern,txt)
+
+
+myword="Abdeali Dodiya from bangalore , We are learning Python and in this course we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="We"
+print(re.findall(pattern,myword))
+
+o/p:-
+['We', 'We']
+
+
+
+
+
+import re
+myword="Abdeali Dodiya from bangalore , We are learning Python and in this course we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="Python2"
+print(re.findall(pattern,myword))
+o/p:-
+Null
+
+
+
+import re
+myword="Abdeali Dodiya from bangalore , We are learning Python and in this course we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="python2"
+print(re.findall(pattern,myword))
+
+if you are using pattern then you can use []
+python2
+python3
+
+python[2]
+
+
+import re
+myword="Abdeali Dodiya from bangalore , We are learning Python and in this course we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="python[2]"
+print(re.findall(pattern,myword))
+
+
+
+
+
+import re
+myword="Abdeali Dodiya from bangalore , We are learning Python and in this course we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="python[234]"
+print(re.findall(pattern,myword))
+
+
+
+
+
+import re
+myword="Abdeali Dodiya from bangalore , We are learning python and in this course we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="python[' '23]"
+print(re.findall(pattern,myword))
+
+
+
+
+
+import re
+myword="Abdeali Dodiya from bangalore , We are learning python and in this course we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="python2|python3|python|Python"
+print(re.findall(pattern,myword))

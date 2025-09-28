@@ -1,0 +1,227 @@
+
+
+
+
+
+
+
+myfinalscript.py
+
+mysql> select * from my_df_data;
++---------+-----------------------------------+------+------+-------+----------------+------------+---------------------+-------------+---------------+
+| file_id | filesystem                        | size | used | avail | usage_with_per | mounted_on | datetime            | ip_address  | hostname      |
++---------+-----------------------------------+------+------+-------+----------------+------------+---------------------+-------------+---------------+
+|       1 | /dev/sda2                         | 875M | 149M | 665M  |             19 | /boot      | 2022-10-02 13:14:05 | 192.168.1.6 | abdeali       |
+|       2 | udev                              | 953M | 0    | 953M  |              0 | /dev       | 2022-10-02 11:46:24 | 192.168.1.8 | abdeali.local |
+|       3 | /dev/mapper/ubuntu--vg-ubuntu--lv | 8.9G | 5.8G | 2.7G  |             69 | /          | 2022-10-02 11:46:24 | 192.168.1.8 | abdeali.local |
+|       4 | /dev/sda2                         | 875M | 149M | 665M  |             19 | /boot      | 2022-10-02 11:46:24 | 192.168.1.8 | abdeali.local |
++---------+-----------------------------------+------+------+-------+----------------+------------+---------------------+-------------+---------------+
+4 rows in set (0.00 sec)
+
+
+
+
+mysql> select * from my_df_data where usage_with_per >=50;
++---------+-----------------------------------+------+------+-------+----------------+------------+---------------------+-------------+---------------+
+| file_id | filesystem                        | size | used | avail | usage_with_per | mounted_on | datetime            | ip_address  | hostname      |
++---------+-----------------------------------+------+------+-------+----------------+------------+---------------------+-------------+---------------+
+|       3 | /dev/mapper/ubuntu--vg-ubuntu--lv | 8.9G | 5.8G | 2.7G  |             69 | /          | 2022-10-02 11:46:24 | 192.168.1.8 | abdeali.local |
+|       6 | /dev/mapper/ubuntu--vg-ubuntu--lv | 8.9G | 5.8G | 2.7G  |             69 | /          | 2022-10-02 13:37:28 | 192.168.1.8 | abdeali.local |
++---------+-----------------------------------+------+------+-------+----------------+------------+---------------------+-------------+---------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from my_df_data where usage_with_per >=50 and ip_address='192.168.1.8';
++---------+-----------------------------------+------+------+-------+----------------+------------+---------------------+-------------+---------------+
+| file_id | filesystem                        | size | used | avail | usage_with_per | mounted_on | datetime            | ip_address  | hostname      |
++---------+-----------------------------------+------+------+-------+----------------+------------+---------------------+-------------+---------------+
+|       3 | /dev/mapper/ubuntu--vg-ubuntu--lv | 8.9G | 5.8G | 2.7G  |             69 | /          | 2022-10-02 11:46:24 | 192.168.1.8 | abdeali.local |
+|       6 | /dev/mapper/ubuntu--vg-ubuntu--lv | 8.9G | 5.8G | 2.7G  |             69 | /          | 2022-10-02 13:37:28 | 192.168.1.8 | abdeali.local |
++---------+-----------------------------------+------+------+-------+----------------+------------+---------------------+-------------+---------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from my_df_data where usage_with_per >=50 and ip_address='192.168.1.6';
+Empty set (0.00 sec)
+
+
+
+
+
+Final project :-
+root@abdeali:~/myproject# cat myfilecsv.csv
+udev,953M,0,953M,0,/dev,2022-10-02 13:47:10,192.168.1.8,abdeali.local
+/dev/mapper/ubuntu--vg-ubuntu--lv,8.9G,5.8G,2.7G,69,/,2022-10-02 13:47:10,192.168.1.8,abdeali.local
+/dev/sda2,875M,149M,665M,19,/boot,2022-10-02 13:47:10,192.168.1.8,abdeali.local
+
+
+root@abdeali:~/myproject# cat python_csv_project.py
+#!/usr/bin/python3
+import os
+import json
+
+
+try:
+    jsonfile = "mylinux.json"
+    with open(jsonfile,"r") as jf:
+        my_dict = json.load(jf)
+
+    os_name=os.popen(my_dict['os_flavour']).read().strip('\n')
+    if os_name == 'Ubuntu' or os_name == 'redhat':
+        df_cmd=os.popen(my_dict['df_cmd']).read()
+        print(df_cmd)
+        print("CSV file generated succesfully in current directory")
+    else:
+        print("Other os found", os_name)
+except Exception as e:
+    print("Something having issue",e)
+
+
+
+###########
+root@abdeali:~/myproject# cat mylinux.json
+{
+        "username": "mysql_user",
+        "password": "test123",
+        "os_flavour": "cat /etc/os-release | grep -iw \"NAME\" | awk -F = '{print $2}' | tr -d '\"'",
+        "df_cmd" : "df -h  | grep -v 'tmpfs' | awk 'NR!=1' | awk '{print $1,$2,$3,$4,$5,$6}' | sed -e 's/%//g' | sed -E \"s/ +/,/g\" | sed \"s/$/,$(date '+%F %T')/g\" | sed \"s/$/,$(hostname -I | awk '{print $1}')/g\" |  sed \"s/$/,$(hostname)/g\" > myfilecsv.csv"
+}
+
+##################
+
+root@abdeali:~/myproject# cat myproject.py
+import json
+import os
+from  cryptography.fernet import Fernet
+import mysql.connector
+import csv
+
+
+try:
+    jsonfile="W:\Alnafi\Devops\Python Automation\lec57 ( Real-World Project [ Part -1 ])\mylinux.json"
+    print("We are running python csv script then you will get csv file from mentinoed path..")
+    os.system("W:\Alnafi\Devops\Python Automation\lec57 ( Real-World Project [ Part -1 ])\python-project.py")
+    csvpath="W:\Alnafi\Devops\Python Automation\lec57 ( Real-World Project [ Part -1 ])\df.csv"
+    with open(jsonfile) as jf:
+        print("We are fetching MYSQL password and encrypting and decrypting...")
+        my_dict = json.load(jf)
+        username_mysql = (my_dict['username'])
+        password_mysql = (my_dict['password'])
+        message = password_mysql.encode("utf-8")
+        key = Fernet.generate_key()
+        f = Fernet(key)
+        enc = f.encrypt(message)
+        dec = f.decrypt(enc)   
+        passwd_mysql = dec.decode('utf-8')
+
+
+        mydb = mysql.connector.connect (
+            host = "192.168.0.105",
+            user= "mysql_user",
+            password = "Ahmad:06331913012",
+            database = "alnafi",
+            auth_plugin = "mysql_native_password"
+        )
+
+        print("CSV file reading and storing into mysql DB")
+        with open(csvpath) as csv_file:
+            csvfile = csv.reader(csv_file,delimiter=',')
+            all_values=[]
+            for row in csvfile:
+                value = (row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8])
+                all_values.append(value)
+        query= "insert into my_df_data (filesystem,size,used,avail,usage_with_per,mounted_on,datetime,ip_address,hostname) values (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        mycursor =mydb.cursor()
+        mycursor.executemany(query,all_values)
+        mydb.commit()
+        mydb.close()
+        print("Data has been imported into DB successfully")
+except Exception as e:
+    print("Something having issue : ",e)
+
+
+################################################################################################
+
+TASK :-
+Memory details :-
+
+root@abdeali:~/myproject# free -gt
+              total        used        free      shared  buff/cache   available
+Mem:              1           0           1           0           0           1
+Swap:             1           0           1
+Total:            3           0           2
+
+###################################################
+archiving logs from linux machine 
+
+from datetime import date
+import os
+
+# Get today's date
+today = date.today()
+d1 = today.strftime("%d%B%Y")
+
+# Define the correct log file path (without trailing slash)
+syslog_log = "/var/log/messages-20250302"
+
+# Get file size
+file_size = os.stat(syslog_log).st_size
+file_mb = file_size / 1_000_000  # Convert bytes to MB
+
+# Define the archive command (use the correct filename)
+archive_path = f"{syslog_log}_{d1}.tgz"
+cmd = f'tar cvf - {syslog_log} | gzip -c > {archive_path}'
+
+# Empty the file after archiving
+echo1 = f'echo " " > {syslog_log}'
+
+# Set correct permissions
+chmod_cmd = f'chmod 755 {syslog_log}'
+
+# Proceed only if the file is large
+if file_mb >= 1.0:
+    print("File is huge, Proceeding to archive")
+
+    # Run commands
+    os.system(cmd)
+    os.system(echo1)
+    os.system(chmod_cmd)
+
+    print(f"Archive created: {archive_path}")
+else:
+    print("File is small")
+
+
+
+
+
+
+####################
+
+root@abdeali:~/myproject/archive_logs# python3 archive_log.py
+02October2022
+2721694
+2.721694
+File is small
+
+root@abdeali:~/myproject/archive_logs# python3 archive_log.py
+
+2.721694
+File is huge, Proceeding to archive
+syslog
+######################################
+configure crontab 
+10 0 * * * /root/myproject/archive_logs/archive_log.py
+
+
+
+python --> scheduler 
+Windows --> batch file --> Task_scheduler 
+
+###########################################################################
+
+
+
+
+
+
+
+

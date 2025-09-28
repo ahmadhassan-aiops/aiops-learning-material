@@ -1,0 +1,127 @@
+
+
+Lecture 34:
+
+
+read file :
+with open("abd.txt") as file:
+	data=file.read()
+	print(data)
+
+OR 
+
+with open("abd.txt",mode="r") as file:
+    data=file.read()
+    print(data)
+
+OR 
+
+with open("abd.txt","r") as file:
+    data=file.read()
+    print(data)
+
+
+#Write the file
+with open("abd.txt") as file:
+    file.write("Abdeali Dodiya")
+
+Error :
+io.UnsupportedOperation: not writable
+
+#Write :
+with open("abd.txt",mode="w") as file:
+   file.write("Abdeali Dodia")
+
+OR 
+with open("abd.txt","w") as file:
+   file.write("Abdeali Dodia")
+
+
+
+#Write file with multi:-
+with open("abd.txt","w") as file:
+   file.write("Abdeali Dodia\n")
+   file.write("This is write commands\n")
+   file.write("Bangalore\n")
+
+O/p:
+abd.txt
+Abdeali Dodia
+This is write commands
+Bangalore
+
+
+
+
+with open("abd.txt","w") as file:
+   file.write("We are learning python from alnafi")
+o/p:-
+We are learning python from alnafi
+
+
+
+
+#Append 
+with open("abd.txt","a") as file:
+   file.write("\nMy name is Abdeali dodiya")
+O/p:-
+We are learning python from alnafi
+My name is Abdeali dodiya
+
+
+#append is use for append your data as well as creating file if file is not present.
+
+
+mydata=['Python','Python3','Python2']
+with open("abd.txt","w") as file:
+  for i in mydata:
+     file.write(i)
+
+mydata=['Python','Python3','Python2']
+with open("abd.txt","w") as file:
+  for i in mydata:
+     file.write(i+"\n")
+
+
+#read data with binary mode :-
+with open("abd2.bin","rb") as file:
+    data=file.read()
+    print(data)
+
+
+
+
+for i in range(11):
+    with open("abd.txt",'w') as file:
+        file.write(f"Line : {i}\n")
+o/p:-
+Line : 10
+
+
+write mode will overwrite your data, means your previous data will be vanish once the new data is present.
+
+
+
+
+for i in range(11):
+    with open("abd.txt",'a') as file:
+        file.write(f"Line : {i}\n")
+
+
+o/p:-
+Line : 0
+Line : 1
+Line : 2
+Line : 3
+Line : 4
+Line : 5
+Line : 6
+Line : 7
+Line : 8
+Line : 9
+Line : 10
+
+
+
+
+

@@ -1,0 +1,78 @@
+Lecture 31 Docker notes
+
+
+
+Docker Swarm --> ODocker swarm is a container orchestration tool who manage mutiple container with HA
+
+Cluster --> Manage multiple nodes , collection of nodes
+
+2 Machine
+EC2 , COntainer, OVM , VMWARE , any hyper visor
+
+
+
+Abdealidodia --> 192.168.1.8 --> Master
+abdealinode1 --> 192.168.1.9 --> Worker
+
+Port : 2377
+EC2 AWS --> Network engineer port need to opened
+
+Master machine : 192.168.1.8
+docker swarm init --advertise-addr 192.168.1.8
+OR
+docker swarm init
+
+Swarm initialized: current node (y9u7aje8kuvruaeekyzbd957t) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+docker swarm join --token SWMTKN-1-3q93eiyhg8kc19z92ui73hiyeeq6qh5y9tsnxzd3d3sn0b637c-eptz3c433kymiws0vs1qqrxnf 192.168.1.8:2377
+
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+
+
+# docker node ls
+
+
+Wokrer  Machine 1.9
+#docker swarm join --token SWMTKN-1-3q93eiyhg8kc19z92ui73hiyeeq6qh5y9tsnxzd3d3sn0b637c-eptz3c433kymiws0vs1qqrxnf 192.168.1.8:2377
+
+
+master :-
+docker network create -d overlay mynetwork
+# docker build -t ahmad/web:swarm .
+
+Docker file --> Docker image --> Docker container
+Docker file --> Docker image --> Docker service
+
+docker service create --name web-swarm --publish 8080:80 ahmad/web:swarm
+
+docker service ls
+docker ps
+
+docker exec -it webapp1.1.wreyruyperfzolc1vg2wy6abd bash
+docker service ps rw1f4yi7bz30
+docker node update --availability drain abdealidodia
+
+Broswer --> http://192.168.1.9:8001/
+docker node update --availability active abdealidodia
+docker node ls
+docker service rm webapp1
+docker service create --name webapp1 -d --network mynetwork --replicas=2  -p 8001:80 abdealidodia/web:swarm
+
+
+
+Worker
+# docker swarm leave
+
+Master :-
+# docker node ls
+ID                            HOSTNAME             STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+y9u7aje8kuvruaeekyzbd957t *   abdealidodia         Ready     Active         Leader           20.10.14
+ovg6bchz7n4b6lg1pj97yjbs1     abdealinode1.local   Down      Active                          20.10.14
+
+
+
+docker node  rm abdealinode1.local
+docker node ls
+docker service logs webapp1

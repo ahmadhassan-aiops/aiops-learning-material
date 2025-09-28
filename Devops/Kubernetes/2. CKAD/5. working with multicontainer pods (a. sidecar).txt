@@ -1,0 +1,104 @@
+
+In Kubernetes, you can run multiple containers within a single Pod, using either the same or different images. 
+This is especially useful when the containers are tightly coupled and need to share resources like networking (localhost communication) 
+or storage (shared volumes). These containers are scheduled together on the same node and act as a single unit, 
+which allows for patterns like sidecars, adapters, or log shippers that complement the main application container.
+
+This flexibility supports both monolithic and microservices architecture styles. 
+In a monolithic approach, tightly integrated components can run in the same Pod, while in a microservices approach, 
+a Pod might house a primary service container and a helper container (like a proxy or metrics exporter). 
+This design enables Kubernetes to adapt to different application needs, ensuring better modularity, observability, 
+and resource sharing within complex deployments.
+
+
+All container in single pod binds in same fate!!! (same storage, netwrok)(both create and destry simultaneously)
+
+1.sidecar
+2.Ambassador
+3.Adaptor
+
+-------------------------------------------------------
+
+
+[root@client1 ahmad]# cat sidecar-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sidecar-practice-pod
+spec:
+  containers:
+    - name: main-container
+      image: busybox:stable
+      command: ['sh', '-c', 'echo "I am learning kubernetes" > /output-dir/data.txt; while true; do sleep 5; done']
+      volumeMounts:
+        - name: shared-volume
+          mountPath: /output-dir
+
+    - name: sidecar-container
+      image: busybox:stable
+      command: ['sh', '-c', 'while true; do cat /input-dir/data.txt; sleep 5; done']
+      volumeMounts:
+        - name: shared-volume
+          mountPath: /input-dir
+
+  volumes:
+    - name: shared-volume
+      emptyDir: {}
+
+-------------------------------------------------------
+
+
+[root@client1 ahmad]# cat config.yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+  - role: worker
+
+-----------------------------------------------------
+
+kind create cluster --name my-cluster --config config.yaml
+
+-----------------------------------------------------
+
+[root@client1 ahmad]# kubectl get nodes
+NAME                       STATUS   ROLES           AGE   VERSION
+my-cluster-control-plane   Ready    control-plane   74s   v1.32.2
+my-cluster-worker          Ready    <none>          63s   v1.32.2
+[root@client1 ahmad]#
+-----------------------------------------------------
+
+
+[root@client1 ahmad]# kubectl apply -f sidecar-pod.yaml
+pod/sidecar-practice-pod created
+[root@client1 ahmad]# kubectl get pods -w
+NAME                   READY   STATUS    RESTARTS   AGE
+sidecar-practice-pod   2/2     Running   0          17s
+
+-----------------------------------------------------
+
+
+ kubectl logs sidecar-practice-pod -c sidecar-container
+I am learning kubernetes
+I am learning kubernetes
+I am learning kubernetes
+I am learning kubernetes
+I am learning kubernetes
+I am learning kubernetes
+I am learning kubernetes
+I am learning kubernetes
+I am learning kubernetes
+I am learning kubernetes
+
+-----------------------------------------------------
+
+[root@client1 ahmad]# kubectl logs sidecar-practice-pod -c sidecar-container | wc
+     93     372    2325
+[root@client1 ahmad]# kubectl logs sidecar-practice-pod -c sidecar-container | wc
+     95     380    2375
+[root@client1 ahmad]# kubectl logs sidecar-practice-pod -c sidecar-container | wc
+     96     384    2400
+[root@client1 ahmad]#
+
+-----------------------------------------------------
+

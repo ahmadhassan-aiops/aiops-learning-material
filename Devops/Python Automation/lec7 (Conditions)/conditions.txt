@@ -1,0 +1,178 @@
+Lecture 7 :  Condition in Python.
+
+
+Condition :-
+condition statement helps to control the flow of a program.
+condition must be evaluate either True or False example : Boolean
+
+Common operators :-
+< ---- Less than  --> if a  < b
+<= --- Less than equal to  --> if a  <= b
+> --- greater than  --> if a  >  b
+>= --- greater than equal to  --> if a  >= b
+== Equal Equal  --> if a  == b
+!= Not Equal  --> if a  != b
+! Not --->!a
+&& --- And  --> if a  > b  && b > c
+|| --- OR   --> if a  > b  || b > c
+
+
+
+&& -->
+a  > b  && b > c
+10 > 2 &&  2 > 3
+
+TRUE && TRUE  = TRUE
+TRUE && False = False
+False && TRUE = False
+False && False = False
+
+
+a  > b  || b > c
+10 > 2 || 2 > 3
+TRUE || TRUE  = TRUE
+TRUE && False = True
+False && TRUE = True
+False && False = False
+
+
+
+Condition :-
+if condition:
+statement
+
+a=10
+b=2
+
+if a > b:
+print("a is greater than b")
+
+root@abdealidodia:~/lect7# python3 if_statement.py
+a is greater than b
+
+
+a=10
+b=20
+
+if (a > b):
+print("a is greater than b")
+
+
+
+If --> Else --> condition
+Condition :-
+if condition:
+statement
+else:
+statement
+
+
+a=10
+b=20
+
+if (a > b):
+print("a is greater than b")
+else:
+print("B is greater than a")
+
+
+
+
+If --> elif --> else:-
+Condition :-
+if condition:
+statement
+elif condition:
+statement
+else:
+statement
+
+
+root@abdealidodia:~/lect7# cat if_statement.py
+a=int(input("Enter the a number"))
+b=int(input("Enter the b number"))
+c=int(input("Enter the c number"))
+
+if a > b and a > c:
+print(f"a is big a = {a}")
+elif b > c and b > a:
+print(f"b is big b= {b}")
+else:
+print(f"c is big c= {c}")
+
+
+root@abdealidodia:~/lect7# python3 if_statement.py
+Enter the a number10
+Enter the b number20
+Enter the c number5
+b is big b= 20
+
+
+
+
+
+Nested If syntax:-
+if condition
+statement
+if condition
+stetement
+if condition
+else:
+statements:
+
+a=int(input("Enter the a number"))
+b=int(input("Enter the b number"))
+c=int(input("Enter the c number"))
+
+if a > b:
+if a > c:
+print(f"a is big a = {a}")
+else:
+print(f"c is big c= {c}")
+else:
+if b > c:
+print(f"b is big b= {b}")
+else:
+print(f"c is big c= {c}")
+
+root@abdealidodia:~/lect7# python3 nestedif.py
+Enter the a number10
+Enter the b number20
+Enter the c number30
+c is big c= 30
+
+
+
+TASK time :--
+
+if number is ODD  , print LinkedIN
+if number is even and in the inclusive range of 2 to 5 , Print Not LinkedIN
+if number is even and in the inclusive range of 6 to 20 , Print LinkedIN
+if number is even greater than 20 , Print Not LinkedIN
+
+Enter the number : 3
+LinkedIN
+
+
+Enter the number : 4
+Not LinkedIN
+
+
+Enter the number : 7
+LinkedIN
+
+
+Enter the number : 25
+LinkedIN
+
+
+Enter the number : 22
+Not LinkedIN
+
+
+Enter the number23
+LinkedIN
+
+
+Enter the number24
+Not LinkedIN

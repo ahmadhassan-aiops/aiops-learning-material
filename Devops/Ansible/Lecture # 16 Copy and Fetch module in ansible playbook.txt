@@ -1,0 +1,62 @@
+sudo vim copy.yml
+=========================================================
+---
+- name: this yml file focuses on copying files
+  hosts: ubuntu
+  become: yes
+  tasks:
+    - name: Copying ansible.cfg file
+      copy:
+        src: /home/jhon/ansible/ansible.cfg
+        dest: /home/ubuntu/
+
+
+=============================================================
+# you can check if there is error on your file or not
+ansible-playbook copy.yml --check
+
+# another way
+ansible-playbook copy.yml --syntax-check
+
+============================================
+Key value way
+
+---
+- name: this yml file focuses on copying files
+  hosts: ubuntu
+  become: yes
+  tasks:
+    - name: Copying ansible.cfg file
+      copy: src=/home/jhon/ansible/ansible.cfg dest=/home/ahsan/
+
+
+
+
+================================================
+
+fetching file from worker machine
+
+Key value way
+
+---
+- name: this yml file focuses on copying files
+  hosts: ubuntu
+  tasks:
+    - name: Copying ansible.cfg file
+      fetch: src=/home/ubuntu/ansible.cfg dest=/home/jhon/ansible/
+
+
+================================================
+
+#To copy the file directly into your destination folder (without extra directories), you just need to add flat=yes:
+
+---
+- name: this yml file focuses on copying files
+  hosts: ubuntu
+  tasks:
+    - name: Copying ansible.cfg file
+      fetch: src=/home/ubuntu/ansible.cfg dest=/home/jhon/ansible/ flat=yes
+
+
+
+

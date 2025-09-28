@@ -1,0 +1,27 @@
+Lecture 11: Docker notes
+
+
+CTRL + p+ q --> Your container process will be running at background
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Welcome</title>
+<meta name="viewport" content="width=device-width, initialscale=1">
+</head>
+<body>
+<h1>Welcome!</h1>
+<p>This file has been created on the host machine and has been
+mounted into the Nginx Docker Container!</p>
+</body>
+</html>
+
+
+When you type run command using docker run --> you will press or type exit command inside the container then your container will be die
+
+When you type exec command when container is already running mode then you press ctrl c or exit command inside the container then your container will be not die
+
+
+docker run --name my_daemonized -d ubuntu /bin/sh -c "while true; do echo my daemonized container; sleep 1; done "

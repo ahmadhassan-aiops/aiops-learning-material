@@ -1,0 +1,6 @@
+sudo yum install cloud-utils-growpart
+sudo growpart /dev/sda 2
+sudo pvresize /dev/sda2
+sudo lvextend -L +40G /dev/mapper/cs-root
+sudo xfs_growfs /
+df -h

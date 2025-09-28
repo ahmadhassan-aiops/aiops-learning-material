@@ -1,0 +1,74 @@
+
+
+
+The key concept demonstrated here is the use of securityContext in Kubernetes Pods to control user privileges inside containers. 
+The unsecure-pod runs without any securityContext, so the container defaults to running as the root user (whoami → root), which poses a security risk. 
+In contrast, the security-context-demo pod explicitly defines a securityContext at both the Pod and container level, assigning specific non-root runAsUser 
+and runAsGroup IDs (e.g., UID 2000), ensuring the container runs with limited privileges. Although whoami shows "unknown uid 2000" due to the 
+busybox image lacking a mapping for UID 2000, the container still successfully runs as a non-root user, showcasing a more secure configuration.
+
+
+-------------------------------------------------------------
+
+vim test-pod1.yaml
+[ahmad@client1 cks]$ cat test-pod1.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: security-context-demo
+spec:
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 3000
+  containers:
+  - name: sec-ctx-demo
+    image: busybox:1.28
+    command: ["sh", "-c", "sleep 1h"]
+    securityContext:
+      runAsUser: 2000
+
+
+
+-------------------------------------------------------------
+
+ vim 1test-unsecure-pod.yaml
+[ahmad@client1 cks]$ cat 1test-unsecure-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: unsecure-pod
+spec:
+  containers:
+  - name: sec-ctx-demo
+    image: busybox:1.28
+    command: ["sh", "-c", "sleep 1h"]
+
+
+-------------------------------------------------------------
+
+
+ kubectl apply -f 1test-unsecure-pod.yaml
+pod/unsecure-pod created
+[ahmad@client1 cks]$ kubectl get po
+NAME           READY   STATUS    RESTARTS   AGE
+unsecure-pod   1/1     Running   0          14s
+[ahmad@client1 cks]$ kubectl exec -it unsecure-pod -- /bin/sh
+/ # whoami
+root
+
+
+-------------------------------------------------------------
+
+kubectl apply -f test-pod1.yaml
+pod/security-context-demo created
+[ahmad@client1 cks]$ kubectl get po
+NAME                    READY   STATUS    RESTARTS   AGE
+security-context-demo   1/1     Running   0          3s
+unsecure-pod            1/1     Running   0          72s
+[ahmad@client1 cks]$ kubectl exec -it security-context-demo -- /bin/sh
+/ $ whoami
+whoami: unknown uid 2000
+
+
+
+-------------------------------------------------------------

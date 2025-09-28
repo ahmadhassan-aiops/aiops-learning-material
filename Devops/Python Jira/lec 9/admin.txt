@@ -1,0 +1,5 @@
+Now we are creating Infra project :- 
+
+Admin login --> project --> Crete project  Infra --> operation --> Linux or windows or delivery  
+
+Admin user --> Setting --> Issue --> Issue type -->

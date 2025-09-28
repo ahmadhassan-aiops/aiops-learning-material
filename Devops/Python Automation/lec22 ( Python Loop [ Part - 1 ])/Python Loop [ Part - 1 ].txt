@@ -1,0 +1,94 @@
+Lecture 22
+
+
+Loops :-
+Loops are important in python or any other programming languages. As they help you to execute a block of code repeatedly.
+
+
+You don't want to write the same line of code multiples in programs.
+
+Before Loop :-
+print("1")
+print("2")
+print("3")
+print("4")
+print("5")
+print("6")
+print("7")
+print("8")
+print("9")
+print("10")
+
+
+1. For Loop:-
+2. While Loop:-
+
+1. For Loop:-
+for <variable> in <range or list or dictionary or string >:
+statement
+
+print(list(range(1,11)))
+print(list(range(0,11,2)))
+
+
+After Loop :-
+for i in range(1,11):
+print(i)
+
+
+
+Before Loop :-
+mylist=['Abdeali','Dodia','Bangalore']
+print(mylist)
+O/p:-
+['Abdeali', 'Dodia', 'Bangalore']
+
+
+
+After Loop:-
+mylist=['Abdeali','Dodia','Bangalore']
+for i in mylist:
+print(f"My list value is : {i} ")
+O/p:-
+My list value is : Abdeali
+My list value is : Dodia
+My list value is : Bangalore
+
+
+a,b,d=1,2,3
+print(a)
+print(b)
+print(d)
+
+
+
+myinfo={"name":"ABD","age":44,"city":"bangalore"}
+
+for k,v in myinfo.items():
+print(f"My key is : {k}")
+print(f"My value is : {v}")
+
+O/p:-
+My key is : name
+My value is : ABD
+My key is : age
+My value is : 44
+My key is : city
+My value is : bangalore
+
+
+
+myinfo={"name":"ABD","age":44,"city":"bangalore"}
+
+for i in myinfo.values():
+print(i)
+
+ABD
+44
+bangalore
+
+
+myinfo={"name":"ABD","age":44,"city":"bangalore"}
+
+for i in myinfo.keys():
+print(i)

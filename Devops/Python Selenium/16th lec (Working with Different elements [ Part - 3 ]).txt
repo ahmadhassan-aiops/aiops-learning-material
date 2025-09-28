@@ -1,0 +1,282 @@
+
+
+is elements :-
+
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get("https://dev.alnafi.com/")
+driver.maximize_window()
+
+a_tag = driver.find_element(By.TAG_NAME,"a")
+print(a_tag)
+
+driver.quit()
+
+
+
+##########
+
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get("https://dev.alnafi.com/")
+driver.maximize_window()
+
+a_tag = driver.find_element(By.TAG_NAME,"a").is_displayed()
+print(a_tag)
+
+driver.quit()
+
+O/p:-
+True 
+
+
+###
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get("https://dev.alnafi.com/")
+driver.maximize_window()
+
+a_tag = driver.find_element(By.TAG_NAME,"abdeali").is_displayed()
+print(a_tag)
+
+driver.quit()
+
+Error :-
+selenium.common.exceptions.NoSuchElementException: Message: Unable to locate element: abdeali
+
+is_displayed() always work with hidden values 
+
+#########
+We are creating own function to indedntifying for present elements 
+
+
+import time
+from selenium import webdriver
+from selenium.common import NoSuchElementException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+
+
+
+def is_elements_avail(tag_name):
+    try:
+        driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+        driver.get("https://dev.alnafi.com/")
+        driver.maximize_window()
+        driver.find_element(By.TAG_NAME,tag_name)
+        return True
+    except NoSuchElementException:
+        return False
+
+print(is_elements_avail('a'))
+
+
+O/p:
+TRUE 
+##############
+
+import time
+from selenium import webdriver
+from selenium.common import NoSuchElementException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+
+
+
+def is_elements_avail(tag_name):
+    try:
+        driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+        driver.get("https://dev.alnafi.com/")
+        driver.maximize_window()
+        driver.find_element(By.TAG_NAME,tag_name)
+        return True
+    except NoSuchElementException:
+        return False
+
+print(is_elements_avail('abdeali'))
+
+
+O/p:-
+False
+##################
+
+import time
+from selenium import webdriver
+from selenium.common import NoSuchElementException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+driver.get("https://dev.alnafi.com/")
+driver.maximize_window()
+
+
+def is_elements_avail(tag_name):
+    try:
+        driver.find_element(By.TAG_NAME,tag_name)
+        return True
+    except NoSuchElementException:
+        return False
+
+print(is_elements_avail('abdeali'))
+print(is_elements_avail('a'))
+
+driver.quit()
+
+#@###################
+
+
+
+import time
+from selenium import webdriver
+from selenium.common import NoSuchElementException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+driver.get("https://dev.alnafi.com/")
+driver.maximize_window()
+
+
+def is_elements_avail(att,tag_name):
+    try:
+        driver.find_element(att,tag_name)
+        return True
+    except NoSuchElementException:
+        return False
+
+print(is_elements_avail('By.XPATH','abdeali'))
+print(is_elements_avail('By.TAG_NAME','a'))
+
+driver.quit()
+
+Error :-
+
+
+#########################
+
+import time
+from selenium import webdriver
+from selenium.common import NoSuchElementException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+driver.get("https://dev.alnafi.com/")
+driver.maximize_window()
+
+
+def is_elements_avail(att,abd):
+    try:
+        driver.find_element(by=att,value=abd)
+        return True
+    except NoSuchElementException:
+        return False
+
+print(is_elements_avail(By.XPATH,'abdeali'))
+print(is_elements_avail(By.TAG_NAME,'a'))
+print(is_elements_avail(By.TAG_NAME,'div'))
+
+driver.quit()
+
+
+
+#####################
+NEW method :-
+
+
+Error :-
+
+import time
+from selenium import webdriver
+from selenium.common import NoSuchElementException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+driver.get("https://dev.alnafi.com/")
+driver.maximize_window()
+
+
+def is_elements_avail(att,abd):
+        if len(driver.find_element(by=att,value=abd)) == 0:
+            return False
+        else:
+            return True
+print(is_elements_avail(By.XPATH,'abdeali'))
+print(is_elements_avail(By.TAG_NAME,'a'))
+print(is_elements_avail(By.TAG_NAME,'div'))
+
+driver.quit()
+
+
+#########
+
+import time
+from selenium import webdriver
+from selenium.common import NoSuchElementException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+driver.get("https://dev.alnafi.com/")
+driver.maximize_window()
+
+
+def is_elements_avail(att,abd):
+        if len(driver.find_elements(by=att,value=abd)) == 0:
+            return False
+        else:
+            return True
+print(is_elements_avail(By.XPATH,'abdeali'))
+print(is_elements_avail(By.TAG_NAME,'a'))
+print(is_elements_avail(By.TAG_NAME,'div'))
+
+driver.quit()
+
+
+
+
+
+
+

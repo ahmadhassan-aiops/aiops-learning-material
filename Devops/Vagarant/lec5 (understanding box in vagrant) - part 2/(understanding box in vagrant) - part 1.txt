@@ -1,0 +1,34 @@
+Available Boxes
+
+To use the available boxes just replace {title} and {url} with the information in the table below.
+
+ $ vagrant box add {title} {url}
+ $ vagrant init {title}
+ $ vagrant up
+
+
+
+$ vagrant box add rhel7abd https://vagrantcloud.com/samdoran/boxes/rhel7
+==> box: Loading metadata for box 'https://vagrantcloud.com/samdoran/boxes/rhel7'
+The box you're adding has a name different from the name you
+requested. For boxes with metadata, you cannot override the name.
+If you're adding a box using `vagrant box add`, don't specify
+the `--name` parameter. If the box is being added via a Vagrantfile,
+change the `config.vm.box` value to match the name below.
+
+Requested name: rhel7abd
+Actual name: samdoran/rhel7
+
+
+
+$ vagrant init samdoran/rhel7
+
+$ vagrant up
+$ vagrant ssh
+[vagrant@packer-rhel7 ~]$ pwd
+/home/vagrant
+[vagrant@packer-rhel7 ~]$ ls
+[vagrant@packer-rhel7 ~]$ ls -ltrh
+total 0
+[vagrant@packer-rhel7 ~]$ cat /etc/redhat-release
+Red Hat Enterprise Linux Server release 7.5 Beta (Maipo)

@@ -1,0 +1,150 @@
+
+
+Lecture 30:-
+
+
+import pytest
+def test_mylogin1():
+    print("My Pytest login1...")
+    print("Mylogin1")
+
+def test_mylogin2():
+    print("My Pytest login2...")
+    print("Mylogin2")
+
+
+
+
+RUN 
+
+>  python -m pytest .\test_abd.py  -s -v
+
+I want to run via pycharm ?
+
+Pycharm --> Edit configuration --> Add new (+) -->pytest --> pytest bin --> target --> C:\Users\AbdealiDodiya\Desktop\DevOps\Python Selenium\Pytest_project\learning  --> working directory --> C:\Users\AbdealiDodiya\Desktop\DevOps\Python Selenium\Pytest_project\learning
+
+
+
+It will be change pytest in learning 
+
+COCE :-import pytest
+def test_mylogin1():
+    print("My Pytest login1...")
+    print("Mylogin1")
+
+def test_mylogin2():
+    print("My Pytest login2...")
+    print("Mylogin2")
+
+
+
+You can run via pycharm 
+############################
+
+pytest fixture :-
+Fixtures are function , which will run before each test function to which it is applied . Fixtures are used to feed some data to test such as database , URLS to test and some sort of input 
+
+
+
+
+CODE :-
+
+import pytest
+def test_mylogin1():
+    print("Starting browser:::::")
+    print("My Pytest login1...")
+    print("Mylogin1")
+
+def test_mylogin2():
+    print("Starting browser:::::")
+    print("My Pytest login2...")
+    print("Mylogin2")
+
+
+
+Wih Fixutures :-
+CODE :-
+import pytest
+
+def setup_function(function):
+    print("::::::::::Starting browser:::::")
+
+def test_mylogin1():
+    print("My Pytest login1...")
+    print("Mylogin1")
+
+def test_mylogin2():
+    print("My Pytest login2...")
+    print("Mylogin2")
+
+#########################
+Teardown function :-
+
+import pytest
+
+def setup_function(function):
+    print(":::::::::::::::::::Starting browser:::::::::::::::::::")
+
+def teardown_function():
+    print(":::::::::::::::::::Ending Browser:::::::::::::::::::")
+def test_mylogin1():
+    print("My Pytest login1...")
+    print("Mylogin1")
+
+def test_mylogin2():
+    print("My Pytest login2...")
+    print("Mylogin2")
+
+
+#######################
+
+import pytest
+
+
+def setup_module(module):
+    print(":::::::::::::::::::Connection Established:::::::::::::::::::")
+
+def teardown_module(module):
+    print(":::::::::::::::::::Connection Closed:::::::::::::::::::")
+def setup_function(function):
+    print(":::::::::::::::::::Starting browser:::::::::::::::::::")
+
+def teardown_function():
+    print(":::::::::::::::::::Ending Browser:::::::::::::::::::")
+def test_mylogin1():
+    print("My Pytest login1...")
+    print("We are open dev.alanfi.com")
+    print("Mylogin1")
+
+def test_mylogin2():
+    print("My Pytest login2...")
+    print("We are open gmail.com")
+    print("Mylogin2")
+
+
+Output :-
+
+collecting ... collected 2 items
+
+test_abd.py::test_mylogin1 :::::::::::::::::::Connection Established:::::::::::::::::::
+:::::::::::::::::::Starting browser:::::::::::::::::::
+PASSED                                        [ 50%]My Pytest login1...
+We are open dev.alanfi.com
+Mylogin1
+:::::::::::::::::::Ending Browser:::::::::::::::::::
+
+test_abd.py::test_mylogin2 :::::::::::::::::::Starting browser:::::::::::::::::::
+PASSED                                        [100%]My Pytest login2...
+We are open gmail.com
+Mylogin2
+:::::::::::::::::::Ending Browser:::::::::::::::::::
+:::::::::::::::::::Connection Closed:::::::::::::::::::
+
+
+
+
+
+
+
+
+

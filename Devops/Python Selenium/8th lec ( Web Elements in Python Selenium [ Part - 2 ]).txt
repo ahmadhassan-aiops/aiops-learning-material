@@ -1,0 +1,110 @@
+
+
+Lecture 8 :-
+
+
+https://www.saucedemo.com/
+
+
+HTML Element :-
+Username :-
+
+<input class="input_error form_input" placeholder="Username" type="text" data-test="username" id="user-name" name="user-name" autocorrect="off" autocapitalize="none" value="">
+
+username --> ID --> "user-name"
+
+
+#################
+password :-
+
+HTML elements :-
+<input class="input_error form_input" placeholder="Password" type="password" data-test="password" id="password" name="password" autocorrect="off" autocapitalize="none" value="">
+
+
+
+#################
+Login button :-
+<input type="submit" class="submit-button btn_action" data-test="login-button" id="login-button" name="login-button" value="Login">
+
+Login --> Id --> "login-button"
+
+
+
+Login details :-
+Accepted usernames are:
+standard_user
+locked_out_user
+problem_user
+performance_glitch_user
+
+Password for all users:-
+secret_sauce
+
+
+
+
+
+Password --> ID -- > "password" 
+
+#########
+
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+
+driver = webdriver.Chrome(ChromeDriverManager().install())
+driver.get("https://www.saucedemo.com/")
+
+driver.maximize_window()
+driver.quit()
+
+
+
+################
+Now we will try to login our website via selenium
+
+
+Final script
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
+import time
+
+# Initialize the driver
+driver = webdriver.Chrome(service=webdriver.chrome.service.Service(ChromeDriverManager().install()))
+
+# Open the website
+time.sleep(5)
+driver.get("https://www.saucedemo.com/")
+driver.maximize_window()
+time.sleep(5)
+
+# Username section
+myusername = driver.find_element(By.ID, "user-name")
+myusername.send_keys("standard_user")
+
+time.sleep(5)
+
+# Password section
+mypassword = driver.find_element(By.ID, "password")
+mypassword.send_keys("secret_sauce")
+
+time.sleep(5)
+
+# Login section
+mylogin = driver.find_element(By.ID, "login-button")
+mylogin.click()
+
+time.sleep(5)
+
+# Quit the driver
+driver.quit()
+
+
+
+###########################
+TASK TIME :-
+You need to login :
+Gmail and alnafi website :-
+
+

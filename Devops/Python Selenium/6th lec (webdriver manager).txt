@@ -1,0 +1,112 @@
+
+
+Lecture 6 :-
+backward version driver :-
+
+from selenium import webdriver
+
+
+driver = webdriver.Chrome(r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python Selenium\driver\chromedriver.exe")
+driver.get("https://dev.alnafi.com/")
+driver.maximize_window()
+web_title= driver.title
+if web_title == "Al Nafi | Education Benefits All":
+    print(f"Yes , We verified and title name is : {web_title}")
+else:
+    print("Sorry, title not found from alnafi database")
+driver.quit()
+
+
+O/P:-
+You will get error message because chrome updated 
+
+
+
+You need to install webdriver-manager 
+
+pip install webdriver-manager
+
+
+
+Webdriver code.py
+
+import time
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+# Initialize the Chrome driver with the correct service
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+# Open the IMDb website
+driver.get("https://www.imdb.com/")
+driver.maximize_window()
+
+# Keep the browser open for 6 seconds
+time.sleep(6)
+
+# Verify the title
+web_title = driver.title
+if web_title == "IMDb: Ratings, Reviews, and Where to Watch the Best Movies & TV Shows":
+    print(f"Yes, we verified and the title name is: {web_title}")
+else:
+    print("Sorry, title not found from alnafi database")
+
+# Close the browser
+driver.quit()
+
+
+
+O/p:-
+
+First time it will download from internet and import into your local machine as cache 
+
+
+Note : First time will download from internet and second wont happen because its getting from cache 
+
+################################################
+Firefox :-
+from selenium import webdriver
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+driver.get("https://dev.alnafi.com/")
+driver.maximize_window()
+web_title= driver.title
+if web_title == "Al Nafi | Education Benefits All":
+    print(f"Yes , We verified and title name is : {web_title}")
+else:
+    print("Sorry, title not found from alnafi database")
+driver.quit()
+
+
+
+
+########################
+Edge :-
+from selenium import webdriver
+from selenium.webdriver.edge.service import Service
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
+
+# Initialize the Edge driver with the correct service
+service = Service(EdgeChromiumDriverManager().install())
+driver = webdriver.Edge(service=service)
+
+# Open the IMDb website
+driver.get("https://www.imdb.com/")
+driver.maximize_window()
+
+# Verify the title
+web_title = driver.title
+if web_title == "IMDb: Ratings, Reviews, and Where to Watch the Best Movies & TV Shows":
+    print(f"Yes, we verified and the title name is: {web_title}")
+else:
+    print("Sorry, title not found from IMDb database")
+
+# Close the browser
+driver.quit()
+
+
+

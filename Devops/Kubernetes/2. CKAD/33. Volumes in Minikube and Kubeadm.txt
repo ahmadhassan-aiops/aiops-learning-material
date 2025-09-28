@@ -1,0 +1,153 @@
+
+
+
+
+
+-----------------------------------------------
+
+[ahmad@client1 ~]$ minikube ssh
+
+docker@minikube:/$ sudo mkdir /etc/host-dir
+
+docker@minikube:/etc$ echo "my name is ahmad hassan" | sudo tee /etc/host-dir/data.txt
+my name is ahmad hassan
+
+docker@minikube:/etc/host-dir$ cat data.txt
+my name is ahmad hassan
+
+-----------------------------------------------
+
+cat volume-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hostpath-volume
+spec:
+  restartPolicy: OnFailure
+  containers:
+  - name: busybox
+    image: busybox:stable
+    command: ['sh', '-c', 'cat /data/data.txt']
+    volumeMounts:
+    - name: alnafi-host-data
+      mountPath: /data
+  volumes:
+  - name: alnafi-host-data
+    hostPath:
+      path: /etc/host-dir
+      type: Directory
+
+
+[ahmad@client1 volumes]$ kubectl apply -f volume-pod.yaml
+pod/hostpath-volume created
+
+
+[ahmad@client1 volumes]$ kubectl get po
+NAME              READY   STATUS              RESTARTS   AGE
+hostpath-volume   0/1     ContainerCreating   0          5s
+[ahmad@client1 volumes]$ kubectl get po
+NAME              READY   STATUS      RESTARTS   AGE
+hostpath-volume   0/1     Completed   0          39s
+
+
+-----------------------------------------------
+
+[ahmad@client1 volumes]$ kubectl logs hostpath-volume
+my name is ahmad hassan
+
+
+-----------------------------------------------
+
+cat empty-dir-volume-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: emptydir-volume-test
+spec:
+  restartPolicy: OnFailure
+  containers:
+  - name: busybox
+    image: busybox:stable
+    command: ['sh', '-c', 'echo "I am testing Empty Dir Volume Type" > /data/new.txt']
+    volumeMounts:
+    - name: empty-dir-volume
+      mountPath: /data
+  volumes:
+  - name: empty-dir-volume
+    emptyDir: {}
+
+
+[ahmad@client1 volumes]$ kubectl apply -f empty-dir-volume-pod.yaml
+pod/emptydir-volume-test created
+
+
+[ahmad@client1 volumes]$ kubectl get po
+NAME                   READY   STATUS      RESTARTS   AGE
+emptydir-volume-test   0/1     Completed   0          3s
+hostpath-volume        0/1     Completed   0          5m47s
+
+
+-----------------------------------------------
+
+
+[ahmad@client1 volumes]$ kubectl logs emptydir-volume-test
+
+(No output here)
+
+
+
+Why You Can't See the Data
+Because the pod exits right after writing the file, it's no longer running. emptyDir volumes only exist as long as the pod is running 
+once the pod is deleted or exits, the data is gone.
+
+-----------------------------------------------
+
+Using hostPath (host-dir) is not a good option for storing data in a multi-node Kubernetes cluster because the data is stored on the local filesystem 
+of a specific node. This means if a pod using that volume is rescheduled to another node (due to failure or scaling), the new node won't have access to 
+the original data since it exists only on the first node's disk. This breaks data availability and consistency, making hostPath unsuitable for production 
+or distributed environments where pods can move across nodes.
+
+
+-----------------------------------------------
+
+
+
+-----------------------------------------------
+
+
+
+
+-----------------------------------------------
+
+
+
+
+-----------------------------------------------
+
+
+
+-----------------------------------------------
+
+
+
+-----------------------------------------------
+
+
+
+-----------------------------------------------
+
+
+
+-----------------------------------------------
+
+
+
+-----------------------------------------------
+
+
+
+-----------------------------------------------
+
+
+
+-----------------------------------------------

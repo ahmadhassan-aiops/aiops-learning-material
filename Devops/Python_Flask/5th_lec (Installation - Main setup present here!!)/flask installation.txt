@@ -1,0 +1,223 @@
+we need to open command prompt and go to current working directory like:
+ => W:\Alnafi\Devops\Python_Flask\5th_lec
+
+Now we have to create virtual environment. One good thing is to make sure that there are no spaces in directory path as it can create some issues 
+during venv creation.
+
+ => python -m venv myproject
+
+Now we can activate the venv by going to:
+
+ => cd/your_project/Scripts/activate
+
+Now we can install the flask
+
+ => pip install flask
+
+Now we can create app.py file in the system. And write the following
+
+ from flask import Flask
+ app = Flask(__name__)      #Which tells the application which URL should be call for the associated function. The rules parameter represent URL binding with function
+
+Now we can run the flask
+
+ => flask run
+
+   (Running on http://127.0.0.1:5000)
+
+
+Now i have update app.py and rerun flask
+
+mydata = "HOME PAGE"
+@app.get("/")
+def get_data():
+	return mydata
+
+
+#http://127.0.0.1:5000/
+-----------------------------------------------------------------------------
+
+CODE :-
+
+from flask import Flask
+app = Flask(__name__)
+mydata = "HOME PAGE"
+@app.get("/abd")
+def get_data():
+	return mydata
+
+
+Browser: http://127.0.0.1:5000/abd
+
+-------------------------------------------
+
+
+CODE :
+
+from flask import Flask
+app = Flask(__name__)
+mycontact= "CONTACT US PAGE"
+@app.get("/contact")
+def get_data():
+	return mycontact
+
+
+Browser: http://127.0.0.1:5000/mycontact
+
+################################
+
+
+CODE :- (Two different function are created by name of get home and data)
+
+from flask import Flask
+app = Flask(__name__)
+myhome="HOME PAGE"
+mycontact= "CONTACT US PAGE"
+@app.get("/")
+def get_home():
+	return myhome
+
+@app.get("/contact")
+def get_data():
+	return mycontact
+
+#http://127.0.0.1:5000/contact
+
+############################################
+
+
+Now we will configure Flask in pycharm env
+
+CODE :-
+
+from flask import Flask
+app = Flask(__name__)
+myhome="HOME PAGE"
+mycontact= "CONTACT US PAGE"
+@app.get("/")
+def get_home():
+	return myhome
+
+@app.get("/contact")
+def get_data():
+	return mycontact
+
+
+#Now gettting URL
+
+
+#######################
+CODE :-
+from flask import Flask
+
+app = Flask(__name__)
+myhome="HOME PAGE"
+mycontact= "CONTACT US PAGE"
+@app.get("/")
+def get_home():
+	return myhome
+
+@app.get("/contact")
+def get_data():
+	return mycontact
+if __name__ == "__main__":
+	app.run()
+
+
+
+
+#######################
+CODE :
+
+from flask import Flask
+app = Flask(__name__)
+myhome="HOME PAGE"
+mycontact= "CONTACT US PAGE"
+@app.route("/")
+def get_home():
+	return myhome
+
+@app.route("/contact")
+def get_data():
+	return mycontact
+
+
+if __name__ == "__main__":
+	app.run()
+
+
+
+#######################
+CODE for debug on :-  (Live changes will be managed)
+
+from flask import Flask
+app = Flask(__name__)
+myhome="HOME PAGE!!!!!!!!!!!!!!!!!!!!!!!"
+mycontact= "!!!!!!!!!!!!!!!!!CONTACT US PAGE!!!!!!!!!!!!!!!!!!!"
+@app.route("/")
+def get_home():
+	return myhome
+
+@app.route("/contacts")
+def get_data():
+	return mycontact
+
+if __name__ == "__main__":
+	app.run(debug=True)
+
+
+
+################################
+IP change for network
+
+
+from flask import Flask
+app = Flask(__name__)
+myhome="HOME PAGE i am here!"
+mycontact= "CONTACT US PAGE"
+@app.route("/")
+def get_home():
+	return myhome
+
+@app.route("/contacts")
+def get_data():
+	return mycontact
+
+
+if __name__ == "__main__":
+	app.run(debug=True,host="0.0.0.0")
+
+
+
+
+
+##################################
+
+PORT change
+
+
+from flask import Flask
+app = Flask(__name__)
+myhome="HOME PAGE i am here!"
+mycontact= "CONTACT US PAGE"
+@app.route("/")
+def get_home():
+	return myhome
+
+@app.route("/contacts")
+def get_data():
+	return mycontact
+
+
+if __name__ == "__main__":
+	app.run(debug=True,host="0.0.0.0",port=9000)
+
+
+
+############################
+
+
+
+
+
+

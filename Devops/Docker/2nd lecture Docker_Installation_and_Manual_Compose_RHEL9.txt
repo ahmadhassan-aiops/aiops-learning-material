@@ -1,0 +1,38 @@
+
+Installing Docker and Docker Compose on RHEL 9 (Using yum and Manual Method for Compose)
+
+1. Update the system:
+   yum update -y
+
+2. Install required dependencies:
+   yum install -y yum-utils
+
+3. Add the Docker repository:
+   yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+4. Install Docker:
+   yum install -y docker-ce docker-ce-cli containerd.io
+
+5. Start Docker service:
+   systemctl start docker
+
+6. Enable Docker to start on boot:
+   systemctl enable docker
+
+7. Verify Docker installation:
+   systemctl status docker
+   docker --version
+
+Installing Docker Compose (Manual Method):
+
+1. Download the Docker Compose binary:
+   curl -L "https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+2. Make the binary executable:
+   chmod +x /usr/local/bin/docker-compose
+
+3. Verify Docker Compose installation:
+   docker-compose --version
+
+4. Optional: Create a symbolic link if necessary:
+   ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose

@@ -1,0 +1,485 @@
+Lecture 30 : Exception Handling [ Part - 2 ]
+
+
+
+4. Zero Division Error:
+
+#NO Error
+a=int(input("Enter the number:"))
+b=int(input("Enter the number:"))
+
+result= a/b
+print(result)
+O/p:
+Enter the number:10
+Enter the number:5
+2.0
+
+#Error
+a=int(input("Enter the number:"))
+b=int(input("Enter the number:"))
+
+result= a/b
+print(result)
+
+O/p:-
+Enter the number:10
+Enter the number:0
+Traceback (most recent call last):
+File "C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 30\ex_handle.py", line 4, in <module>
+result= a/b
+ZeroDivisionError: division by zero
+
+
+
+#Handling
+try:
+a=int(input("Enter the number:"))
+b=int(input("Enter the number:"))
+
+result= a/b
+print(result)
+except Exception as e:
+print("Something issue:",e)
+
+o/p:-
+Enter the number:10
+Enter the number:0
+Something issue: division by zero
+
+
+
+
+5. Value Error :-
+
+#NO Error
+a=int(input("Enter the number:"))
+b=int(input("Enter the number:"))
+
+result= a/b
+print(result)
+O/p:
+Enter the number:10
+Enter the number:5
+2.0
+
+
+Error :-
+a=int(input("Enter the number:"))
+b=int(input("Enter the number:"))
+
+result= a/b
+print(result)
+o/p:-
+Enter the number:ten
+Traceback (most recent call last):
+File "C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 30\ex_handle.py", line 1, in <module>
+a=int(input("Enter the number:"))
+ValueError: invalid literal for int() with base 10: 'ten'
+
+
+
+
+#Handling:-
+try:
+a=int(input("Enter the number:"))
+b=int(input("Enter the number:"))
+
+result= a/b
+print(result)
+except Exception as e:
+print("Something issue:",e)
+
+o/p:-
+Enter the number:ten
+Something issue: invalid literal for int() with base 10: 'ten'
+
+
+
+Exception Handling:-
+1. NameError: name 'y' is not defined
+2. IndexError: list index out of range
+3. ModuleNotFoundError: No module named 'osss'
+4. ZeroDivisionError: division by zero
+5. ValueError: invalid literal for int() with base 10: 'ten'
+
+
+try:
+#x = "ABD"
+y="Ali"
+print("My value is ", x)
+print("My value is ", y)
+except NameError:
+print("Something having issue in your variable, Please check variable define or not")
+
+o/p:-Something having issue in your variable, Please check variable define or not
+
+
+
+###
+try:
+#x = "ABD"
+y="Ali"
+print("My value is ", x)
+print("My value is ", y)
+mylist = [2, 7, 8, 9]
+print(mylist[4])
+except NameError:
+print("Something having issue in your variable, Please check variable define or not")
+
+
+
+###
+try:
+x = "ABD"
+y="Ali"
+print("My value is ", x)
+print("My value is ", y)
+mylist = [2, 7, 8, 9]
+print(mylist[4])
+except NameError:
+print("Something having issue in your variable, Please check variable define or not")
+except IndexError:
+print("Please check your data structure index value should be within range")
+
+o/p:-
+My value is  ABD
+My value is  Ali
+Please check your data structure index value should be within range
+
+
+###
+
+try:
+import os
+x = "ABD"
+y="Ali"
+print("My value is ", x)
+print("My value is ", y)
+mylist = [2, 7, 8, 9]
+print(mylist[3])
+os.system('hostname')
+except NameError:
+print("Something having issue in your variable, Please check variable define or not")
+except IndexError:
+print("Please check your data structure index value should be within range")
+except ModuleNotFoundError:
+print("Please check module name or module available in your machine")
+
+
+o/p:-
+My value is  ABD
+My value is  Ali
+9
+DESKTOP-08RGL16
+
+
+####
+
+try:
+import os
+x = "ABD"
+y="Ali"
+print("My value is ", x)
+print("My value is ", y)
+mylist = [2, 7, 8, 9]
+print(mylist[3])
+os.system('hostname')
+a = int(input("Enter the number:"))
+b = int(input("Enter the number:"))
+
+result = a / b
+print(result)
+except NameError:
+print("Something having issue in your variable, Please check variable define or not")
+except IndexError:
+print("Please check your data structure index value should be within range")
+except ModuleNotFoundError:
+print("Please check module name or module available in your machine")
+except ZeroDivisionError:
+print("Please check value , Zero you can not devide with any value ")
+
+o/p:-
+My value is  ABD
+My value is  Ali
+9
+DESKTOP-08RGL16
+Enter the number:10
+Enter the number:0
+Please check value , Zero you can not devide with any value
+
+
+###
+
+try:
+import os
+x = "ABD"
+y="Ali"
+print("My value is ", x)
+print("My value is ", y)
+mylist = [2, 7, 8, 9]
+print(mylist[3])
+os.system('hostname')
+a = int(input("Enter the number:"))
+b = int(input("Enter the number:"))
+
+result = a / b
+print(result)
+except NameError:
+print("Something having issue in your variable, Please check variable define or not")
+except IndexError:
+print("Please check your data structure index value should be within range")
+except ModuleNotFoundError:
+print("Please check module name or module available in your machine")
+except ZeroDivisionError:
+print("Please check value , Zero you can not devide with any value ")
+except ValueError:
+print("Value error because you can not divide value with string ")
+
+
+
+o/p:
+My value is  ABD
+My value is  Ali
+9
+DESKTOP-08RGL16
+Enter the number:ten
+Value error because you can not divide value with string
+
+
+###
+try:
+import os
+x = 10
+y="Ali"
+print("My value is "+ x)
+print("My value is ", y)
+mylist = [2, 7, 8, 9]
+print(mylist[3])
+os.system('hostname')
+a = int(input("Enter the number:"))
+b = int(input("Enter the number:"))
+
+result = a / b
+print(result)
+except NameError:
+print("Something having issue in your variable, Please check variable define or not")
+except IndexError:
+print("Please check your data structure index value should be within range")
+except ModuleNotFoundError:
+print("Please check module name or module available in your machine")
+except ZeroDivisionError:
+print("Please check value , Zero you can not devide with any value ")
+except ValueError:
+print("Value error because you can not divide value with string ")
+
+
+
+o/p:-
+Traceback (most recent call last):
+File "C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 30\ex_handle.py", line 5, in <module>
+print("My value is "+ x)
+TypeError: can only concatenate str (not "int") to str
+
+####
+try:
+import os
+x = 10
+y="Ali"
+print("My value is "+ x)
+print("My value is ", y)
+mylist = [2, 7, 8, 9]
+print(mylist[3])
+os.system('hostname')
+a = int(input("Enter the number:"))
+b = int(input("Enter the number:"))
+
+result = a / b
+print(result)
+except NameError:
+print("Something having issue in your variable, Please check variable define or not")
+except IndexError:
+print("Please check your data structure index value should be within range")
+except ModuleNotFoundError:
+print("Please check module name or module available in your machine")
+except ZeroDivisionError:
+print("Please check value , Zero you can not devide with any value ")
+except ValueError:
+print("Value error because you can not divide value with string ")
+except Exception as e:
+print("Something having issue in your code")
+
+
+o/p:-
+Something having issue in your code
+
+
+
+
+###
+try:
+import os
+x = 10
+y="Ali"
+print("My value is "+ x)
+print("My value is ", y)
+mylist = [2, 7, 8, 9]
+print(mylist[3])
+os.system('hostname')
+a = int(input("Enter the number:"))
+b = int(input("Enter the number:"))
+
+result = a / b
+print(result)
+except NameError:
+print("Something having issue in your variable, Please check variable define or not")
+except IndexError:
+print("Please check your data structure index value should be within range")
+except ModuleNotFoundError:
+print("Please check module name or module available in your machine")
+except ZeroDivisionError:
+print("Please check value , Zero you can not devide with any value ")
+except ValueError:
+print("Value error because you can not divide value with string ")
+except Exception as e:
+print("Something having issue in your code")
+else:
+print("This is else statement")
+
+
+o/p:-Something having issue in your code
+
+
+###
+
+try:
+import os
+x = 'ABD'
+y="Ali"
+print("My value is "+ x)
+print("My value is ", y)
+mylist = [2, 7, 8, 9]
+print(mylist[3])
+os.system('hostname')
+a = int(input("Enter the number:"))
+b = int(input("Enter the number:"))
+
+result = a / b
+print(result)
+except NameError:
+print("Something having issue in your variable, Please check variable define or not")
+except IndexError:
+print("Please check your data structure index value should be within range")
+except ModuleNotFoundError:
+print("Please check module name or module available in your machine")
+except ZeroDivisionError:
+print("Please check value , Zero you can not devide with any value ")
+except ValueError:
+print("Value error because you can not divide value with string ")
+except Exception as e:
+print("Something having issue in your code")
+else:
+print("This is else statement")
+
+
+o/p:-
+My value is ABD
+My value is  Ali
+9
+DESKTOP-08RGL16
+Enter the number:10
+Enter the number:5
+2.0
+This is else statement
+
+
+
+Note : Else will print only once program executed successfully, Else will not print if any exception handle in your program.
+
+
+
+
+###
+try:
+import os
+x = 'ABD'
+y="Ali"
+print("My value is "+ x)
+print("My value is ", y)
+mylist = [2, 7, 8, 9]
+print(mylist[3])
+os.system('hostname')
+a = int(input("Enter the number:"))
+b = int(input("Enter the number:"))
+
+result = a / b
+print(result)
+except NameError:
+print("Something having issue in your variable, Please check variable define or not")
+except IndexError:
+print("Please check your data structure index value should be within range")
+except ModuleNotFoundError:
+print("Please check module name or module available in your machine")
+except ZeroDivisionError:
+print("Please check value , Zero you can not devide with any value ")
+except ValueError:
+print("Value error because you can not divide value with string ")
+except Exception as e:
+print("Something having issue in your code")
+else:
+print("This is else statement")
+finally:
+print("This statement will print any how ")
+
+O/p:-
+My value is ABD
+My value is  Ali
+9
+DESKTOP-08RGL16
+Enter the number:10
+Enter the number:5
+2.0
+This is else statement
+This statement will print any how
+
+
+
+#
+try:
+import os
+x = 10
+y="Ali"
+print("My value is "+ x)
+print("My value is ", y)
+mylist = [2, 7, 8, 9]
+print(mylist[3])
+os.system('hostname')
+a = int(input("Enter the number:"))
+b = int(input("Enter the number:"))
+
+result = a / b
+print(result)
+except NameError:
+print("Something having issue in your variable, Please check variable define or not")
+except IndexError:
+print("Please check your data structure index value should be within range")
+except ModuleNotFoundError:
+print("Please check module name or module available in your machine")
+except ZeroDivisionError:
+print("Please check value , Zero you can not devide with any value ")
+except ValueError:
+print("Value error because you can not divide value with string ")
+except Exception as e:
+print("Something having issue in your code")
+else:
+print("This is else statement")
+finally:
+print("This statement will print any how ")
+
+O/p:-
+Something having issue in your code
+This statement will print any how
+
+
+
+Note :Finally will print any how situation like error or success code but else is opposite it else statement will print only on success code.

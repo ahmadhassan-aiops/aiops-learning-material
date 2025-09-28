@@ -1,0 +1,395 @@
+
+###################
+DOCKER          K8's
+
+CMD             args
+ENTRYPOINT      command
+
+######################
+
+
+
+-----------------------------------------------
+
+
+vim cmd-test.yaml
+[root@client1 ahmad]# cat cmd-test.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: alnafi-pod
+  namespace: default
+  labels:
+    app: alnafi
+spec:
+  containers:
+  - name: ubuntu
+    image: ubuntu
+    command: [ "sleep" ]
+    args: [ "10" ]
+
+[root@client1 ahmad]# kubectl apply -f cmd-test.yaml
+pod/alnafi-pod created
+
+
+
+
+ kubectl get pods
+NAME         READY   STATUS      RESTARTS      AGE
+alnafi-pod   0/1     Completed   1 (15s ago)   105s
+
+
+ kubectl describe po alnafi-pod
+Name:             alnafi-pod
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             my-cluster-worker/172.25.0.3
+Start Time:       Sat, 03 May 2025 20:40:14 +0500
+Labels:           app=alnafi
+Annotations:      <none>
+Status:           Running
+IP:               10.244.1.71
+IPs:
+  IP:  10.244.1.71
+Containers:
+  ubuntu:
+    Container ID:  containerd://49abe74310f14ffc4f4ffc0cdf11defc4f1614e29ee0ca44775fee47bc1b92b7
+    Image:         ubuntu
+    Image ID:      docker.io/library/ubuntu@sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      sleep
+    Args:
+      10
+    State:          Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Sat, 03 May 2025 20:40:55 +0500
+      Finished:     Sat, 03 May 2025 20:41:05 +0500
+    Last State:     Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Sat, 03 May 2025 20:40:29 +0500
+      Finished:     Sat, 03 May 2025 20:40:39 +0500
+    Ready:          False
+    Restart Count:  2
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-2jfp4 (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True
+  Initialized                 True
+  Ready                       False
+  ContainersReady             False
+  PodScheduled                True
+Volumes:
+  kube-api-access-2jfp4:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason     Age                From               Message
+  ----     ------     ----               ----               -------
+  Normal   Scheduled  54s                default-scheduler  Successfully assigned default/alnafi-pod to my-cluster-worker
+  Normal   Pulled     51s                kubelet            Successfully pulled image "ubuntu" in 2.085s (2.085s including waiting). Image size: 29727061 bytes.
+  Normal   Pulled     39s                kubelet            Successfully pulled image "ubuntu" in 2.232s (2.232s including waiting). Image size: 29727061 bytes.
+  Normal   Pulling    15s (x3 over 53s)  kubelet            Pulling image "ubuntu"
+  Normal   Created    13s (x3 over 51s)  kubelet            Created container: ubuntu
+  Normal   Started    13s (x3 over 51s)  kubelet            Started container ubuntu
+  Normal   Pulled     13s                kubelet            Successfully pulled image "ubuntu" in 2.019s (2.019s including waiting). Image size: 29727061 bytes.
+  Warning  BackOff    2s (x2 over 28s)   kubelet            Back-off restarting failed container ubuntu in pod alnafi-pod_default(00168955-2041-4cfb-b1bb-2b8600508bcf)
+
+
+
+kubectl get pods
+NAME         READY   STATUS    RESTARTS      AGE
+alnafi-pod   1/1     Running   3 (35s ago)   86s
+ kubectl get pods
+NAME         READY   STATUS      RESTARTS      AGE
+alnafi-pod   0/1     Completed   3 (54s ago)   105s
+[root@client1 ahmad]# kubectl get pods
+NAME         READY   STATUS             RESTARTS      AGE
+alnafi-pod   0/1     CrashLoopBackOff   3 (22s ago)   111s
+
+
+
+This means the container sleeps for only 10 seconds, then exits normally with code 0. However, Kubernetes thinks the container should keep running, 
+so it restarts it, only for it to complete again — causing a loop of crashes and restarts.
+
+
+
+-----------------------------------------------
+
+kubectl edit po alnafi-pod
+error: pods "alnafi-pod" is invalid
+A copy of your changes has been stored to "/tmp/kubectl-edit-4203417291.yaml"
+error: Edit cancelled, no valid changes were saved.
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+(((((Means we cannot change all objects in a pod. Only few things are permissible like image etc. But temporary files with edit is created for us by K8's))
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+kubectl replace --force -f /tmp/kubectl-edit-4203417291.yaml
+pod "alnafi-pod" deleted
+pod/alnafi-pod replaced
+[root@client1 ahmad]# kubectl get po
+NAME         READY   STATUS    RESTARTS   AGE
+alnafi-pod   1/1     Running   0          12s
+[root@client1 ahmad]# kubectl describe po alnafi-pod
+Name:             alnafi-pod
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             my-cluster-worker/172.25.0.3
+Start Time:       Sat, 03 May 2025 20:50:18 +0500
+Labels:           app=alnafi
+Annotations:      <none>
+Status:           Running
+IP:               10.244.1.72
+IPs:
+  IP:  10.244.1.72
+Containers:
+  ubuntu:
+    Container ID:  containerd://64b3b4dd8ea8147f5803a55f2238d13c659f997ccc4e1f274e3d44d0781503af
+    Image:         ubuntu
+    Image ID:      docker.io/library/ubuntu@sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      sleep
+    Args:
+      4800
+    State:          Running
+      Started:      Sat, 03 May 2025 20:50:21 +0500
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-2jfp4 (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True
+  Initialized                 True
+  Ready                       True
+  ContainersReady             True
+  PodScheduled                True
+Volumes:
+  kube-api-access-2jfp4:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason   Age   From     Message
+  ----    ------   ----  ----     -------
+  Normal  Pulling  20s   kubelet  Pulling image "ubuntu"
+  Normal  Pulled   17s   kubelet  Successfully pulled image "ubuntu" in 2.239s (2.239s including waiting). Image size: 29727061 bytes.
+  Normal  Created  17s   kubelet  Created container: ubuntu
+  Normal  Started  17s   kubelet  Started container ubuntu
+
+
+
+-----------------------------------------------
+
+ kubectl run test --image kodekloud/webapp-color --dry-run=client -- --color red
+pod/test created (dry run)
+
+kubectl get pods
+No resources found in default namespace.
+
+ kubectl run test --image kodekloud/webapp-color --dry-run=client -o yaml -- --color red > testpod.yaml
+[root@client1 ahmad]# cat testpod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: test
+  name: test
+spec:
+  containers:
+  - args:
+    - --color
+    - red
+    image: kodekloud/webapp-color
+    name: test
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+
+
+kubectl apply -f testpod.yaml
+pod/test created
+[root@client1 ahmad]# kubectl get pods
+NAME   READY   STATUS    RESTARTS   AGE
+test   1/1     Running   0          8s
+
+
+
+[root@client1 ahmad]# kubectl describe pods test
+Name:             test
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             my-cluster-worker/172.25.0.3
+Start Time:       Sat, 03 May 2025 21:19:12 +0500
+Labels:           run=test
+Annotations:      <none>
+Status:           Running
+IP:               10.244.1.74
+IPs:
+  IP:  10.244.1.74
+Containers:
+  test:
+    Container ID:  containerd://061ae2dd0ef001aa8d32aeccadb684131c2d85a82787ac238cef6b8783814f5b
+    Image:         kodekloud/webapp-color
+    Image ID:      docker.io/kodekloud/webapp-color@sha256:99c3821ea49b89c7a22d3eebab5c2e1ec651452e7675af243485034a72eb1423
+    Port:          <none>
+    Host Port:     <none>
+    Args:
+      --color
+      red
+    State:          Running
+      Started:      Sat, 03 May 2025 21:19:15 +0500
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-8l2hf (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True
+  Initialized                 True
+  Ready                       True
+  ContainersReady             True
+  PodScheduled                True
+Volumes:
+  kube-api-access-8l2hf:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  19s   default-scheduler  Successfully assigned default/test to my-cluster-worker
+  Normal  Pulling    19s   kubelet            Pulling image "kodekloud/webapp-color"
+  Normal  Pulled     18s   kubelet            Successfully pulled image "kodekloud/webapp-color" in 1.953s (1.953s including waiting). Image size: 31777918 bytes.
+  Normal  Created    17s   kubelet            Created container: test
+  Normal  Started    17s   kubelet            Started container test
+
+-----------------------------------------------
+
+
+kubectl expose pod test --port 8080 --name test-service --type Nodeport --dry-run=client
+service/test-service exposed (dry run)
+[root@client1 ahmad]# kubectl expose pod test --port 8080 --name test-service --type NodePort --dry-run=client -o yaml > test-svc.yaml
+[root@client1 ahmad]# cat test-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    run: test
+  name: test-service
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    run: test
+  type: Nodeport
+status:
+  loadBalancer: {}
+
+
+ kubectl apply -f test-svc.yaml
+service/test-service created
+
+
+kubectl get svc
+NAME           TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+kubernetes     ClusterIP   10.96.0.1      <none>        443/TCP          2d23h
+test-service   NodePort    10.96.30.226   <none>        8080:32719/TCP   25s
+
+
+
+-----------------------------------------------
+
+ kubectl describe svc test-service
+Name:                     test-service
+Namespace:                default
+Labels:                   run=test
+Annotations:              <none>
+Selector:                 run=test
+Type:                     NodePort
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.96.30.226
+IPs:                      10.96.30.226
+Port:                     <unset>  8080/TCP
+TargetPort:               8080/TCP
+NodePort:                 <unset>  32719/TCP
+Endpoints:                10.244.1.74:8080
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Internal Traffic Policy:  Cluster
+Events:                   <none>
+
+
+
+172.25.0.2:32719
+
+
+
+we cannot access it externally right now. We have to do port forwarding!!
+
+kubectl port-forward pod/test 2222:8080
+Forwarding from 127.0.0.1:2222 -> 8080
+Forwarding from [::1]:2222 -> 8080
+Handling connection for 2222
+Handling connection for 2222
+
+
+127.0.0.1:2222    -----> Browse it within VM and screen will turn red!
+-----------------------------------------------
+
+vim testpod.yaml
+[root@client1 ahmad]# kubectl replace --force -f testpod.yaml
+pod "test" deleted
+pod/test replaced
+[root@client1 ahmad]# kubectl port-forward pod/test 2222:8080
+error: unable to forward port because pod is not running. Current status=Pending
+[root@client1 ahmad]# kubectl port-forward pod/test 2222:8080
+Forwarding from 127.0.0.1:2222 -> 8080
+Forwarding from [::1]:2222 -> 8080
+Handling connection for 2222
+
+127.0.0.1:2222    -----------   >>>   I changed it to green now
+-----------------------------------------------
+
+
+

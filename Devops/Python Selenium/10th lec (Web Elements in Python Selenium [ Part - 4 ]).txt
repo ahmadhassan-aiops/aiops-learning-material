@@ -1,0 +1,61 @@
+
+Lecture 10 :-
+
+
+What is diff b/w LINK_TEXT and PARTIAL_LINK_TEXT
+
+Actual TEXT : Sign in
+By.LINK_TEXT --> Sign in --> Allowed 
+By.PARTIAL_LINK_TEXT --> in --> Allowed 
+By.LINK_TEXT -->  in --> Not allowed 
+By.PARTIAL_LINK_TEXT --> Sign in ---> Allowed 
+
+
+
+>>> driver.find_element(By.LINK_TEXT,'Sign in').click()
+>>> driver.find_element(By.PARTIAL_LINK_TEXT,'Sign in').click()
+>>> driver.find_element(By.PARTIAL_LINK_TEXT,'in').click()
+
+FINAL GMAIL SCRIPT 
+
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+import time
+
+# Set up Chrome WebDriver using Service object
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+# Open Gmail page
+driver.get('https://www.google.com/intl/en-GB/gmail/about/')
+driver.maximize_window()
+
+# Click on the "Sign in" link
+driver.find_element(By.PARTIAL_LINK_TEXT, 'Sign in').click()
+
+# Enter the email address
+driver.find_element(By.ID, 'identifierId').send_keys("ahlytics@gmail.com")
+time.sleep(3)
+# Click Next to verify email address
+driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[2]/c-wiz/div/div[3]/div/div[1]/div/div/button/span').click()
+time.sleep(5)
+# Enter the password
+driver.find_element(By.NAME, 'Passwd').send_keys('aaaaaa')
+
+# Click Next to log in
+driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[2]/div/c-wiz/div/div[2]/div/div[2]/div/div[1]/div/div/button/span').click()
+
+print("Login success")
+
+
+
+
+
+
+
+
+
+
+

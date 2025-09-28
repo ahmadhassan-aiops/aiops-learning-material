@@ -1,0 +1,287 @@
+
+
+Lecture 54:
+
+how to add columns in exisiting tables
+
+
+alter table trainer_details add column email varchar(255);
+
+mysql> alter table trainer_details add column email varchar(255);
+Query OK, 0 rows affected (0.06 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from trainer_details;
++------+---------+--------+--------------------+----------+----------+--------+---------------------+-------+
+| t_id | fname   | lname  | desig              | username | password | salary | datetime            | email |
++------+---------+--------+--------------------+----------+----------+--------+---------------------+-------+
+|    1 | Abdeali | Dodiya | Software Developer | abd      | abd123   |   1000 | 2022-10-01 00:00:00 | NULL  |
+|    2 | kazim   | saikh  | AVP                | kazim    | kazim123 |   5000 | 2022-10-01 00:00:00 | NULL  |
++------+---------+--------+--------------------+----------+----------+--------+---------------------+-------+
+2 rows in set (0.00 sec)
+
+
+
+###############
+how to delete any column in your table;
+
+alter table trainer_details DROP column email;
+
+mysql> alter table trainer_details DROP column email;
+Query OK, 0 rows affected (0.09 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from trainer_details;
++------+---------+--------+--------------------+----------+----------+--------+---------------------+
+| t_id | fname   | lname  | desig              | username | password | salary | datetime            |
++------+---------+--------+--------------------+----------+----------+--------+---------------------+
+|    1 | Abdeali | Dodiya | Software Developer | abd      | abd123   |   1000 | 2022-10-01 00:00:00 |
+|    2 | kazim   | saikh  | AVP                | kazim    | kazim123 |   5000 | 2022-10-01 00:00:00 |
++------+---------+--------+--------------------+----------+----------+--------+---------------------+
+2 rows in set (0.00 sec)
+
+#######################################
+
+how to add column after existing table
+
+
+alter table trainer_details add email varchar(255) after password;
+
+
+mysql> alter table trainer_details add email varchar(255) after password;
+Query OK, 0 rows affected (0.09 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from trainer_details;
++------+---------+--------+--------------------+----------+----------+-------+--------+---------------------+
+| t_id | fname   | lname  | desig              | username | password | email | salary | datetime            |
++------+---------+--------+--------------------+----------+----------+-------+--------+---------------------+
+|    1 | Abdeali | Dodiya | Software Developer | abd      | abd123   | NULL  |   1000 | 2022-10-01 00:00:00 |
+|    2 | kazim   | saikh  | AVP                | kazim    | kazim123 | NULL  |   5000 | 2022-10-01 00:00:00 |
++------+---------+--------+--------------------+----------+----------+-------+--------+---------------------+
+2 rows in set (0.00 sec)
+
+
+
+
+
+
+
+
+
+We will insert another data
+
+insert into trainer_details (fname,lname,desig,username,password,salary,datetime) values ('Sarah','shaikh','FD','sarah','sarah123',3000,'2022-10-02');
+
+
+mysql> insert into trainer_details (fname,lname,desig,username,password,salary,datetime) values ('Sarah','shaikh','FD','sarah','sarah123',3000,'2022-10-02');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from trainer_details;
++------+---------+--------+--------------------+----------+----------+--------+---------------------+
+| t_id | fname   | lname  | desig              | username | password | salary | datetime            |
++------+---------+--------+--------------------+----------+----------+--------+---------------------+
+|    1 | Abdeali | Dodiya | Software Developer | abd      | abd123   |   1000 | 2022-10-01 00:00:00 |
+|    2 | kazim   | saikh  | AVP                | kazim    | kazim123 |   5000 | 2022-10-01 00:00:00 |
+|    3 | Sarah   | shaikh | FD                 | sarah    | sarah123 |   3000 | 2022-10-02 00:00:00 |
++------+---------+--------+--------------------+----------+----------+--------+---------------------+
+3 rows in set (0.00 sec)
+
+
+##################################
+
+
+how to update your data from mysql
+
+mysql> update trainer_details set password='sarah@123' where t_id=3;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from trainer_details;
++------+---------+--------+--------------------+----------+-----------+--------+---------------------+
+| t_id | fname   | lname  | desig              | username | password  | salary | datetime            |
++------+---------+--------+--------------------+----------+-----------+--------+---------------------+
+|    1 | Abdeali | Dodiya | Software Developer | abd      | abd123    |   1000 | 2022-10-01 00:00:00 |
+|    2 | kazim   | saikh  | AVP                | kazim    | kazim123  |   5000 | 2022-10-01 00:00:00 |
+|    3 | Sarah   | shaikh | FD                 | sarah    | sarah@123 |   3000 | 2022-10-02 00:00:00 |
++------+---------+--------+--------------------+----------+-----------+--------+---------------------+
+3 rows in set (0.00 sec)
+
+
+
+
+#############################
+how to delete your row from mysql
+delete from trainer_details where t_id=3;
+
+
+
+mysql> delete from trainer_details where t_id=3;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from trainer_details;
++------+---------+--------+--------------------+----------+----------+--------+---------------------+
+| t_id | fname   | lname  | desig              | username | password | salary | datetime            |
++------+---------+--------+--------------------+----------+----------+--------+---------------------+
+|    1 | Abdeali | Dodiya | Software Developer | abd      | abd123   |   1000 | 2022-10-01 00:00:00 |
+|    2 | kazim   | saikh  | AVP                | kazim    | kazim123 |   5000 | 2022-10-01 00:00:00 |
++------+---------+--------+--------------------+----------+----------+--------+---------------------+
+2 rows in set (0.00 sec)
+
+
+
+
+
+###########
+We will insert another data
+
+insert into trainer_details (fname,lname,desig,username,password,salary,datetime) values ('Sarah','shaikh','FD','sarah','sarah@123',3000,'2022-10-02');
+
+
+mysql> insert into trainer_details (fname,lname,desig,username,password,salary,datetime) values ('Sarah','shaikh','FD','sarah','sarah@123',3000,'2022-10-02');
+Query OK, 1 row affected (0.02 sec)
+
+mysql> select * from trainer_details;
++------+---------+--------+--------------------+----------+-----------+--------+---------------------+
+| t_id | fname   | lname  | desig              | username | password  | salary | datetime            |
++------+---------+--------+--------------------+----------+-----------+--------+---------------------+
+|    1 | Abdeali | Dodiya | Software Developer | abd      | abd123    |   1000 | 2022-10-01 00:00:00 |
+|    2 | kazim   | saikh  | AVP                | kazim    | kazim123  |   5000 | 2022-10-01 00:00:00 |
+|    4 | Sarah   | shaikh | FD                 | sarah    | sarah@123 |   3000 | 2022-10-02 00:00:00 |
++------+---------+--------+--------------------+----------+-----------+--------+---------------------+
+3 rows in set (0.00 sec)
+
+mysql> desc trainer_details;
++----------+--------------+------+-----+---------+----------------+
+| Field    | Type         | Null | Key | Default | Extra          |
++----------+--------------+------+-----+---------+----------------+
+| t_id     | int(11)      | NO   | PRI | NULL    | auto_increment |
+| fname    | char(255)    | YES  |     | NULL    |                |
+| lname    | char(255)    | YES  |     | NULL    |                |
+| desig    | char(255)    | YES  |     | NULL    |                |
+| username | varchar(255) | YES  |     | NULL    |                |
+| password | varchar(255) | YES  |     | NULL    |                |
+| salary   | int(255)     | YES  |     | NULL    |                |
+| datetime | datetime     | YES  |     | NULL    |                |
++----------+--------------+------+-----+---------+----------------+
+8 rows in set (0.00 sec)
+
+
+
+
+############################################################################
+
+Now we need to focus on python module with database
+
+>>> import mysql.connector
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ModuleNotFoundError: No module named 'mysql'
+
+- this means of mysql.connector module not available.
+
+
+- we need to install mysql package in python 
+
+Windows :-
+C:\Users\AbdealiDodiya>pip install mysql-connector
+
+
+Collecting mysql-connector
+  Downloading mysql-connector-2.2.9.tar.gz (11.9 MB)
+     ---------------------------------------- 11.9/11.9 MB 2.9 MB/s eta 0:00:00
+  Preparing metadata (setup.py) ... done
+Using legacy 'setup.py install' for mysql-connector, since package 'wheel' is not installed.
+Installing collected packages: mysql-connector
+  Running setup.py install for mysql-connector ... done
+Successfully installed mysql-connector-2.2.9
+
+[notice] A new release of pip available: 22.2.1 -> 22.2.2
+[notice] To update, run: python.exe -m pip install --upgrade pip
+#########################
+C:\Users\AbdealiDodiya>python
+Python 3.10.6 (tags/v3.10.6:9c7b4bd, Aug  1 2022, 21:53:49) [MSC v.1932 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import mysql.connector
+>>>
+
+
+
+
+#Linux :-
+root@abdeali:~# pip3 install mysql-connector
+
+/usr/lib/python3/dist-packages/secretstorage/dhcrypto.py:15: CryptographyDeprecationWarning: Python 3.6 is no longer supported by the Python core team. Therefore, support for it is deprecated in cryptography and will be removed in a future release.
+  from cryptography.utils import int_from_bytes
+Collecting mysql-connector
+  Using cached mysql-connector-2.2.9.tar.gz (11.9 MB)
+  Preparing metadata (setup.py) ... done
+Building wheels for collected packages: mysql-connector
+  Building wheel for mysql-connector (setup.py) ... done
+  Created wheel for mysql-connector: filename=mysql_connector-2.2.9-cp36-cp36m-linux_x86_64.whl size=241988 sha256=9e45e716b5a8c596810cb484828cc1ee8467edfe5e6e4a84104cc8f5a1ee2367
+  Stored in directory: /root/.cache/pip/wheels/23/27/3e/72be437e6a950b8972728d2a62935ae7cd0d7c3c251fb2e737
+Successfully built mysql-connector
+Installing collected packages: mysql-connector
+Successfully installed mysql-connector-2.2.9
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+
+
+
+root@abdeali:~# python3
+Python 3.6.9 (default, Jun 29 2022, 11:45:57)
+[GCC 8.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import mysql.connector
+
+
+###########################
+CODE :-
+import mysql.connector
+mydb= mysql.connector.connect(host="localhost",user="root",password="Ahmad:06331913012",database="alnafi")
+
+#mysql connection object create
+cur = mydb.cursor()
+
+
+#Fetching data
+sql = ''' select * from trainer_details '''
+
+
+#Executing
+
+cur.execute(sql)
+
+
+result = cur.fetch()
+
+mydb.close()
+
+
+
+#########################
+root@abdeali:~/lect54# python3 data_insert.py
+Traceback (most recent call last):
+  File "data_insert.py", line 2, in <module>
+    mydb= mysql.connector.connect(host="localhost",user="root",password="123@abd",database="alnafi")
+  File "/usr/local/lib/python3.6/dist-packages/mysql/connector/__init__.py", line 179, in connect
+    return MySQLConnection(*args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/mysql/connector/connection.py", line 95, in __init__
+    self.connect(**kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/mysql/connector/abstracts.py", line 716, in connect
+    self._open_connection()
+  File "/usr/local/lib/python3.6/dist-packages/mysql/connector/connection.py", line 210, in _open_connection
+    self._ssl)
+  File "/usr/local/lib/python3.6/dist-packages/mysql/connector/connection.py", line 144, in _do_auth
+    self._auth_switch_request(username, password)
+  File "/usr/local/lib/python3.6/dist-packages/mysql/connector/connection.py", line 177, in _auth_switch_request
+    raise errors.get_exception(packet)
+mysql.connector.errors.ProgrammingError: 1698 (28000): Access denied for user 'root'@'localhost'
+
+
+
+
+
+
+
+

@@ -1,0 +1,76 @@
+This is our API link : https://alnafi.atlassian.net/rest/api/latest/issue/AC-2 
+
+from jira import JIRA
+user="ahmad.hds393@gmail.com"
+server = "https://ahmadhds393.atlassian.net"
+my_token= 'ATATT3xFfGF0sNKU9IS6a0pTWUCyYhAE4tN4Kz3bUP9Qy0qTy_u7L5H5t_yozce4gDF3sfvoITwMi9_kTzZHvXscgH8J4rKLCrrKoeoIzAVsAb8WWa7M23D3ocgW3GkZjzN8WFBMDcR8cifPW4NjVyEdwTgyfILuRmtbLvHrbRqwDI_CauE1SNM=E3B35198'
+jira = JIRA(server,basic_auth=(user,my_token))
+
+ticket='MYP-8'
+issue = jira.issue(ticket)
+print(type(issue)) 
+
+ 
+comments = issue.fields.comment.comments 
+for comment in comments:    
+	print("My comment is : ",comment.body) 
+
+##########################################
+  
+for comment in comments:    
+	print("My comment is : ",comment.body)    
+	print("Comment Author is : ",comment.author.displayName)    
+	print("Comment time is : ",comment.created)    
+	print("---------------------------------------") 
+
+######################################## 
+ 
+for comment in comments:   
+	print(comment.body)   
+	print(comment.id) 
+
+ 
+######################################## 
+
+commentid=1000 
+for comment in comments:    
+  if int(comment.id) > commentid:        
+	  commentid=int(comment.id) 
+print(jira.comment(issue,commentid).body) 
+
+ 
+
+#################### 
+
+mycomnt=[] 
+for comment in comments:    
+	latestcomments = comment.body    
+	mycomnt.append(latestcomments) 
+print(latestcomments) 
+print(mycomnt[0])  
+
+ 
+
+ ############################## 
+for comment in comments:    
+  eng= comment.author.displayName    
+  print(eng) 
+
+for comment in comments:    
+  eng= comment.author.displayName    
+  if eng == "Ahmad Hassan":
+    print(comment.body) 
+
+ 
+######################################################## TASK TIME :- 
+
+for comment in comments:    
+eng= comment.author.displayName    
+if eng == "Kazim Shaikh":        
+	print(comment.body)        
+	print(comment.created) 
+
+I want to display specif time :- 
+I am comments from Developer side, still issue is persisted. 2022-11-27T11:21:53.464+0530 
+
+2022-11-27 11 

@@ -1,0 +1,149 @@
+As we have studied that ansible has a master and worker nodes.
+
+Ansible does agentless communication, we are not installing an agent on node machines and you only need to install ansible in master machine. 
+You do not nned to install ansible in every worker machine(node)
+
+Ansible does ssh communication which are of two types ad-hoc comand line and playbook.
+
+Now, ssh communication between master and worker node is done through either passwrod and password less communication
+
+
+ALWAYS MAKE A USER FOR ANSIBLE IN MASTER MACHINE WHILE WORKING IN PRODUCTIONS
+
+IT IS NOT GOOD TO WORK ON ROOT IN PRODUCTION
+
+My maste machine is centos: 192.168.0.108
+My node machine is ubuntu(aws): 54.166.4.83
+
+
+In node machine I install python
+sudo apt install python-is-python3
+
+ubuntu@ip-172-31-26-215:~$ python --version
+Python 3.12.3
+
+
+
+# create a user jhon in ubuntu which is my master machine
+useradd -m -s /bin/bash jhon
+
+# logging in jhon
+su - jhon
+
+# now making jhon entry in visudo file, so that whatever jhon does it does not ask for password
+
+# command to open sudoers file
+visudo
+
+jhon ALL=(ALL) NOPASSWD:ALL
+
+now make this entry in both systems master and node in visudo file
+
+
+
+So, why we make entry of jhon in visudo file?
+So, if you dont make any entry in visudo for jhon, you need to add jhon in sudo group. (sudo usermod -aG sudo jhon)
+After adding it in sudo group, you need to define sudo password for jhon. (passwd jhon. suppose jhon123)
+Whenever you need to install something, it will ask for that sudo password, so each time you have to enter password (which is jhon user password jhon123) 
+which is hectic and not good ; SO, we make entry of jhon in visudo file with no password, now when you run sudo install zip, it wont ask for any password.
+Now, after makng entry of jhon you are password less.
+
+
+
+
+Now, go to vi /etc/ssh/sshd_config file in both master and node and see if PasswordAuthentication is yes, if it is not yes make it yes in both 
+master and node machine
+
+
+[root@client1 jhon]# cat /etc/ssh/sshd_config | grep -i PasswordAuthentication
+#PasswordAuthentication yes
+# PasswordAuthentication.  Depending on your PAM configuration,
+# PAM authentication, then enable this but set PasswordAuthentication
+
+
+cat /etc/ssh/sshd_config | grep -i PasswordAuthentication
+#PasswordAuthentication yes
+# PasswordAuthentication.  Depending on your PAM configuration,
+# PAM authentication, then enable this but set PasswordAuthentication
+
+
+
+Now, restart ssh service in both master and node machine
+
+
+Now, we need to generate key:
+Go to your normal user in master machine and run ssh-keygen. i will go in jhon and then run it
+
+# command to create ssh key
+ssh-keygen
+
+Now, copy this ssh key on your worker node machine by following command
+
+# command to copy ssh key to worker node(i had to work around as I am using ec2 instance of ubuntu machine from aws as my ansible worker node)
+
+(in mobaxterm terminal) scp /drives/c/Users/PMLS/Downloads/NVKP.pem jhon@192.168.0.108:/home/jhon/
+chmod 400 /home/jhon/NVKP.pem
+ssh -i /home/jhon/NVKP.pem ubuntu@54.166.4.83
+
+
+(in ssh of ubuntu machine we have to run following command)
+mkdir -p ~/.ssh
+echo "PASTE_YOUR_PUBLIC_KEY_HERE" >> ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+chmod 700 ~/.ssh
+
+
+
+
+# mention the user on worker node or else it will use the root user of worker node
+
+# command to take ssh of ubuntu now
+ssh ubuntu@54.166.4.83
+
+
+
+# now open file
+vim /etc/ansible/hosts
+
+# make entry of ubuntu
+54.166.4.83 ansible_user=ubuntu
+
+
+
+
+
+[jhon@master-ansible ~]$ ansible all -m ping -u ubuntu --private-key=~/NVKP.pem
+54.166.4.83 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+
+
+
+
+
+sudo vim /etc/ansible/hosts
+54.166.4.83 ansible_user=ubuntu ansible_ssh_private_key_file=~/NVKP.pem
+
+
+
+
+
+[jhon@master-ansible ~]$ ansible all -m ping
+54.166.4.83 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+
+
+
+#now run command
+ansible all -m ping
+
+ansible --> use ansible, all --> all nodes, -m --> module, ping --> run ping

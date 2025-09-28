@@ -1,0 +1,91 @@
+Lecture 18 : OS module in python [ Part - 3 ]
+
+
+Lecture 17 Task solution :-
+
+#task time :-
+os version is : 20.04.4 LTS
+
+
+Two way method implement :-
+1. python method with Linux
+
+Manual command:-
+# cat /etc/os-release  | grep -iw "version" | awk -F '=' '{print $2}' | awk '{print $1,$2}' | tr -d '"'
+
+import os
+myversion=os.popen("cat /etc/os-release  | grep -iw \"version\" | awk -F '=' '{print $2}' | awk '{print $1,$2}' | tr -d '\"' | tr '\n' ' '").read()
+print(myversion)
+
+
+2. Method with python
+
+#cat /etc/os-release
+
+import os
+myversion=os.popen("cat /etc/os-release").read()
+mylist=myversion.split()
+
+#print(mylist)
+myfind=(mylist[8:10])
+convert_string=" ".join(myfind)
+#print(convert_string)
+myversion=(convert_string.strip("\""))
+print(f"My OS version is : {myversion} ")
+
+
+
+
+
+Memory information are as below :-
+Total memory is : 3 GB
+Used Memory : 0
+Total swap memory is : 0 GB
+
+
+Storage details :-
+Root directory name is : /
+Root directory total size : 456G
+Root directory used size : 82G
+
+Lecture 18 :
+
+#os.path
+#os.path.basename()
+#os.path.dirname()
+
+import os
+mypath="C:\\Users\\AbdealiDodiya\\Desktop\\DevOps\\Python\\Lecture 18\\os.path.py"
+print(f"My full path is {mypath}")
+
+print(f"My base path is {os.path.basename(mypath)} ")
+print(f"My directory path is { os.path.dirname(mypath)}")
+
+OR
+
+
+LINUX
+
+root@abdealidodia:~/lect18# python3 os_path.py
+My full path is /root/lect18/os_path.py
+My base path is os_path.py
+My directory path is /root/lect18
+root@abdealidodia:~/lect18# cat os_path.py
+import os
+mypath="/root/lect18/os_path.py"
+print(f"My full path is {mypath}")
+
+print(f"My base path is {os.path.basename(mypath)} ")
+print(f"My directory path is { os.path.dirname(mypath)}")
+
+
+
+
+#os.path.split()
+import os
+mypath="C:\\Users\\AbdealiDodiya\\Desktop\\DevOps\\Python\\Lecture 18\\os.path.py"
+print(f"My full path is {mypath}")
+
+mylist=os.path.split(mypath)
+print(f"My directory is { mylist[0]}")
+print(f"My file is {mylist[1]}")

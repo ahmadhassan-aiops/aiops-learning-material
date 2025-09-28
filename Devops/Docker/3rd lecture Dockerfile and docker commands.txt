@@ -1,0 +1,74 @@
+Lecture :3 Docker Notes 
+
+
+Revision:-
+1. We have seen 3 problem to find out docker important
+2. Images --> Docker images are read only , Immutable, can edit but execute
+3. Container: Its as a process run from images
+
+Container: As a package of software because it contains application / Library /
+Dependencies , packages installation
+
+4. 3 thing architecture : Server , Client , Registry
+
+
+5. Docker installation
+6. Some docker commands
+7. Docker benefits
+
+
+
+ Question Time:-
+
+1. Is docker run command able to pull the image ?
+2. How to list the docker images in the local ?
+3. Steps to create docker images --> In theory steps
+
+Answer :
+1. Yes it will pull image from docker registry
+Docker run hello-world
+
+2. sudo docker images or #sudo docker image ls
+
+3. Dockerimage --> Docker file se banta hain --> We can write our own file --> docker images --> If we dont want write the docker file --> We can pull images or download images from docker registry
+
+#Docker run hello-world
+
+
+OS flavor in linux :-
+Centos, ubuntu and its family ,fedora ,Mint, suse, debian , kali, opensource, openlinux, arch linux, rockey linux, amazon linux, boss solaris, alma linux, zorin linux, AIX, backtrack, puppet, oracle  etc
+
+CentOS : 2-10 GB
+
+IT --> Industry , production --> Always avoid to use all above mentioned OS
+
+
+In the docker world , We have 2 more new images --> Especially for docker 
+1. BusyBOX Image: Statements, print or any message use --> Docker run hello-world
+2. Alpine image  : Web Server, Python, Java, mysql , promethoeous , and nagios etc
+
+Light weighted and Secure
+
+CENTOS : 5 GB OS , web server 1 GB , Mysql 2 GB, Python 100MB===8-9GB
+Alpine : 50M ,web server 1 GB , Mysql 2 GB, Python 100MB--> 3-4 GB
+
+
+Interview Questions:-
+1. machine centOS 
+yum install httpd --> server start --> systemctl start httpd
+install --> Service start --> web server --> Docker file --> Docker image --> Docker container as process
+
+
+Docker registry: DockerHUB register
+
+Commands :
+sudo docker pull hello-world
+docker images
+sudo docker images
+sudo docker ps
+sudo docker ps -a
+ sudo docker run hello-world
+sudo docker run --name myfirstcon hello-world
+sudo docker rm 2a0c073ec397
+docker run --rm --name myhello hello-world
+sudo docker run --rm --name myhello hello-world

@@ -1,0 +1,166 @@
+
+Taints and Tolerations in Kubernetes:
+Taints are applied to nodes to repel certain pods, while tolerations are applied to pods to allow them to be scheduled on nodes with matching taints. 
+This mechanism is used to control pod placement—for example, keeping certain workloads off specific nodes (like GPU or critical system nodes) 
+unless explicitly allowed.
+
+
+1. NoSchedule:
+This is the most common taint effect. It prevents any pod from being scheduled on the tainted node unless the pod has a matching toleration. 
+It acts as a hard restriction during scheduling.
+
+2. PreferNoSchedule:
+This is a soft restriction. Kubernetes tries to avoid scheduling pods on nodes with this taint, but it may still schedule them if no better options exist. 
+It’s a preference, not a strict rule.
+
+3. NoExecute:
+This taint affects both new and running pods. It prevents new pods from being scheduled and evicts existing pods from the node unless they tolerate the 
+taint. It is used in scenarios like node failure or cordoning.
+(Cordoning in Kubernetes means marking a node as unschedulable, so that no new pods can be scheduled on it. However, it does not affect existing pods 
+already running on the node—they continue to run normally. This is typically done as a preparation step before maintenance or draining the node.)
+
+
+
+-----------------------------------------------
+
+Masters-node is always tainted
+
+ kubectl describe node my-cluster-control-plane | grep Taint
+Taints:             node-role.kubernetes.io/control-plane:NoSchedule
+
+-----------------------------------------------
+
+kubectl describe node my-cluster-worker | grep Taint
+Taints:             <none>
+
+
+-----------------------------------------------
+
+kubectl taint node my-cluster-worker spray=mortein:NoSchedule
+node/my-cluster-worker tainted
+
+[root@client1 ahmad]# kubectl describe node my-cluster-worker | grep Taint
+Taints:             spray=mortein:NoSchedule
+
+
+-----------------------------------------------
+
+kubectl run mosquito --image nginx
+pod/mosquito created
+[root@client1 ahmad]# kubectl get po
+NAME       READY   STATUS    RESTARTS   AGE
+mosquito   0/1     Pending   0          9s
+
+
+-----------------------------------------------
+
+[root@client1 ahmad]# kubectl describe po mosquito
+
+Events:
+  Type     Reason            Age   From               Message
+  ----     ------            ----  ----               -------
+  Warning  FailedScheduling  34s   default-scheduler  0/2 nodes are available: 1 node(s) had untolerated taint {node-role.kubernetes.io/control-plane: }, 
+1 node(s) had untolerated taint {spray: mortein}. preemption: 0/2 nodes are available: 2 Preemption is not helpful for scheduling.
+
+
+-----------------------------------------------
+kubectl run bee --image=nginx --dry-run=client -o yaml > bee.pod.yaml
+
+
+
+vim bee.pod.yaml
+[root@client1 ahmad]# cat bee.pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: bee
+  name: bee
+spec:
+  containers:
+  - image: nginx
+    name: bee
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+  tolerations:
+    - key: spray
+      operator: Equal
+      value: mortein
+      effect: NoSchedule
+status: {}
+[root@client1 ahmad]# kubectl replace --force -f bee.pod.yaml
+pod "bee" deleted
+pod/bee replaced
+
+
+
+[root@client1 ahmad]# kubectl get po
+NAME       READY   STATUS    RESTARTS   AGE
+bee        1/1     Running   0          4s
+mosquito   0/1     Pending   0          8m46s
+
+
+(Because now we had provided tolerations to this pod for worker node  thats why it is in running state)
+-----------------------------------------------
+
+
+kubectl taint node my-cluster-control-plane node-role.kubernetes.io/control-plane:NoSchedule-
+node/my-cluster-control-plane untainted
+
+kubectl get po -o wide
+NAME       READY   STATUS              RESTARTS   AGE    IP           NODE                       NOMINATED NODE   READINESS GATES
+bee        1/1     Running             0          6m5s   10.244.1.7   my-cluster-worker          <none>           <none>
+mosquito   0/1     ContainerCreating   0          14m    <none>       my-cluster-control-plane   <none>           <none>
+
+
+(Interestingly mosquito pod is running on master node because we have removed the taint from master node. The reason why it didnot place on worker node
+is that it is not tolerated for worker node)
+-----------------------------------------------
+
+
+ kubectl taint node my-cluster-control-plane node-role.kubernetes.io/control-plane:NoSchedule
+node/my-cluster-control-plane tainted
+[root@client1 ahmad]# kubectl get po -o wide
+NAME       READY   STATUS              RESTARTS   AGE     IP           NODE                       NOMINATED NODE   READINESS GATES
+bee        1/1     Running             0          9m32s   10.244.1.7   my-cluster-worker          <none>           <none>
+mosquito   0/1     ContainerCreating   0          18m     <none>       my-cluster-control-plane   <none>           <none>
+
+
+(The mosquito pod is stil running even though we have re entered the taint on master node)
+
+
+
+-----------------------------------------------
+
+ kubectl taint node my-cluster-control-plane node-role.kubernetes.io/control-plane:NoSchedule
+node/my-cluster-control-plane tainted
+
+
+ kubectl delete po mosquito
+pod "mosquito" deleted
+
+[root@client1 ahmad]# kubectl run mosquito --image=nginx
+pod/mosquito created
+[root@client1 ahmad]# kubectl get po
+NAME       READY   STATUS    RESTARTS   AGE
+bee        1/1     Running   0          16m
+mosquito   0/1     Pending   0          6s
+
+(But when we delete it and try to create it again now it will not run)
+
+-----------------------------------------------
+
+ kubectl taint node my-cluster-control-plane node-role.kubernetes.io/control-plane:NoExecute
+node/my-cluster-control-plane tainted
+[root@client1 ahmad]# kubectl get po
+NAME   READY   STATUS    RESTARTS   AGE
+bee    1/1     Running   0          19m
+
+
+(With NoExecute Taint even the running pod got eliminated)
+
+-----------------------------------------------
+
+

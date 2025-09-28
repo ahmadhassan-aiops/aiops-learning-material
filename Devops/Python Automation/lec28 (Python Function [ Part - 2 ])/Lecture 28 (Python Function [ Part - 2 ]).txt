@@ -1,0 +1,174 @@
+
+
+def add(a,b):
+    c=a+b
+    print(c)
+
+def mycode():
+    a=int(input("Enter the number"))
+    b=int(input("Enter the number"))
+    add(a,b)
+
+mycode()
+
+
+O/p:Enter the number10
+Enter the number20
+30
+
+def add(a,b):
+    c=a+b
+    print(c)
+
+def mycode():
+    a=int(input("Enter the number"))
+    b=int(input("Enter the number"))
+    add(a,b)
+    print(c)
+
+mycode()
+
+
+
+def add(a,b):
+    c=a+b
+    #print(c)
+
+def mycode():
+    a=int(input("Enter the number"))
+    b=int(input("Enter the number"))
+    result=add(a,b)
+    print(result)
+
+
+mycode()
+
+
+def num(ali=3):
+    print(ali)
+
+num(1)
+num(2)
+num()
+
+
+
+
+
+###############
+Variable lenght arguments :-
+*args  
+
+
+def mycode():
+    print(f"Server is : {server}\n IP is {ip} \n OS is {os}")
+
+mycode()
+
+
+
+def mycode(server,ip,os):
+    print(f"Server is : {server}\n IP is {ip} \n OS is {os}")
+mycode("IBM","192.168.1.1","RHEL")
+
+
+def mycode(*data):
+    print(f"Server is : {data[0]}\n IP is {data[1]} \n OS is {data[2]}")
+
+mycode("IBM","192.168.1.1","RHEL")
+
+
+
+
+
+def mycode(*data):
+    print(f"Server is : {data[0]}\n IP is {data[1]} \n OS is {data[2]}")
+
+mylist=["IBM","192.168.1.1","RHEL"]
+mycode(*mylist)
+
+
+def mycode(*mydata):
+   for i in mydata:
+        print(type(i))
+        return None
+
+
+mycode(4,5,7)
+
+
+##########################
+**args
+
+def mycode(**mydata):
+    for k,v in mydata.items():
+        print(k,v)
+        
+mydict={'server':'IBM','IP':'192.168.1.1','OS':'AIX'}
+mycode(**mydict)
+
+
+
+
+###Lambda Function ##############
+
+Lambda syntax:-
+lambda arguments: expression 
+
+
+Before :-
+def mycode(ali,kazim):
+    result=ali+kazim
+    return result
+
+print(mycode(20,10))
+
+
+After :-
+
+result=lambda ali,kazim:ali+kazim
+print(result(20,10))
+
+
+result=lambda ali,kazim: ali if (ali >= kazim) else kazim
+print(result(20,10))
+
+
+Def_function.py
+import os
+def mycode():
+    print("This is my code function")
+print(os.listdir(os.getcwd()))
+print("My global print")
+
+
+
+
+#test.py
+import Def_function
+Def_function.mycode()
+
+
+
+
+Def_function.py
+import os
+def mycode():
+    print("This is my code function")
+
+    
+
+if (__name__=="__main__"):
+	print(os.listdir(os.getcwd()))
+    	print("My global print")
+
+
+#test.py
+import Def_function
+Def_function.mycode()
+
+
+
+
+
+

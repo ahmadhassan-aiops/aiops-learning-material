@@ -1,0 +1,157 @@
+
+
+
+Lecture 46 :-
+
+########################
+re.match
+
+
+
+
+
+import re
+mytext="My 192.168.1.8 jboss server ip address is  \nMy Docker server ip address is 192.168.1.11 \n My broadcast addres is 255.255.255.255 \n My invalid address 192.168.1234.12345"
+pattern=r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+myfind=(re.findall(pattern,mytext))
+print(myfind)
+
+
+
+import re
+mytext="My 192.168.1.8 jboss server ip address is  \nMy Docker server ip address is 192.168.1.11 \n My broadcast addres is 255.255.255.255 \n My invalid address 192.168.1234.12345"
+pattern=r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+myfind=(re.search(pattern,mytext))
+print(myfind)
+
+
+
+
+
+import re
+mytext="My 192.168.1.8 jboss server ip address is  \nMy Docker server ip address is 192.168.1.11 \n My broadcast addres is 255.255.255.255 \n My invalid address 192.168.1234.12345"
+pattern=r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+myfind=(re.findall(pattern,mytext))
+print(myfind)
+print(re.match(pattern,mytext))
+O/p:
+['192.168.1.8', '192.168.1.11', '255.255.255.255']
+None
+
+
+
+import re
+mytext="192.168.1.8 My jboss server ip address is "
+pattern=r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+print(mytext)
+pattern=r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+print(re.match(pattern,mytext))
+
+o/p:-
+192.168.1.8 My jboss server ip address is 
+<re.Match object; span=(0, 11), match='192.168.1.8'>
+
+
+
+
+import re
+mytext="192.168.1.8 jboss server ip address is  \nMy Docker server ip address is 192.168.1.11 \n My broadcast addres is 255.255.255.255 \n My invalid address 192.168.1234.12345"
+pattern=r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+
+print(re.match(pattern,mytext))
+
+
+<re.Match object; span=(30, 41), match='192.168.1.8'>
+
+
+
+
+
+import re
+mytext="192.168.1.8 jboss server ip address is  \nMy Docker server ip address is 192.168.1.11 \n My broadcast addres is 255.255.255.255 \n My invalid address 192.168.1234.12345"
+pattern=r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+
+print(re.search(pattern,mytext,re.M))
+
+
+findall --> ye aapka pure entire string me search karega 
+search --> ye aapka only first line me hi search karega 
+match --> ye aapka only first index hi check karega 
+
+
+
+####################
+re.split()
+
+import re
+mytext="192.168.1.8 jboss server ip address is  \nMy Docker server ip address is 192.168.1.11 \n My broadcast addres is 255.255.255.255 \n My invalid address 192.168.1234.12345"
+pattern=r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+
+mymatch=(re.split(pattern,mytext))
+print(mymatch)
+for i in mymatch:
+    print(i)
+
+
+O/p:-
+'', ' jboss server ip address is  \nMy Docker server ip address is ', ' \n My broadcast addres is ', ' \n My invalid address 192.168.1234.12345']
+
+ jboss server ip address is  
+My Docker server ip address is 
+ 
+ My broadcast addres is 
+ 
+ My invalid address 192.168.1234.12345
+
+
+
+Task :-
+import re
+print(re.split('[a-c]','0a2ALI7',re.I))
+
+Tell me the output of above commands 
+
+
+
+
+####################
+re.sub()
+it will replace pattern from your string 
+
+import re
+myword= "Abdeali Dodiya from bangalore, We are leaning python course and in this python course will lear two version like python2 and python3 course"
+pattern=r"\bcourse\b"
+print(re.sub(pattern,'COURSE',myword))
+
+O/p:-
+Abdeali Dodiya from bangalore, We are leaning python COURSE and in this python COURSE will lear two version like python2 and python3 COURSE
+
+##############
+re.subn()
+import re
+myword= "Abdeali Dodiya from bangalore, We are leaning python course and in this python course will lear two version like python2 and python3 course"
+pattern=r"\bcourse\b"
+print(re.subn(pattern,'COURSE',myword))
+
+
+O/p:-
+('Abdeali Dodiya from bangalore, We are leaning python COURSE and in this python COURSE will lear two version like python2 and python3 COURSE', 3)
+
+
+
+
+Task time :-
+
+Input :-
+
+myword="""
+We have example of email address finder 
+abdealidodia@gmail.com
+abdeali@gmail.com
+xyz.com
+ABDEALi@gmail.com
+ABd@yahoo.com
+"""
+You need to find out correct email address from your string 
+
+

@@ -1,0 +1,194 @@
+Lecture 4 : Variables and Data types in Python.
+
+
+
+What is variables :-
+A variables stored data in the program. When you want to refer back to that data. Variable you can say like that label.
+
+9876543210
+
+ali --> 9876543210
+
+name --> Abdeali
+
+name=ABD
+
+>>> name="ABD"
+>>> print(name)
+ABD
+>>> two=2
+>>> print(two)
+2
+>>>
+
+
+
+
+>>> abd="Abdeali Dodia"
+>>> print(abd)
+Abdeali Dodia
+
+
+root@abdealidodia:~/lect4# cat simple_variable.py
+#!/usr/local/bin/python3
+
+glass="Empty"
+print(glass)
+
+
+root@abdealidodia:~/lect4# ./simple_variable.py
+
+
+root@abdealidodia:~/lect4# python3 simple_variable.py
+Empty
+
+
+
+root@abdealidodia:~/lect4# cat simple_variable.py
+#!/usr/local/bin/python3
+
+glass="Empty"
+print(glass)
+print("The glass is : " + glass)
+
+
+root@abdealidodia:~/lect4# python3 simple_variable.py
+Empty
+The glass is : Empty
+
+
+
+root@abdealidodia:~/lect4# vim simple_variable.py
+#!/usr/local/bin/python3
+
+glass="Empty"
+print(glass)
+print("The glass is : " + glass)
+
+glass="Full"
+print("The glass is : " + glass)
+
+glass='half-empty'
+print("The glass is : " + glass)
+
+
+#!/usr/local/bin/python3
+name=input("Enter your name")
+print("Your name is " + name)
+
+
+
+user name=input("Enter your user_name")#ERROR because space issue
+print("Your username is " + name)
+
+user_name=input("Enter your user_name")#Allowded
+
+u=input("Enter your user_name")#allow
+
+12=input("Enter your user_name")#Error
+
+user1=input("Enter your user_name")#Allow
+
+1user=input("Enter your user_name")#Error
+
+u=input("Enter your user_name")
+print("Your username is " + U)#Error
+
+
+
+
+>>> print("Abdeali")
+Abdeali
+>>> print(len("Abdeali"))
+7
+>>> print(len(786))
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+TypeError: object of type 'int' has no len()
+
+
+
+Data type :-
+Data types are the classfication of data items.
+
+String --> Text
+Integer --> Number
+Float  --> Decimal point
+boolean  --> True or False
+
+
+
+root@abdealidodia:~/lect4# cat data_types.py
+astring="Abdeali dodia"
+aint=53
+afloat= 52.76894
+abool=True
+
+print(astring)
+print(aint)
+print(afloat)
+print(abool)
+
+print(type(astring))
+print(type(aint))
+print(type(afloat))
+print(type(abool))
+
+
+
+
+
+root@abdealidodia:~/lect4# python3 data_types.py
+Abdeali dodia
+53
+52.76894
+True
+<class 'str'>
+<class 'int'>
+<class 'float'>
+<class 'bool'>
+
+
+
+root@abdealidodia:~/lect4# cat data_types.py
+astring=input("Enter the string")
+aint=input("Enter the integer")
+afloat=input("Enter the float")
+
+print(astring)
+print(aint)
+print(afloat)
+
+print(type(astring))
+print(type(aint))
+print(type(afloat))
+
+
+root@abdealidodia:~/lect4# cat data_types.py
+astring=input("Enter the string")
+aint=int(input("Enter the integer"))
+afloat=float(input("Enter the float"))
+
+print(astring)
+print(aint)
+print(afloat)
+
+print(type(astring))
+print(type(aint))
+print(type(afloat))
+
+
+
+
+root@abdealidodia:~/lect4# cat data_types.py
+astring=input("Enter the string")
+aint=eval(input("Enter the integer"))
+afloat=eval(input("Enter the float"))
+
+print(astring)
+print(aint)
+print(afloat)
+
+print(type(astring))
+print(type(aint))
+print(type(afloat))

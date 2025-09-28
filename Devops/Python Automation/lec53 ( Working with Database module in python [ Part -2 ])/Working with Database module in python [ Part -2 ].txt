@@ -1,0 +1,234 @@
+
+
+
+Lecture 53:-
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| alnafi             |
+| devops_users       |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+6 rows in set (0.02 sec)
+
+mysql>
+
+
+Database :Alnafi						
+Table name:trainer_details	
+Columns :-					
+t_id	fname	lname	designation	username	password	salary	datetime
+
+
+									
+	Database 	Alnafi							
+	Table name	trainer_details							
+	t_id	fname	lname	designation	username	password	salary	datetime	
+	1	Abdeali	Dodia	SE	abd	abd123	1000	234234	
+	2	Kazim	shaikh						
+									
+									
+							
+									
+	Table name	Course_details							
+	c_id	c_name	duration	t_id					
+	1	devops	18	1					
+	2	Sysops	5	2					
+									
+									
+									
+									
+									
+
+
+create table trainer_details
+(
+t_id int NOT NULL AUTO_INCREMENT,
+fname char(255),
+lname char(255),
+desig char(255),
+username varchar(255),
+password varchar(255),
+salary int(255),
+datetime datetime,
+PRIMARY KEY (t_id)
+);
+
+mysql> create table trainer_details
+    -> (
+    -> t_id int NOT NULL AUTO_INCREMENT,
+    -> fname char(255),
+    -> lname char(255),
+    -> desig char(255),
+    -> username varchar(255),
+    -> password varchar(255),
+    -> salary int(255),
+    -> datetime datetime,
+    -> PRIMARY KEY (t_id)
+    -> );
+ERROR 1046 (3D000): No database selected
+mysql>
+
+
+mysql> use alnafi
+Database changed
+mysql> create table trainer_details
+    -> (
+    -> t_id int NOT NULL AUTO_INCREMENT,
+    -> fname char(255),
+    -> lname char(255),
+    -> desig char(255),
+    -> username varchar(255),
+    -> password varchar(255),
+    -> salary int(255),
+    -> datetime datetime,
+    -> PRIMARY KEY (t_id)
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql>
+
+
+
+
+How get all tables details from mysql 
+mysql> show tables;
++------------------+
+| Tables_in_alnafi |
++------------------+
+| trainer_details  |
++------------------+
+1 row in set (0.01 sec)
+
+mysql>
+
+
+
+
+
+###############
+
+how to show tables details 
+mysql> describe trainer_details;
++----------+--------------+------+-----+---------+----------------+
+| Field    | Type         | Null | Key | Default | Extra          |
++----------+--------------+------+-----+---------+----------------+
+| t_id     | int(11)      | NO   | PRI | NULL    | auto_increment |
+| fname    | char(255)    | YES  |     | NULL    |                |
+| lname    | char(255)    | YES  |     | NULL    |                |
+| desig    | char(255)    | YES  |     | NULL    |                |
+| username | varchar(255) | YES  |     | NULL    |                |
+| password | varchar(255) | YES  |     | NULL    |                |
+| salary   | int(255)     | YES  |     | NULL    |                |
+| datetime | datetime     | YES  |     | NULL    |                |
++----------+--------------+------+-----+---------+----------------+
+8 rows in set (0.00 sec)
+
+
+
+###############################
+howto check tables details 
+
+
+mysql> select * from trainer_details;
+Empty set (0.00 sec)
+
+###############################################
+how to insert data into table 
+
+
+insert into trainer_details (fname,lname,desig,username,password,salary,datetime) values ('Abdeali','Dodiya','Software Developer','abd','abd123',1000,'2022-10-01');
+
+
+#########
+
+We will insert another data
+
+insert into trainer_details (fname,lname,desig,username,password,salary,datetime) values ('kazim','saikh','AVP','kazim','kazim123',5000,'2022-10-01');
+
+
+#####################
+
+I want display only specific coulmns 
+
+mysql> select fname,lname,desig from trainer_details;
++---------+--------+--------------------+
+| fname   | lname  | desig              |
++---------+--------+--------------------+
+| Abdeali | Dodiya | Software Developer |
+| kazim   | saikh  | AVP                |
++---------+--------+--------------------+
+2 rows in set (0.00 sec)
+
+
+
+
+
+
+####################
+
+mysql> select fname,lname,desig from trainer_details;
++---------+--------+--------------------+
+| fname   | lname  | desig              |
++---------+--------+--------------------+
+| Abdeali | Dodiya | Software Developer |
+| kazim   | saikh  | AVP                |
++---------+--------+--------------------+
+2 rows in set (0.00 sec)
+
+mysql> select fname,lname,desig from trainer_details where fname='Abdeali';
++---------+--------+--------------------+
+| fname   | lname  | desig              |
++---------+--------+--------------------+
+| Abdeali | Dodiya | Software Developer |
++---------+--------+--------------------+
+1 row in set (0.00 sec)
+
+mysql> select * from trainer_details where t_id=1;
++------+---------+--------+--------------------+----------+----------+--------+---------------------+
+| t_id | fname   | lname  | desig              | username | password | salary | datetime            |
++------+---------+--------+--------------------+----------+----------+--------+---------------------+
+|    1 | Abdeali | Dodiya | Software Developer | abd      | abd123   |   1000 | 2022-10-01 00:00:00 |
++------+---------+--------+--------------------+----------+----------+--------+---------------------+
+1 row in set (0.00 sec)
+
+mysql> select * from trainer_details where t_id=2;
++------+-------+-------+-------+----------+----------+--------+---------------------+
+| t_id | fname | lname | desig | username | password | salary | datetime            |
++------+-------+-------+-------+----------+----------+--------+---------------------+
+|    2 | kazim | saikh | AVP   | kazim    | kazim123 |   5000 | 2022-10-01 00:00:00 |
++------+-------+-------+-------+----------+----------+--------+---------------------+
+1 row in set (0.01 sec)
+
+
+
+
+#####################
+mysql> select * from trainer_details where salary >=2000;
++------+-------+-------+-------+----------+----------+--------+---------------------+
+| t_id | fname | lname | desig | username | password | salary | datetime            |
++------+-------+-------+-------+----------+----------+--------+---------------------+
+|    2 | kazim | saikh | AVP   | kazim    | kazim123 |   5000 | 2022-10-01 00:00:00 |
++------+-------+-------+-------+----------+----------+--------+---------------------+
+1 row in set (0.00 sec)
+
+
+
+mysql> select * from trainer_details where salary <=2000;
++------+---------+--------+--------------------+----------+----------+--------+---------------------+
+| t_id | fname   | lname  | desig              | username | password | salary | datetime            |
++------+---------+--------+--------------------+----------+----------+--------+---------------------+
+|    1 | Abdeali | Dodiya | Software Developer | abd      | abd123   |   1000 | 2022-10-01 00:00:00 |
++------+---------+--------+--------------------+----------+----------+--------+---------------------+
+1 row in set (0.01 sec)
+
+
+
+
+
+

@@ -1,0 +1,110 @@
+Lecture 17 : OS module in python [ Part - 2 ]
+
+
+Solution :-
+import os
+myfiles=os.listdir()
+print(myfiles)
+myext=myfiles[1].split(".")
+print(myext[0])
+
+
+
+#os.walk()
+similer find command in linux
+
+
+
+root@abdealidodia:~/lect17# cat os_mod.py
+import os
+print(list(os.walk(os.getcwd())))
+
+
+root@abdealidodia:~/lect17# python3 os_mod.py
+[('/root/lect17', ['ABD'], ['test.txt', 'os_mod.py']), ('/root/lect17/ABD', [], ['abd.txt'])]
+root@abdealidodia:~/lect17# tree
+.
+├── ABD
+│   └── abd.txt
+├── os_mod.py
+└── test.txt
+
+1 directory, 3 files
+
+
+
+
+root@abdealidodia:~/lect17# tree
+.
+├── os_mod.py
+└── test.txt
+
+0 directories, 2 files
+root@abdealidodia:~/lect17# python3 os_mod.py
+[('/root/lect17', [], ['test.txt', 'os_mod.py'])]
+
+
+
+root@abdealidodia:~/lect17# tree
+.
+├── ABD
+│   ├── ABD_sub
+│   └── abd.txt
+├── os_mod.py
+└── test.txt
+
+2 directories, 3 files
+root@abdealidodia:~/lect17# python3 os_mod.py
+[('/root/lect17', ['ABD'], ['test.txt', 'os_mod.py']), ('/root/lect17/ABD', ['ABD_sub'], ['abd.txt']), ('/root/lect17/ABD/ABD_sub', [], [])]
+root@abdealidodia:~/lect17# mkdir parents
+root@abdealidodia:~/lect17# tree
+.
+├── ABD
+│   ├── ABD_sub
+│   └── abd.txt
+├── os_mod.py
+├── parents
+└── test.txt
+
+3 directories, 3 files
+root@abdealidodia:~/lect17# python3 os_mod.py
+[('/root/lect17', ['parents', 'ABD'], ['test.txt', 'os_mod.py']), ('/root/lect17/parents', [], []), ('/root/lect17/ABD', ['ABD_sub'], ['abd.txt']), ('/root/lect17/ABD/ABD_sub', [], [])]
+root@abdealidodia:~/lect17#
+
+
+
+#OS.syatem commands
+os.system("dir")
+
+
+
+
+#os.popen(commands).read()
+
+>>> mydata=os.popen("dir").read()
+print(mydata)
+
+
+
+
+
+
+#task time :-
+os version is : 20.04.4 LTS
+
+
+two way method implement :-
+1. python method with linux
+# cat /etc/os-release | grep -iw "version"
+myvar=os.popen("# cat /etc/os-release | grep -iw "version" | awk ").read()
+print(myvar)
+
+Output :-
+os version is : 20.04.4 LTS
+
+
+2. Method with python
+#cat /etc/os-release
+
+Output :-
+os version is : 20.04.4 LTS

@@ -1,0 +1,57 @@
+
+
+Lecture 52
+
+You need to install oracle VM or you need to have one Ubuntu machine 
+
+
+how to install/configure Mysql server in Ubuntu 
+#apt-get update
+#apt-get install mysql-server
+
+
+# systemctl status mysql.service
+# systemctl enable mysql.service
+# systemctl start mysql.service
+
+
+#Now you need to confiugre your mysql server
+~# mysql_secure_installation
+
+
+#
+how to login mysql server with root user 
+
+# mysql -u root -p
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| devops_users       |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+
+
+#how to create own database
+
+mysql> create database alnafi;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| alnafi             |
+| devops_users       |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+6 rows in set (0.00 sec)

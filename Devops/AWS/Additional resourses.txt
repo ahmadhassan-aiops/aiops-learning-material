@@ -1,0 +1,12 @@
+
+
+1. AWS config 		  (features and price alongwith handson and case studies)
+2. AWS OpsWorks 	  (features and price alongwith handson and case studies) -- chef automate -- puppet enterprise -- stacks
+3. AWS System Manager 	  (features and price alongwith handson and case studies)
+4. AWS Codedeploy	  (features and price alongwith handson and case studies)
+5. AWS Codecommit	  (features and price alongwith handson and case studies)
+6. AWS-Elastic Beanstalk  (features and price alongwith handson and case studies)
+7. AWS Codepipeline	  (features and price alongwith handson and case studies)
+8. AWS X-Ray		  (features and price alongwith handson and case studies)
+9. AWS CodeStart	  (features and price alongwith handson and case studies)
+10. AWS AppRunner	  (features and price alongwith handson and case studies)

@@ -1,0 +1,255 @@
+We will make 1 aws ubuntu machines as server and will monitor it using sensu
+
+
+		(Sensu-server)
+
+On sensu-server following sg setting:
+port# 22, 80, 8080, 8081, 3000, 3031, 8125, 3030, 4567, 5672  (All must be open -- can be set to anywhere)
+
+# 1. Add the Sensu repository
+curl -s https://packagecloud.io/install/repositories/sensu/stable/script.deb.sh | sudo bash
+
+# 2. Install the sensu-go-backend package
+sudo apt-get install -y sensu-go-backend
+
+# 3. Download the default backend configuration file
+sudo curl -L https://docs.sensu.io/sensu-go/latest/files/backend.yml -o /etc/sensu/backend.yml
+
+# 4. Start and enable sensu-backend service
+sudo systemctl start sensu-backend
+sudo systemctl enable sensu-backend
+
+# 5. Check status
+sudo systemctl status sensu-backend
+
+
+# Minimal backend configuration (already in place)
+# /etc/sensu/backend.yml
+state-dir: "/var/lib/sensu/sensu-backend"
+
+# 6. Set up admin username and password (use export, not Ixport!)
+export SENSU_BACKEND_CLUSTER_ADMIN_USERNAME=admin
+export SENSU_BACKEND_CLUSTER_ADMIN_PASSWORD=admin
+
+# 7. Initialize the Sensu backend
+sudo -E /usr/sbin/sensu-backend init
+
+http://54.145.180.23:3000/dashboard
+
+
+
+# 8. Add the Sensu repository
+curl -s https://packagecloud.io/install/repositories/sensu/stable/script.deb.sh | sudo bash
+
+# 9. Install the sensu-go-cli package
+sudo apt-get install -y sensu-go-cli
+
+
+#10.Configure sensuctl (non-interactive mode)
+sensuctl configure -n \
+  --username 'admin' \
+  --password 'admin' \
+  --namespace default \
+  --url 'http://54.145.180.23:8080'
+
+
+ubuntu@ip-172-31-27-245:~$ sensuctl config view
+=== Active Configuration
+API URL:                  http://54.145.180.23:8080
+Namespace:                default
+Format:                   tabular
+Timeout:                  15s
+Username:                 admin
+JWT Expiration Timestamp: 1757319346
+
+
+# 11. Add the Sensu repository
+curl -s https://packagecloud.io/install/repositories/sensu/stable/script.deb.sh | sudo bash
+
+# 12. Install the sensu-go-agent package
+sudo apt-get install -y sensu-go-agent
+
+# 13. Download the default agent config template
+sudo curl -L https://docs.sensu.io/sensu-go/latest/files/agent.yml -o /etc/sensu/agent.yml
+
+
+# 14. Edit the config file
+sudo vi /etc/sensu/agent.yml
+
+Inside the file, uncomment and replace the backend URL section:
+backend-url:
+  - "ws://54.145.180.23:8081"
+
+
+# 15. Start using service manager (both work, systemctl is preferred)
+sudo systemctl start sensu-agent
+sudo systemctl enable sensu-agent
+sudo systemctl status sensu-agent
+
+# 16. Install the Sensu Agent
+sudo apt-get install -y sensu-go-agent
+
+# 17. Copy the default config template
+sudo curl -L https://docs.sensu.io/sensu-go/latest/files/agent.yml -o /etc/sensu/agent.yml
+
+# 18. start semsu-agent
+sudo systemctl start sensu-agent
+sudo systemctl enable sensu-agent
+sudo systemctl status sensu-agent
+
+----------------------------------------------------------
+(Some times we have to re run the following)
+Force sensuctl to re-authenticate with the backend API:
+
+sensuctl configure -n \
+  --username 'admin' \
+  --password 'admin' \
+  --namespace 'default' \
+  --url 'http://54.145.180.23:8080'
+----------------------------------------------------------
+
+
+#19. to see user list
+sensuctl user list
+
+
+# 20. Install jq (Optional: for formatting JSON output)
+sudo apt-get install -y jq
+
+# 21. Check Backend Health via API
+curl -v http://54.145.180.23:8080/health | jq
+
+
+# 22. To set up a manual event/incident 
+curl -X POST \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "check": {
+      "metadata": { "name": "check-mysql-status" },
+      "status": 1,
+      "output": "could not connect to mysql"
+    },
+    "entity": {
+      "metadata": { "name": "wordpress-client" }
+    }
+  }' \
+  http://127.0.0.1:3031/events
+
+---------------------------------------------
+
+
+		(We can check it from dashboard now)
+
+==========================================================================================================
+
+			(optional)
+
+
+Here’s a ready-to-use Sensu check configuration for your WordPress client that will periodically monitor CPU, memory, disk, MySQL, and HTTP. 
+You can apply this via sensuctl create -f <file>.
+
+
+vim wordpress-checks.yaml
+
+---
+# CPU Usage Check
+type: CheckConfig
+api_version: core/v2
+metadata:
+  name: check-cpu
+  namespace: default
+spec:
+  command: "check-cpu.rb -w 70 -c 90"   # Example, you can replace with actual command/script
+  interval: 60                         # seconds
+  publish: true
+  subscriptions:
+    - "entity:wordpress-client"
+  handlers:
+    - "default"
+
+---
+# Memory Usage Check
+type: CheckConfig
+api_version: core/v2
+metadata:
+  name: check-memory
+  namespace: default
+spec:
+  command: "check-memory.rb -w 70 -c 90"
+  interval: 60
+  publish: true
+  subscriptions:
+    - "entity:wordpress-client"
+  handlers:
+    - "default"
+
+---
+# Disk Usage Check
+type: CheckConfig
+api_version: core/v2
+metadata:
+  name: check-disk
+  namespace: default
+spec:
+  command: "check-disk.rb -w 80 -c 90 -p /"
+  interval: 60
+  publish: true
+  subscriptions:
+    - "entity:wordpress-client"
+  handlers:
+    - "default"
+
+---
+# MySQL Status Check
+type: CheckConfig
+api_version: core/v2
+metadata:
+  name: check-mysql
+  namespace: default
+spec:
+  command: "check-mysql.rb -H 127.0.0.1 -u root -p 'password'"
+  interval: 60
+  publish: true
+  subscriptions:
+    - "entity:wordpress-client"
+  handlers:
+    - "default"
+
+---
+# HTTP (WordPress site) Check
+type: CheckConfig
+api_version: core/v2
+metadata:
+  name: check-http
+  namespace: default
+spec:
+  command: "check-http.rb -u http://localhost"
+  interval: 60
+  publish: true
+  subscriptions:
+    - "entity:wordpress-client"
+  handlers:
+    - "default"
+
+
+
+sensuctl create -f wordpress-checks.yaml
+
+sensuctl check list
+sensuctl event list
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

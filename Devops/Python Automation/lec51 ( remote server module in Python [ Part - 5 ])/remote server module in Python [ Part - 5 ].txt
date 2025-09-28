@@ -1,0 +1,256 @@
+
+
+Lecture 51 :-
+import paramiko
+hostname="192.168.1.11"
+username="aadmin"
+password= "123@abd"
+client= paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+client.connect(hostname=hostname,username=username,password=password   )
+mycmd="df -h"
+
+stdin, stdout, stderr = client.exec_command(mycmd)
+
+mycmdout=stdout.read().decode()
+print(mycmdout)
+client.close()
+
+
+
+
+########################
+We are working on sftp service using paramiko 
+
+
+import paramiko
+hostname="192.168.1.11"
+username="aadmin"
+password= "123@abd"
+client= paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+client.connect(hostname=hostname,username=username,password=password)
+mysftp = client.open_sftp()
+print(mysftp)
+
+
+It will show sftp client in paramiko objects
+
+
+
+#########################
+
+
+Right now we are in windows machine -:
+
+windows :192.168.1.7
+Linux : 192.168.1.11
+
+Linux remote path : /home/ahmad/sample.csv
+
+import paramiko
+hostname="192.168.0.102"
+username="ahmad"
+password= "12345"
+client= paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+client.connect(hostname=hostname,username=username,password=password)
+
+mysftp = client.open_sftp()
+mysftp.get('/home/ahmad/sample.csv', 'sample.csv')
+mysftp.close()
+client.close()
+
+
+###########################
+import paramiko
+hostname="192.168.1.11"
+username="aadmin"
+password= "123@abd"
+client= paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+client.connect(hostname=hostname,username=username,password=password)
+mysftp = client.open_sftp()
+mysftp.get('/home/aadmin/lect51/server.csv','test.csv')
+mysftp.close()
+client.close()
+
+
+##########################
+
+Windows to Linux 
+we are copying file from windows test.csv to linux path.
+
+
+import paramiko
+hostname="192.168.1.11"
+username="aadmin"
+password= "123@abd"
+client= paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+client.connect(hostname=hostname,username=username,password=password)
+mysftp = client.open_sftp()
+mysftp.put('test.csv','test.csv')
+mysftp.close()
+client.close()
+
+
+
+
+#############################
+how to change your remote directory 
+import paramiko
+hostname="192.168.1.11"
+username="aadmin"
+password= "123@abd"
+client= paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+client.connect(hostname=hostname,username=username,password=password)
+mysftp = client.open_sftp()
+mysftp.chdir('/home/aadmin/lect51')
+mysftp.put('test.csv','test.csv')
+mysftp.close()
+client.close()
+
+
+#####################
+how to check your remote files from windows paramiko 
+
+
+import paramiko
+hostname="192.168.1.11"
+username="aadmin"
+password= "123@abd"
+client= paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+client.connect(hostname=hostname,username=username,password=password)
+mysftp = client.open_sftp()
+print(mysftp.listdir())
+mysftp.close()
+client.close()
+
+
+###########################
+how to check details from files 
+
+
+import paramiko
+hostname="192.168.1.11"
+username="aadmin"
+password= "123@abd"
+client= paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+client.connect(hostname=hostname,username=username,password=password)
+mysftp = client.open_sftp()
+mysftp.chdir('/tmp')
+print(mysftp.stat('sample.csv'))
+mysftp.close()
+client.close()
+
+###############################
+import paramiko
+hostname="192.168.1.11"
+username="aadmin"
+password= "123@abd"
+client= paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+client.connect(hostname=hostname,username=username,password=password)
+
+mysftp = client.open_sftp()
+mysftp.chdir('/tmp')
+file=mysftp.open('sample.csv','a')
+file.write('ahmad hassan')
+
+mysftp.close()
+client.close()
+
+
+
+###################
+import paramiko
+hostname="192.168.1.11"
+username="aadmin"
+password= "123@abd"
+client= paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+client.connect(hostname=hostname,username=username,password=password)
+mysftp = client.open_sftp()
+mysftp.chdir('/home/aadmin/lect51')
+file=mysftp.open('test.csv')
+print(file.read())
+mysftp.close()
+client.close()
+
+
+##################################
+
+
+Task :-
+you need to get free -g data from remote machine and store output into one file every days.
+
+Memory_details.txt
+1st Oct 2022 13:30 and Memory details are as below:
+Available Memory : 2 GB
+Total memory : 10 GB
+Used Memory : 8 GB
+
+
+
+2nd Oct 2022 13:30 and Memory details are as below:
+Available Memory : 1 GB
+Total memory : 10 GB
+Used Memory : 9 GB
+
+
+##########################################
+
+
+task code:
+
+import paramiko
+import datetime
+
+# Remote server details
+hostname = "192.168.0.102"  # Change to your server IP
+username = "ahmad"          # Change to your username
+password = "12345"          # Change to your password
+
+# Connect to remote server via SSH
+client = paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+client.connect(hostname=hostname, username=username, password=password)
+
+# Run 'free -g' command to get memory details
+stdin, stdout, stderr = client.exec_command("free -g")
+output = stdout.readlines()
+
+# Close SSH connection
+client.close()
+
+# Parse memory details
+memory_info = output[1].split()  # Extract memory line
+total_memory = memory_info[1]
+used_memory = memory_info[2]
+available_memory = memory_info[3]
+
+# Get current date & time
+current_time = datetime.datetime.now().strftime("%d %b %Y %H:%M")
+
+# Format memory details
+memory_data = (
+    f"{current_time} and Memory details are as below:\n"
+    f"Available Memory : {available_memory} GB\n"
+    f"Total Memory : {total_memory} GB\n"
+    f"Used Memory : {used_memory} GB\n\n"
+)
+
+# Append details to Memory_details.txt
+with open("Memory_details.txt", "a") as file:
+    file.write(memory_data)
+
+print("Memory details stored successfully!")
+
+
+
+
+

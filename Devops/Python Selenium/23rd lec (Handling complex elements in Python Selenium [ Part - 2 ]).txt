@@ -1,0 +1,145 @@
+Lecture 23 :-
+
+##############
+This is right click example :-
+
+import time
+from selenium import webdriver
+from selenium.webdriver import ActionChains
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get('https://dev.alnafi.com/')
+driver.maximize_window()
+driver.implicitly_wait(10)
+
+actions = ActionChains(driver)
+my_path = driver.find_element(By.XPATH,'/html/body/div[1]/div/div[4]/section[1]/div[1]/div[1]/div/div/a')
+time.sleep(1)
+actions.context_click(my_path).perform()
+
+time.sleep(1)
+driver.quit()
+
+
+
+
+#######
+Double click 
+
+import time
+from selenium import webdriver
+from selenium.webdriver import ActionChains
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get('https://dev.alnafi.com/')
+driver.maximize_window()
+driver.implicitly_wait(10)
+
+actions = ActionChains(driver)
+my_path = driver.find_element(By.XPATH,'/html/body/div[1]/div/div[4]/section[1]/div[1]/div[1]/div/div/a')
+time.sleep(1)
+actions.double_click(my_path).perform()
+
+time.sleep(1)
+driver.quit()
+
+
+
+###########################
+
+Hadn;ling alerts via selenium 
+
+
+
+https://www.selenium.dev/
+
+https://www.selenium.dev/selenium/docs/api/py/index.html
+
+
+https://www.selenium.dev/selenium/docs/api/py/api.html
+
+from selenium.webdriver.common.alert import Alert
+Alert(driver).accept()
+
+###############
+FINAL CODE :-
+import time
+from selenium import webdriver
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get('https://mail.rediff.com/cgi-bin/login.cgi')
+driver.maximize_window()
+driver.implicitly_wait(10)
+
+driver.find_element(By.CLASS_NAME,'signinbtn').click()
+alert_handle = Alert(driver)
+print(alert_handle.text)
+time.sleep(5)
+alert_handle.accept()
+
+time.sleep(5)
+driver.quit()
+
+
+
+###################
+
+Handling Iframe 
+
+One web page but it will coming diffrent web source from extranal website link 
+import time
+from selenium import webdriver
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get('https://www.rediff.com/')
+driver.maximize_window()
+driver.implicitly_wait(10)
+my_nse = driver.find_element(By.XPATH,'//*[@id="nseindex"]')
+print(my_nse.text)
+
+time.sleep(5)
+driver.quit()
+
+
+####################
+import time
+from selenium import webdriver
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get('https://www.rediff.com/')
+driver.maximize_window()
+driver.implicitly_wait(10)
+#my_nse = driver.find_element(By.XPATH,'//*[@id="nseindex"]')
+#print(my_nse.text)
+
+my_news = driver.find_element(By.XPATH,'//*[@id="red_container_main"]/div[27]/h3')
+print(my_news.text)
+
+time.sleep(5)
+driver.quit()
+
+
+######################
+
+
+
+
+

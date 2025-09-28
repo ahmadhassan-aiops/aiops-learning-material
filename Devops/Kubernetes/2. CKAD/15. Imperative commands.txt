@@ -1,0 +1,347 @@
+		
+			Imperative commands:
+
+In Kubernetes, imperative commands are used to directly create, update, or delete resources from the command line using kubectl, 
+without writing YAML files. They offer a quick, one-step approach to managing resources—for example, 
+
+kubectl create deployment nginx --image=nginx 
+
+immediately creates a Deployment. This contrasts with the declarative approach, where you define desired state in YAML files and apply them 
+using kubectl apply -f. Imperative commands are ideal for fast prototyping or scripting but are less maintainable than declarative configs 
+for production setups.
+
+
+
+
+-----------------------------------------------
+
+[root@client1 ahmad]# kubectl run al-nafi-pod --image nginx
+pod/al-nafi-pod created
+[root@client1 ahmad]# kubectl get pods
+NAME          READY   STATUS    RESTARTS   AGE
+al-nafi-pod   1/1     Running   0          5s
+
+
+-----------------------------------------------
+
+[root@client1 ahmad]# kubectl run test-pod --image redis --dry-run=client
+pod/test-pod created (dry run)
+[root@client1 ahmad]# kubectl get pods
+NAME          READY   STATUS    RESTARTS   AGE
+al-nafi-pod   1/1     Running   0          61s
+
+
+-----------------------------------------------
+
+ kubectl run test-pod --image redis --dry-run=client -o yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: test-pod
+  name: test-pod
+spec:
+  containers:
+  - image: redis
+    name: test-pod
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+
+-----------------------------------------------
+
+ kubectl run test-pod --image redis --dry-run=client -o yaml > test-pod.yaml
+[root@client1 ahmad]# cat test-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: test-pod
+  name: test-pod
+spec:
+  containers:
+  - image: redis
+    name: test-pod
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+
+
+-----------------------------------------------
+
+ kubectl run test-pod --image redis --dry-run=client -o json
+{
+    "kind": "Pod",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "test-pod",
+        "creationTimestamp": null,
+        "labels": {
+            "run": "test-pod"
+        }
+    },
+    "spec": {
+        "containers": [
+            {
+                "name": "test-pod",
+                "image": "redis",
+                "resources": {}
+            }
+        ],
+        "restartPolicy": "Always",
+        "dnsPolicy": "ClusterFirst"
+    },
+    "status": {}
+}
+
+
+-----------------------------------------------
+
+kubectl create deploy my-deploy --image nginx --replicas 3 --dry-run=client
+deployment.apps/my-deploy created (dry run)
+[root@client1 ahmad]# kubectl get deploy
+No resources found in default namespace.
+
+
+-----------------------------------------------
+
+kubectl create deploy my-deploy --image nginx --replicas 3 --dry-run=client -o yaml > test-deploy.yaml
+[root@client1 ahmad]# cat test-deploy.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: my-deploy
+  name: my-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-deploy
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: my-deploy
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        resources: {}
+status: {}
+
+
+
+(We can further make changes in these template files and then use apply command to run these config files)
+-----------------------------------------------
+
+kubectl create deploy my-deploy --image nginx --replicas 3 
+
+kubectl get deploy
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE
+my-deploy   3/3     3            3           2m55s
+
+
+
+kubectl get pods
+NAME                         READY   STATUS    RESTARTS   AGE
+al-nafi-pod                  1/1     Running   0          18m
+my-deploy-74b6755685-ccnbn   1/1     Running   0          4m15s
+my-deploy-74b6755685-sr86s   1/1     Running   0          4m15s
+my-deploy-74b6755685-wbjbf   1/1     Running   0          4m15s
+
+
+
+-----------------------------------------------
+
+kubectl create ns al-nafi
+namespace/al-nafi created
+
+kubectl get ns
+NAME                 STATUS   AGE
+al-nafi              Active   43s
+default              Active   3d17h
+kube-node-lease      Active   3d17h
+kube-public          Active   3d17h
+kube-system          Active   3d17h
+local-path-storage   Active   3d17h
+
+
+-----------------------------------------------
+
+kubectl expose pod al-nafi-pod --port 6379 --name rediss-service --dry-run=client
+service/rediss-service exposed (dry run)
+[root@client1 ahmad]# kubectl expose pod al-nafi-pod --port 6379 --name rediss-service
+service/rediss-service exposed
+[root@client1 ahmad]# kubectl get svc
+NAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+kubernetes       ClusterIP   10.96.0.1       <none>        443/TCP    2d15h
+rediss-service   ClusterIP   10.96.245.233   <none>        6379/TCP   4s
+[root@client1 ahmad]# kubectl describe svc rediss-service
+Name:                     rediss-service
+Namespace:                default
+Labels:                   run=al-nafi-pod
+Annotations:              <none>
+Selector:                 run=al-nafi-pod
+Type:                     ClusterIP
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.96.245.233
+IPs:                      10.96.245.233
+Port:                     <unset>  6379/TCP
+TargetPort:               6379/TCP
+Endpoints:                10.244.1.69:6379
+Session Affinity:         None
+Internal Traffic Policy:  Cluster
+Events:                   <none>
+
+
+
+
+kubectl describe po al-nafi-pod
+Name:             al-nafi-pod
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             my-cluster-worker/172.25.0.3
+Start Time:       Sat, 03 May 2025 13:45:04 +0500
+Labels:           run=al-nafi-pod
+Annotations:      <none>
+Status:           Running
+IP:               10.244.1.69
+IPs:
+  IP:  10.244.1.69
+Containers:
+  al-nafi-pod:
+    Container ID:   containerd://ff7d099ab9261bfbe1fc119cf321b3722e7c79ea13d79b66d08bd60f8161aae6
+    Image:          nginx
+    Image ID:       docker.io/library/nginx@sha256:c15da6c91de8d2f436196f3a768483ad32c258ed4e1beb3d367a27ed67253e66
+    Port:           <none>
+    Host Port:      <none>
+    State:          Running
+      Started:      Sat, 03 May 2025 13:45:07 +0500
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-f6ttf (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True
+  Initialized                 True
+  Ready                       True
+  ContainersReady             True
+  PodScheduled                True
+Volumes:
+  kube-api-access-f6ttf:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  101s  default-scheduler  Successfully assigned default/al-nafi-pod to my-cluster-worker
+  Normal  Pulling    101s  kubelet            Pulling image "nginx"
+  Normal  Pulled     99s   kubelet            Successfully pulled image "nginx" in 2.164s (2.164s including waiting). Image size: 72404038 bytes.
+  Normal  Created    99s   kubelet            Created container: al-nafi-pod
+  Normal  Started    98s   kubelet            Started container al-nafi-pod
+
+
+-----------------------------------------------
+
+ kubectl expose pod al-nafi-pod --port 6379 --name rediss-service --dry-run=client -o yaml > tets-service.yaml
+[root@client1 ahmad]# cat test-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-service
+  namespace: default
+spec:
+  type: NodePort
+  selector:
+    name: blue-55
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+
+
+-----------------------------------------------
+kubectl create svc clusterip redis --tcp=6379:6379 --dry-run=client -o yaml > test-service2.yaml
+[root@client1 ahmad]# cat test-service2.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: redis
+  name: redis
+spec:
+  ports:
+  - name: 6379-6379
+    port: 6379
+    protocol: TCP
+    targetPort: 6379
+  selector:
+    app: redis
+  type: ClusterIP
+status:
+  loadBalancer: {}
+
+
+kubectl apply -f test-service2.yaml
+service/redis created
+[root@client1 ahmad]# kubectl get svc
+NAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+kubernetes       ClusterIP   10.96.0.1       <none>        443/TCP    2d15h
+redis            ClusterIP   10.96.168.231   <none>        6379/TCP   8s
+rediss-service   ClusterIP   10.96.245.233   <none>        6379/TCP   5m48s
+[root@client1 ahmad]# kubectl describe svc redis
+Name:                     redis
+Namespace:                default
+Labels:                   app=redis
+Annotations:              <none>
+Selector:                 app=redis
+Type:                     ClusterIP
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.96.168.231
+IPs:                      10.96.168.231
+Port:                     6379-6379  6379/TCP
+TargetPort:               6379/TCP
+Endpoints:
+Session Affinity:         None
+Internal Traffic Policy:  Cluster
+Events:                   <none>
+
+
+
+-------------------------------
+Reason of not available endpoint:
+-----------------------------
+
+Imperative commands in Kubernetes, like `kubectl expose pod`, work well when the pod already exists and is running—just like with `al-nafi-pod`, 
+where the service got an endpoint right away. But if you create a service using `kubectl create svc` and no matching pod is running with the right label, 
+the service will have no endpoint and won’t work. So, while imperative commands are quick and easy, they don’t check if the needed pods are there, 
+which can lead to problems. That’s why declarative YAML files are more reliable for bigger setups, as they define everything clearly 
+and work together better.
+
+
+-----------------------------------------------
+
+
+

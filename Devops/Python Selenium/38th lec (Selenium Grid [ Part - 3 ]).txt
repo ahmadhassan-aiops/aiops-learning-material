@@ -1,0 +1,210 @@
+
+
+HUB machine : bangalore location 
+NODE : Mumbai 
+
+
+(bangalore)HUB started :-
+http://bangalore:4444/ui
+
+
+#java -jar selenium-server-4.6.0.jar hub
+
+
+(mumbai)Node Started :-
+
+
+#java -jar selenium-server-4.6.0.jar node --detect-drivers true --publish-events tcp://192.168.1.7:4442 --subscribe-events tcp://192.168.1.7:4443
+
+
+#http://mumbai:5555
+1. You need to download and upload selenium-server-4.6.0.jar file at your node location 
+2. You need to download and stored drivers in same location 
+3. you need to copy your python selenium project to your node machine 
+4. You need to install python package and python at node machine via bulk command 
+
+
+#pip freeze > requirements.txt
+
+
+#type requirements.txt
+allure-pytest==2.11.1
+allure-python-commons==2.11.1
+astor==0.8.1
+async-generator==1.10
+attrs==22.1.0
+bcrypt==4.0.0
+cachetools==5.2.0
+certifi==2022.9.14
+cffi==1.15.1
+charset-normalizer==2.1.1
+chromedriver==2.24.1
+colorama==0.4.5
+coverage==6.5.0
+cryptography==38.0.1
+encoders==0.0.3
+exceptiongroup==1.0.0rc9
+execnet==1.9.0
+future==0.18.2
+google-auth==2.14.1
+h11==0.14.0
+idna==3.4
+iniconfig==1.1.1
+jsonschema==4.17.0
+kubernetes==10.0.1
+latest==0.6.0
+lxml==4.9.1
+mime==0.1.0
+mysql-connector==2.2.9
+numpy==1.23.2
+oauthlib==3.2.2
+outcome==1.2.0
+packaging==21.3
+pandas==1.4.3
+paramiko==2.11.0
+Pillow==9.3.0
+pluggy==1.0.0
+py==1.11.0
+pyasn1==0.4.8
+pyasn1-modules==0.2.8
+pycparser==2.21
+PyNaCl==1.5.0
+pyparsing==3.0.9
+pyrsistent==0.19.2
+PySocks==1.7.1
+pytest==7.1.3
+pytest-assertions==0.5.0
+pytest-ast-transformer==1.0.3
+pytest-html==3.2.0
+pytest-metadata==2.0.4
+pytest-soft-assertions==0.1.2
+pytest-xdist==3.0.2
+python-dateutil==2.8.2
+python-dotenv==0.21.0
+python-xlib==0.31
+pytz==2022.2.1
+PyYAML==6.0
+requests==2.28.1
+requests-oauthlib==1.3.1
+rsa==4.9
+schedule==1.1.0
+selenium==4.5.0
+Selenium-Screenshot==2.0.0
+six==1.16.0
+sniffio==1.3.0
+sortedcontainers==2.4.0
+texttable==1.6.4
+tomli==2.0.1
+tqdm==4.64.1
+trio==0.22.0
+trio-websocket==0.9.2
+urllib3==1.26.12
+webdriver-manager==3.8.3
+websocket-client==1.4.2
+wsproto==1.2.0
+
+
+
+#COPY project 
+
+#pip install -r .\requirements.txt
+
+
+
+
+#Without grid :-
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+driver.get("https://alnafi.com")
+
+driver.maximize_window()
+driver.implicitly_wait(5)
+print(driver.title)
+time.sleep(2)
+driver.quit()
+
+
+####
+With GRID :-
+
+
+You need to run your program from selenium jar and driver location only 
+
+
+import time
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+# Selenium Grid Hub URL
+hub_url = "http://192.168.0.104:4444/wd/hub"
+
+# Use ChromeOptions instead of deprecated desired_capabilities
+chrome_options = Options()
+chrome_options.browser_name = "chrome"
+
+driver = webdriver.Remote(command_executor=hub_url, options=chrome_options)
+
+driver.get("https://www.website.com/?source=SC")
+driver.maximize_window()
+
+print(driver.title)
+
+time.sleep(20)
+driver.quit()
+
+
+
+
+Now you check your session at hub location 
+
+
+
+
+======================================================================
+(session will remain open now)
+
+import time
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+# Selenium Grid Hub URL
+hub_url = "http://192.168.0.104:4444/wd/hub"
+
+chrome_options = Options()
+chrome_options.browser_name = "chrome"
+
+driver = webdriver.Remote(command_executor=hub_url, options=chrome_options)
+
+# Open website
+driver.get("https://www.website.com/?source=SC")
+driver.maximize_window()
+
+# Print page title
+print("Page Title:", driver.title)
+
+# Keep session open
+print("Browser will remain open. Close manually when done.")
+while True:
+    time.sleep(10)  # Keep script running
+
+
+
+

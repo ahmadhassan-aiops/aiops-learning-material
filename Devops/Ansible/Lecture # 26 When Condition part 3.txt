@@ -1,0 +1,152 @@
+In this lecture we will study about checking the status of service, and to start it 
+
+
+in service module we have 4 options for state which are started, stopped, restarted, reloaded
+
+
+first run the service with started and then check if state is not started then restarted the service
+
+if you are gtting at a specific task you can use  ignore_erros:yes  to ignore the error of that task and move to next task, 
+otherwise next tasks execution is stopped and you get error
+
+vim service_apache2.yml
+
+---
+- hosts: ubuntu
+  become: yes
+  tasks: 
+  - name: Check Apache service restarting on Ubuntu  
+    service:
+      name: apache2
+      state: started
+    register: apache_status
+
+  - name: Restart apache service 
+    service:
+      name: apache2
+      state: restarted
+    when: apache_status.state != 'started'
+
+  - name: Display the apache2 service status
+    debug:
+      msg: "Apache2 service is running"
+    when: apache_status.state == 'started'
+
+
+
+=======================================================
+
+
+
+[jhon@master-ansible ansible]$ ansible-playbook service_apache2.yml
+
+PLAY [ubuntu] ****************************************************************************************************************
+
+TASK [Gathering Facts] *******************************************************************************************************
+ok: [54.166.4.83]
+
+TASK [Check Apache service restarting on Ubuntu] *****************************************************************************
+changed: [54.166.4.83]
+
+TASK [Restart apache service] ************************************************************************************************
+skipping: [54.166.4.83]
+
+TASK [Display the apache2 service status] ************************************************************************************
+ok: [54.166.4.83] => {
+    "msg": "Apache2 service is running"
+}
+
+PLAY RECAP *******************************************************************************************************************
+54.166.4.83                : ok=3    changed=1    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0
+
+
+
+=======================================================
+---
+- hosts: all
+  become: yes 
+  tasks: 
+  - name: Check Apache service restarting on Ubuntu 
+    service: 
+      name: apache2
+      state: started 
+    register: apache_status
+    when: ansible_os_family == "Debian"
+
+  - name: Restart apache service 
+    service:
+      name: apache2
+      state: restarted
+    when: ansible_os_family == "Debian" and apache_status.state != 'started'
+
+  - name: Display the apache2 service status 
+    debug:
+      msg: "Apache2 service is running"
+    when: (ansible_os_family == "Debian") and apache_status.state == 'started'
+
+  - name: Check Apache service restrting on RHEL
+    service:
+      name: httpd
+      state: started
+    register: httpd_status
+    when: ansible_os_family == "RedHat"
+
+  - name: Restart apche service 
+    service:
+      name: httpd
+      state: restarted
+    when: ansible_os_family == "RedHat" and httpd_status.state != 'started'
+
+  - name: Display the httpd service status 
+    debug:
+      msg: "Apache2 service is running"
+    when: ansible_os_family == "RedHat" and httpd_status.state == 'started'
+
+
+
+
+=======================================================
+
+
+
+[jhon@master-ansible ansible]$ ansible-playbook adv_service_apache2.yml
+
+PLAY [all] *******************************************************************************************************************
+
+TASK [Gathering Facts] *******************************************************************************************************
+ok: [54.166.4.83]
+
+TASK [Check Apache service restarting on Ubuntu] *****************************************************************************
+ok: [54.166.4.83]
+
+TASK [Restart apache service] ************************************************************************************************
+skipping: [54.166.4.83]
+
+TASK [Display the apache2 service status] ************************************************************************************
+ok: [54.166.4.83] => {
+    "msg": "Apache2 service is running"
+}
+
+TASK [Check Apache service restrting on RHEL] ********************************************************************************
+skipping: [54.166.4.83]
+
+TASK [Restart apche service] *************************************************************************************************
+skipping: [54.166.4.83]
+
+TASK [Display the httpd service status] **************************************************************************************
+skipping: [54.166.4.83]
+
+PLAY RECAP *******************************************************************************************************************
+54.166.4.83                : ok=3    changed=0    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0
+
+
+
+
+=======================================================
+
+
+What you did is: first try to start the service, then if it’s not started you restart it, and finally you show its status. 
+You also used conditions so that Ubuntu uses apache2 and RHEL uses httpd. This way, the same playbook works for both types of systems. 
+The principle is simple → check, fix if needed, confirm. Later, you can make it cleaner by using handlers, which restart the service only when 
+something changes.
+

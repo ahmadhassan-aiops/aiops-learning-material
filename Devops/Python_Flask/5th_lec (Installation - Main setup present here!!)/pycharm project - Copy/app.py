@@ -1,0 +1,188 @@
+import re
+
+import MySQLdb.cursors
+from flask import Flask, render_template, request, url_for,session,redirect
+from flask_mysqldb import MySQL
+from datetime import date
+from jira import JIRA
+
+app = Flask(__name__)
+
+# Database Configuration
+app.config['MYSQL_HOST'] = '192.168.0.106'
+app.config['MYSQL_USER'] = 'mysql_user'
+app.config['MYSQL_PASSWORD'] = 'Ahmad:06331913012'
+app.config['MYSQL_DB'] = 'alnafi'
+app.secret_key = 'mysecretkey123'
+
+mysql = MySQL(app)
+
+# Home Page Route
+@app.route("/")
+def index():
+    if 'loggedin' in session:
+        return render_template('index.html',username=session['username'])
+    return redirect(url_for('login'))
+
+# Trainer Page Route
+@app.route("/trainer")
+def trainer():
+    if 'loggedin' in session:
+        return render_template('trainer_details.html',username=session['username'])
+    return redirect(url_for('login'))
+
+# Trainer Create Route
+@app.route("/trainer_create", methods=['POST', 'GET'])
+def trainer_create():
+    if 'loggedin' in session:
+
+        if request.method == 'GET':
+            return render_template('trainer_form.html',username=session['username'])
+
+        if request.method == 'POST':
+            fname_data = request.form['fname']
+            lname_data = request.form['lname']
+            design_data = request.form['design']
+            course_data = request.form['Course']
+            cdate = date.today()
+    
+            sql = 'INSERT INTO trainer_details (fname, lname, design, course, datetime) VALUES (%s, %s, %s, %s, %s)'
+            val = (fname_data, lname_data, design_data, course_data, cdate)
+    
+            try:
+                cursor = mysql.connection.cursor()
+                cursor.execute(sql, val)
+                mysql.connection.commit()
+                cursor.close()
+                return render_template('trainer_form.html',username=session['username'])
+            except Exception as e:
+                return f"Error: {e}"
+    return redirect(url_for('login'))
+
+@app.route("/trainer_data", methods=['POST', 'GET'])
+def trainer_data():
+
+    cursor = mysql.connection.cursor()
+    sql = "select * from trainer_details"
+    cursor.execute(sql)
+    row = cursor.fetchall()
+    cursor.close()
+    return render_template('trainer_report.html', output_data = row)
+
+
+@app.route("/trainer_filter", methods=['POST', 'GET'])
+def trainer_filter():
+    if request.method == 'GET':
+        return render_template('trainer_report.html')  # Handle GET request
+
+    if request.method == 'POST':
+        course_search = request.form['Course']
+
+        cursor = mysql.connection.cursor()
+        if course_search == 'ALL':
+            # Fix SQL Query to filter by course
+            sql = "SELECT * FROM trainer_details"
+            cursor.execute(sql)
+            row = cursor.fetchall()
+            cursor.close()
+            return render_template('trainer_report.html', output_data=row)
+
+
+        else:
+            # Fix SQL Query to filter by course
+            sql = "SELECT * FROM trainer_details WHERE course = %s"
+            cursor.execute(sql, (course_search,))
+            row = cursor.fetchall()
+            cursor.close()
+            return render_template('trainer_report.html', output_data=row)
+
+@app.route("/jira")
+def jira():
+    return render_template('jira_page.html')
+
+
+@app.route("/jira_create", methods=['POST', 'GET'])
+def jira_create():
+    if request.method == 'POST':
+        user = "ahmad.hds393@gmail.com"
+        my_token = "ATATT3xFfGF0f48q2x7y26tfSYVXX7ALot_PTY2xEVcyZmu1c19BwbsOWxZuUPo533v8GiE5rm5GH852YqM7IToQOjj551fdoBtfg9ZFRzJoFoRfByGRB0LhjsZw-UnDxfY7qoZ1IoWvWy5y-kUrasmIoWX4xncB0UmLNUYmTId85P5b7Hh-HgU=28FC0133"
+        server = "https://ahmadhds393.atlassian.net"
+
+        jira = JIRA(server, basic_auth=(user, my_token))
+
+        new_issue = jira.create_issue(
+            fields={
+                "project": {"key": request.form['project']},
+                "summary": request.form['summary'],
+                "description": f"Report Name: {request.form['Report_Name']}\n\n{request.form['Description']}",
+                "issuetype": {"name": request.form['Issue_type']},
+                "priority": {"name": request.form['Priority']}
+            }
+        )
+
+        return render_template('jira_page.html', message=f"Jira ticket {new_issue.key} created successfully!")
+
+    return render_template('jira_page.html')
+
+
+
+@app.route("/login",methods=['POST', 'GET'])
+def login():
+    mesg = ' '
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("select * from users where username = %s and password=%s",(username,password))
+        account = cursor.fetchone()
+        print(account)
+        if account:
+            session['loggedin'] = True
+            session['id'] = account['id']
+            session['username'] = account['username']
+            return render_template('index.html',username= session['username'])
+        else:
+            mesg = 'incorrect username or password'
+    return render_template('login_page.html',mesg=mesg)
+
+
+@app.route("/create_account",methods=['POST', 'GET'])
+def create_account():
+    mesg = ' '
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        email = request.form['email']
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("select * from users where username = % s",(username,))
+        account = cursor.fetchone()
+        print(account)
+        if account:
+            mesg = "user already registered"
+        elif not re.match(r"^[^@]+@[^@]+\.[^@]+$", email):
+            mesg = "Please enter a valid email address!"
+        else:
+            cursor.execute("INSERT INTO users values (NULL,%s,%s,%s)",(username,password,email))
+            mysql.connection.commit()
+            mesg = 'successfully registered '
+    elif request.method == 'POST':
+        mesg = "please enter the details!"
+
+    return render_template('register.html',mesg = mesg)
+
+
+@app.route("/register")
+def register():
+    return render_template('register.html')
+
+
+@app.route("/logout")
+def logout():
+    session.pop('loggedin',None)
+    session.pop('id', None)
+    session.pop('username', None)
+    return redirect(url_for('login'))
+
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0")

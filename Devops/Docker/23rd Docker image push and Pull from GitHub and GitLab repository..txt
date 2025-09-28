@@ -1,0 +1,33 @@
+Lecture 23 : Docker image push and Pull from GitHub and GitLab repository.
+
+AWS --> ECR --> Elastic container registry
+Gitlab -->
+Github -->
+
+Profile --> Preferences --> access token --> new token
+glpat-F3pS6p5bD6yYNhkN4iz6 (gitlab token)
+
+docker login registry.gitlab.com
+docker tag <old image name> <new image name or location>
+#docker tag alpine:latest registry.gitlab.com/my519/dev:v1
+docker pull registry.gitlab.com/my519/dev:v1
+
+
+Github
+
+How to generate Token PAT --> Profile --> Settings --> Developer Setting --> PAT
+
+
+
+GIT_PAT= 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
+
+echo $GIT_PAT | docker login ghcr.io -u 786AHMADHASSAN--password-stdin
+
+docker tag <old image> <githublocation/username/imagename>
+
+docker tag busybox ghcr.io/786ahmadhassan//mybusybox:v1
+docker push ghcr.io/786ahmadhassan//mybusybox:v1
+
+#Push and pull
+#create repo
+#Create project and group

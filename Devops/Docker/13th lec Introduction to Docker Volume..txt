@@ -1,0 +1,41 @@
+Lecture 13 : Docker Notes
+
+
+
+I am loosing data from containers--> Persistent
+#Container remove, Kill or stop or anything --> never loss your data
+#container as process
+#Docker volume
+Three way data types stored
+2 way is very imp
+1 way not imp
+
+
+Docker storage types :-
+1. Volumes (Important) --> /var/lib/docker
+2. Bind Mount (Important)
+3. tmpfs(not important)
+
+
+1. Volume : it is also called docker volume, data will stored via docker area into base machine.
+2. Bind mount : it is also called docker bind , Container data will sored into filesystem like vfs, zfs,overlay overlay2 etc
+3. tmpfs : its stored into RAM when reboot your machine then your data will wipe out.
+
+
+Docker area --> Docker home
+Docker home --> Docker database
+Docker Area OR Docker home OR Docker databases --> path /var/lib/docker
+
+Docker volume path : /var/lib/docker/volumes
+docker image path : /var/lib/docker/image/overlay2/imagedb/metadata/sha256
+# docker volume ls  (it is a direct command)
+
+
+
+Docker storage :-
+1. Docker volumes :- These are stored on the host file system that docker managers , on my ubuntu system path is /var/lib/docker/volumes
+
+2. Bind Mounts :- These allow sotrage to be mounted from anywhere on the host system. for example /home/aadmin/data. you could even mount /data,
+
+/home/aadmin/data --> changes happened
+/data --> changes will replicated

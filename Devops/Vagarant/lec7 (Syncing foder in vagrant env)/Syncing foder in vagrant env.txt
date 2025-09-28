@@ -1,0 +1,39 @@
+vagrant@vagrant-ubuntu-trusty-64:~$ cd /
+bin/        dev/        home/       lib64/      media/      opt/        root/       sbin/       sys/        usr/        var/
+boot/       etc/        lib/        lost+found/ mnt/        proc/       run/        srv/        tmp/        vagrant/
+
+vagrant@vagrant-ubuntu-trusty-64:~$ cd /vagrant/
+vagrant@vagrant-ubuntu-trusty-64:/vagrant$ ls
+Vagrantfile
+
+vagrant@vagrant-ubuntu-trusty-64:/vagrant$ touch test1
+vagrant@vagrant-ubuntu-trusty-64:/vagrant$ ls
+test1  Vagrantfile
+
+
+
+-----------------------------
+
+  # Share an additional folder to the guest VM. The first argument is
+  # the path on the host to the actual folder. The second argument is
+  # the path on the guest to mount the folder. And the optional third
+  # argument is a set of non-required options.
+  config.vm.synced_folder ".", "/home/vagrant/mydir"
+
+
+I have created first the mydir in vargrant machine
+the first inverted commas specify the host machine path while 2nd one specify the vagrant machine path!
+
+
+
+vagrant reload
+(it will config the setup)
+
+vagrant ssh
+
+
+vagrant@vagrant-ubuntu-trusty-64:~/mydir$ ls
+Vagrantfile
+
+--------------------------------------------
+

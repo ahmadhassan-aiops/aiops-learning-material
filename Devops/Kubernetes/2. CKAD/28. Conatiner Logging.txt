@@ -1,0 +1,111 @@
+
+
+
+
+
+-----------------------------------------------
+
+cat log-web-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: webapp-pod
+spec:
+  containers:
+  - image: kodekloud/event-simulator
+    name: simple-webapp
+
+
+[root@client1 ahmad]# kubectl apply -f log-web-pod.yaml
+pod/webapp-pod created
+
+
+[root@client1 ahmad]# kubectl get po
+NAME         READY   STATUS              RESTARTS   AGE
+webapp-pod   0/1     ContainerCreating   0          5s
+
+
+-----------------------------------------------
+
+kubectl logs -f webapp-pod
+[2025-05-14 10:59:24,829] INFO in event-simulator: USER2 logged out
+[2025-05-14 10:59:25,835] INFO in event-simulator: USER4 logged out
+[2025-05-14 10:59:26,837] INFO in event-simulator: USER2 logged out
+[2025-05-14 10:59:27,838] INFO in event-simulator: USER2 is viewing page1
+[2025-05-14 10:59:28,842] INFO in event-simulator: USER1 logged in
+[2025-05-14 10:59:29,845] WARNING in event-simulator: USER5 Failed to Login as the account is locked due to MANY FAILED ATTEMPTS.
+[2025-05-14 10:59:29,845] INFO in event-simulator: USER1 logged out
+[2025-05-14 10:59:30,848] INFO in event-simulator: USER3 logged in
+[2025-05-14 10:59:31,849] INFO in event-simulator: USER4 is viewing page2
+[2025-05-14 10:59:32,850] WARNING in event-simulator: USER7 Order failed as the item is OUT OF STOCK.
+[2025-05-14 10:59:32,851] INFO in event-simulator: USER3 logged out
+[2025-05-14 10:59:33,853] INFO in event-simulator: USER4 logged in
+[2025-05-14 10:59:34,854] WARNING in event-simulator: USER5 Failed to Login as the account is locked due to MANY FAILED ATTEMPTS.
+
+
+
+-----------------------------------------------
+
+cat log2-web-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: webapp-pod-2
+spec:
+  containers:
+  - image: kodekloud/event-simulator
+    name: simple-webapp
+  - image: busybox
+    name: db
+    command:
+    - sleep
+    - "5000"
+
+
+[root@client1 ahmad]# kubectl apply -f log2-web-pod.yaml
+pod/webapp-pod-2 created
+[root@client1 ahmad]# kubectl get po
+NAME           READY   STATUS              RESTARTS   AGE
+webapp-pod     1/1     Running             0          7m8s
+webapp-pod-2   0/2     ContainerCreating   0          4s
+[root@client1 ahmad]# kubectl logs webapp-pod-2
+Defaulted container "simple-webapp" out of: simple-webapp, db
+Error from server (BadRequest): container "simple-webapp" in pod "webapp-pod-2" is waiting to start: ContainerCreating
+
+
+(If our pod has two containers then if we want to see the logs of that pod without specifying the conatiner name then automatically it will pick the
+first conatiner of your pod for logs)
+-----------------------------------------------
+
+ kubectl logs webapp-pod-2 -c db
+(EMPTY)
+
+[root@client1 ahmad]# kubectl logs webapp-pod-2 -c simple-webapp
+[2025-05-14 11:06:25,141] INFO in event-simulator: USER1 is viewing page1
+[2025-05-14 11:06:26,142] INFO in event-simulator: USER2 is viewing page1
+[2025-05-14 11:06:27,146] INFO in event-simulator: USER2 is viewing page1
+[2025-05-14 11:06:28,147] INFO in event-simulator: USER4 is viewing page3
+[2025-05-14 11:06:29,149] INFO in event-simulator: USER3 is viewing page3
+[2025-05-14 11:06:30,151] WARNING in event-simulator: USER5 Failed to Login as the account is locked due to MANY FAILED ATTEMPTS.
+[2025-05-14 11:06:30,152] INFO in event-simulator: USER4 is viewing page1
+[2025-05-14 11:06:31,153] INFO in event-simulator: USER3 is viewing page2
+[2025-05-14 11:06:32,154] INFO in event-simulator: USER2 is viewing page2
+[2025-05-14 11:06:33,158] WARNING in event-simulator: USER7 Order failed as the item is OUT OF STOCK.
+[2025-05-14 11:06:33,159] INFO in event-simulator: USER1 is viewing page1
+[2025-05-14 11:06:34,161] INFO in event-simulator: USER2 logged out
+[2025-05-14 11:06:35,163] WARNING in event-simulator: USER5 Failed to Login as the account is locked due to MANY FAILED ATTEMPTS.
+
+
+-----------------------------------------------
+
+kubectl logs -f webapp-pod-2 -c db
+
+(To see live logs of a specific container)
+
+-----------------------------------------------
+
+We can try by taking nginx as 2nd conatiner image!!!
+
+-----------------------------------------------
+
+

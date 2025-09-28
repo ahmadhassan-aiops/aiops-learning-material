@@ -1,0 +1,24 @@
+#We need to create dir in our machine where we want to deploy our app on docker
+
+[root@client1 lec18]# ls
+app.py  Dockerfile  pycharm_project  requirements.txt  static  templates
+
+
+#Simply make the zip file and upload it on your machine and then unzip it in that dir
+
+#Create docker_file
+
+FROM python:3.8-alpine
+WORKDIR /app
+RUN apk add mysql mysql-client gcc mariadb-connector-c-dev musl-dev
+COPY requirements.txt /app/requirements.txt
+RUN pip install -r requirements.txt
+COPY . /app
+ENTRYPOINT [ "python" ]
+CMD [ "app.py" ]
+
+#docker build -t flask_server .
+#docker run -p 5000:5000 flask_server
+
+
+

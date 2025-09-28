@@ -1,0 +1,129 @@
+---
+# using when conditions
+# as apache2 is on ubuntu and httpd is on redhat for same service
+# to make a script that has different commands and command is only run when a specific condition is met
+# so we can run apache --version on ubunut and get output
+# in the same way we can run httpd -v on redhat and get output
+# so to run commands we need to check the operating system family first
+
+# in the following script i am running apache2 --version if os family is ubunt 
+# and httpd -v if th eos family is redhat
+# as running the command and printing output using debug are different tasks, 
+# so we need to use same when condition in both of them
+
+
+======================================================================================================
+
+vim version_chek_using_when.yml
+
+- hosts: all
+  gather_facts: true
+  tasks:
+  - name: Check apache2 version
+    shell: apache2 -v
+    register: apache2_ver
+    when: ansible_os_family == "Debian
+
+  - name: Printing the apache2 version and httpd version
+    debug:
+      var: apache2_ver.stdout
+    when: ansible_os_family == "Debian"
+
+  - name: Check HTTPD version on RHEL
+    shell: httpd -v 
+    register: httpd_ver
+    when: ansible_os_family == "RedHat"
+
+  - name: printing the httpd version
+    debug: 
+      var: httpd_ver.stdout
+    when: ansible_os_family == "RedHat"
+
+
+
+======================================================================================================
+
+
+
+[jhon@master-ansible ansible]$ ansible-playbook version_chek_using_when.yml
+
+PLAY [all] *******************************************************************************************************************
+
+TASK [Gathering Facts] *******************************************************************************************************
+ok: [54.166.4.83]
+
+TASK [Check apache2 version] *************************************************************************************************
+changed: [54.166.4.83]
+
+TASK [Printing the apache2 version and httpd version] ************************************************************************
+ok: [54.166.4.83] => {
+    "apache2_ver.stdout": "Server version: Apache/2.4.58 (Ubuntu)\nServer built:   2025-08-11T11:10:09"
+}
+
+TASK [Check HTTPD version on RHEL] *******************************************************************************************
+skipping: [54.166.4.83]
+
+TASK [printing the httpd version] ********************************************************************************************
+skipping: [54.166.4.83]
+
+PLAY RECAP *******************************************************************************************************************
+54.166.4.83                : ok=3    changed=1    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0
+
+
+
+
+======================================================================================================
+
+
+
+
+# advance form of above task:
+# where i am defining both commands side by side
+# in when condition i am passing os family together
+# in debug i just need to tell that my variable which i am calling is defined
+
+======================================================================================================
+
+vim adv_ver_chek.yml
+
+
+---
+- hosts: all
+  gather_facts: true
+  tasks:
+  - name: Check apache2 version
+    shell: apache2 -v || httpd -v
+    register: apache_version
+    when: ansible_os_family in ["Debian","RedHat"]
+
+  - name: Printing the apache2 version and httpd version
+    debug:
+      var: apache_version.stdout
+    when: apache_version is defined
+
+
+======================================================================================================
+
+
+
+ansible-playbook adv_ver_chek.yml
+
+PLAY [all] *******************************************************************************************************************
+
+TASK [Gathering Facts] *******************************************************************************************************
+ok: [54.166.4.83]
+
+TASK [Check apache2 version] *************************************************************************************************
+changed: [54.166.4.83]
+
+TASK [Printing the apache2 version and httpd version] ************************************************************************
+ok: [54.166.4.83] => {
+    "apache_version.stdout": "Server version: Apache/2.4.58 (Ubuntu)\nServer built:   2025-08-11T11:10:09"
+}
+
+PLAY RECAP *******************************************************************************************************************
+54.166.4.83                : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+
+
+======================================================================================================

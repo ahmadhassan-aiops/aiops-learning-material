@@ -1,0 +1,448 @@
+
+
+
+We have 4 pods - external - payroll(only internal and data base should access it) - Internal - DB
+
+
+-----------------------------------------------
+
+(We can also specify driver-kvm2) But for that we first have to install the kvm2!!
+
+[ahmad@client1 ~]$ minikube start --network-plugin=cni --cni=cilium
+* minikube v1.35.0 on Centos 9
+* Using the docker driver based on user configuration
+! With --network-plugin=cni, you will need to provide your own CNI. See --cni flag as a user-friendly alternative
+* Using Docker driver with root privileges
+* Starting "minikube" primary control-plane node in "minikube" cluster
+* Pulling base image v0.0.46 ...
+* Creating docker container (CPUs=2, Memory=2200MB) ...
+* Preparing Kubernetes v1.32.0 on Docker 27.4.1 ...
+  - Generating certificates and keys ...
+  - Booting up control plane ...
+  - Configuring RBAC rules ...
+* Configuring Cilium (Container Networking Interface) ...
+* Verifying Kubernetes components...
+  - Using image gcr.io/k8s-minikube/storage-provisioner:v5
+* Enabled addons: storage-provisioner, default-storageclass
+* Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+
+
+-----------------------------------------------
+
+kubectl get all -A
+NAMESPACE     NAME                                   READY   STATUS    RESTARTS      AGE
+kube-system   pod/cilium-envoy-l278l                 1/1     Running   0             43m
+kube-system   pod/cilium-hn8fk                       1/1     Running   1 (31m ago)   43m
+kube-system   pod/cilium-operator-799f498c8-lnw9h    1/1     Running   0             43m
+kube-system   pod/coredns-668d6bf9bc-2kqkz           1/1     Running   1 (31m ago)   31m
+kube-system   pod/etcd-minikube                      1/1     Running   0             43m
+kube-system   pod/kube-apiserver-minikube            1/1     Running   0             43m
+kube-system   pod/kube-controller-manager-minikube   1/1     Running   0             43m
+kube-system   pod/kube-proxy-2lmw8                   1/1     Running   0             43m
+kube-system   pod/kube-scheduler-minikube            1/1     Running   0             43m
+kube-system   pod/storage-provisioner                1/1     Running   1 (43m ago)   43m
+
+NAMESPACE     NAME                   TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                  AGE
+default       service/kubernetes     ClusterIP   10.96.0.1       <none>        443/TCP                  43m
+kube-system   service/cilium-envoy   ClusterIP   None            <none>        9964/TCP                 43m
+kube-system   service/hubble-peer    ClusterIP   10.108.21.249   <none>        443/TCP                  43m
+kube-system   service/kube-dns       ClusterIP   10.96.0.10      <none>        53/UDP,53/TCP,9153/TCP   43m
+
+NAMESPACE     NAME                          DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
+kube-system   daemonset.apps/cilium         1         1         1       1            1           kubernetes.io/os=linux   43m
+kube-system   daemonset.apps/cilium-envoy   1         1         1       1            1           kubernetes.io/os=linux   43m
+kube-system   daemonset.apps/kube-proxy     1         1         1       1            1           kubernetes.io/os=linux   43m
+
+NAMESPACE     NAME                              READY   UP-TO-DATE   AVAILABLE   AGE
+kube-system   deployment.apps/cilium-operator   1/1     1            1           43m
+kube-system   deployment.apps/coredns           1/1     1            1           43m
+
+NAMESPACE     NAME                                        DESIRED   CURRENT   READY   AGE
+kube-system   replicaset.apps/cilium-operator-799f498c8   1         1         1       43m
+kube-system   replicaset.apps/coredns-668d6bf9bc          1         1         1       43m
+
+
+
+-----------------------------------------------
+cat internal.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    name: internal
+  name: internal
+  namespace: default
+spec:
+  containers:
+  - env:
+    - name: APP_NAME
+      value: Internal Al-Nafi Application
+    - name: BG_COLOR
+      value: blue
+    image: kodekloud/webapp-conntest
+    name: internal
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+
+
+[ahmad@client1 ~]$ kubectl apply -f internal.yaml
+pod/internal created
+[ahmad@client1 ~]$ kubectl get po
+NAME       READY   STATUS              RESTARTS   AGE
+internal   0/1     ContainerCreating   0          4s
+
+
+-----------------------------------------------
+
+
+cat external.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    name: external
+  name: external
+  namespace: default
+spec:
+  containers:
+  - env:
+    - name: APP_NAME
+      value: External Al-Nafi Application
+    - name: BG_COLOR
+      value: red
+    image: kodekloud/webapp-conntest
+    imagePullPolicy: Always
+    name: external
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+
+
+[ahmad@client1 ~]$ kubectl apply -f external.yaml
+pod/external created
+[ahmad@client1 ~]$ kubectl get po
+NAME       READY   STATUS              RESTARTS   AGE
+external   0/1     ContainerCreating   0          3s
+internal   0/1     ContainerCreating   0          115s
+
+-----------------------------------------------
+
+cat payroll.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    name: payroll
+  name: payroll
+  namespace: default
+spec:
+  containers:
+  - env:
+    - name: APP_NAME
+      value: Payroll Application
+    - name: BG_COLOR
+      value: blue
+    image: kodekloud/webapp-conntest
+    name: payroll
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+[ahmad@client1 ~]$ kubectl apply -f payroll.yaml
+pod/payroll created
+[ahmad@client1 ~]$ kubectl get po
+NAME       READY   STATUS              RESTARTS   AGE
+external   0/1     ContainerCreating   0          2m17s
+internal   0/1     ContainerCreating   0          4m9s
+payroll    0/1     ContainerCreating   0          4s
+
+
+-----------------------------------------------
+
+cat db.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    name: mysql
+  name: mysql
+  namespace: default
+spec:
+  containers:
+  - env:
+    - name: MYSQL_ROOT_PASSWORD
+      value: paswrd
+    image: mysql
+    name: mysql
+    ports:
+    - containerPort: 3306
+      protocol: TCP
+[ahmad@client1 ~]$ kubectl apply -f db.yaml
+pod/mysql created
+[ahmad@client1 ~]$ kubectl get po
+NAME       READY   STATUS              RESTARTS   AGE
+external   1/1     Running             0          4m39s
+internal   1/1     Running             0          6m31s
+mysql      0/1     ContainerCreating   0          5s
+payroll    1/1     Running             0          2m26s
+
+
+-----------------------------------------------
+
+vim internal-svc
+[ahmad@client1 ~]$ cat internal-svc
+apiVersion: v1
+kind: Service
+metadata:
+  name: internal-service
+  namespace: default
+spec:
+  ports:
+  - nodePort: 30082
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    name: internal
+  type: NodePort
+
+
+[ahmad@client1 ~]$ kubectl apply -f internal-svc
+service/internal-service created
+[ahmad@client1 ~]$ kubectl get svc
+NAME               TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+internal-service   NodePort    10.99.179.208   <none>        8080:30082/TCP   5s
+kubernetes         ClusterIP   10.96.0.1       <none>        443/TCP          7h16m
+
+
+-----------------------------------------------
+
+cat external-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: external-service
+  namespace: default
+spec:
+  ports:
+  - nodePort: 30080
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    name: external
+  type: NodePort
+[ahmad@client1 ~]$ kubectl apply -f external-svc.yaml
+service/external-service created
+[ahmad@client1 ~]$ kubectl get svc
+NAME               TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+external-service   NodePort    10.111.195.221   <none>        8080:30080/TCP   6s
+internal-service   NodePort    10.99.179.208    <none>        8080:30082/TCP   2m28s
+kubernetes         ClusterIP   10.96.0.1        <none>        443/TCP          7h19m
+
+
+
+kubectl get nodes -o wide
+NAME       STATUS   ROLES           AGE     VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION          CONTAINER-RUNTIME
+minikube   Ready    control-plane   7h23m   v1.32.0   192.168.49.2   <none>        Ubuntu 22.04.5 LTS   5.14.0-583.el9.x86_64   docker://27.4.1
+
+
+
+
+- Now we can write
+
+192.168.49.2:30080
+192.168.49.2:30082
+
+
+The internal and external pages will open and there we can write host names as internal and external-service with port as 8080 
+to assess these services from each other page!!
+
+-----------------------------------------------
+
+
+cat payroll-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: payroll-service
+  namespace: default
+spec:
+  ports:
+  - nodePort: 30083
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    name: payroll
+  type: NodePort
+[ahmad@client1 ~]$ kubectl apply -f payroll-svc.yaml
+service/payroll-service created
+[ahmad@client1 ~]$ kubectl get svc
+NAME               TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+external-service   NodePort    10.111.195.221   <none>        8080:30080/TCP   7m35s
+internal-service   NodePort    10.99.179.208    <none>        8080:30082/TCP   9m57s
+kubernetes         ClusterIP   10.96.0.1        <none>        443/TCP          7h26m
+payroll-service    NodePort    10.98.250.45     <none>        8080:30083/TCP   14s
+
+
+
+-----------------------------------------------
+
+cat db-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-service
+  namespace: default
+spec:
+  ports:
+  - port: 3306
+    protocol: TCP
+    targetPort: 3306
+  selector:
+    name: mysql
+  type: ClusterIP
+[ahmad@client1 ~]$ kubectl apply -f db-svc.yaml
+service/db-service created
+[ahmad@client1 ~]$ kubectl get svc
+NAME               TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+db-service         ClusterIP   10.110.46.201    <none>        3306/TCP         4s
+external-service   NodePort    10.111.195.221   <none>        8080:30080/TCP   9m54s
+internal-service   NodePort    10.99.179.208    <none>        8080:30082/TCP   12m
+kubernetes         ClusterIP   10.96.0.1        <none>        443/TCP          7h28m
+payroll-service    NodePort    10.98.250.45     <none>        8080:30083/TCP   2m33s
+
+
+
+
+-----------------------------------------------
+
+Similarly we can access the payroll page and from that we can also access internal and external service !!!!
+And also we can access the payroll from internal and external service!!
+
+
+Now we will make network policy and will make sure that payroll pod can be accessible only by internal pod!
+
+-----------------------------------------------
+
+
+ kubectl get netpol
+No resources found in default namespace.
+
+
+
+ vim network-policy.yaml
+[ahmad@client1 ~]$ cat network-policy.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: payroll-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      name: payroll
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          name: internal
+    ports:
+    - port: 8080
+      protocol: TCP
+
+
+[ahmad@client1 ~]$ kubectl apply -f network-policy.yaml
+networkpolicy.networking.k8s.io/payroll-policy created
+[ahmad@client1 ~]$ kubectl get netpol
+NAME             POD-SELECTOR   AGE
+payroll-policy   name=payroll   6s
+
+
+
+
+ kubectl describe netpol payroll-policy
+Name:         payroll-policy
+Namespace:    default
+Created on:   2025-05-20 00:39:27 +0500 PKT
+Labels:       <none>
+Annotations:  <none>
+Spec:
+  PodSelector:     name=payroll
+  Allowing ingress traffic:
+    To Port: 8080/TCP
+    From:
+      PodSelector: name=internal
+  Not affecting egress traffic
+  Policy Types: Ingress
+
+
+
+
+Now I checked that payroll service is accessible only from internal pod and not from external and db. Even we cannot access the payroll service by writing 
+nodeip:nodeport!!
+-----------------------------------------------
+
+https://artturik.github.io/network-policy-viewer/
+
+(We can playaround on this to visualize the network policies)
+-----------------------------------------------
+
+
+cat external-network-policy.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: external-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      name: external
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              name: payroll
+      ports:
+        - port: 8080
+          protocol: TCP
+
+
+
+[ahmad@client1 ~]$ kubectl apply -f external-network-policy.yaml
+networkpolicy.networking.k8s.io/external-policy created
+[ahmad@client1 ~]$ kubectl get netpol
+NAME              POD-SELECTOR    AGE
+external-policy   name=external   6s
+payroll-policy    name=payroll    17m
+
+
+[ahmad@client1 ~]$ kubectl describe netpol external-policy
+Name:         external-policy
+Namespace:    default
+Created on:   2025-05-20 00:56:56 +0500 PKT
+Labels:       <none>
+Annotations:  <none>
+Spec:
+  PodSelector:     name=external
+  Allowing ingress traffic:
+    To Port: 8080/TCP
+    From:
+      PodSelector: name=payroll
+  Not affecting egress traffic
+  Policy Types: Ingress
+
+
+
+
+Now we cannot access the external pod from internal pod!!!
+-----------------------------------------------
+
+We can do the same thing using kind and kubeadm cluster as well!
+
+-----------------------------------------------
+

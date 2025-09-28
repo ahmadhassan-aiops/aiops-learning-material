@@ -1,0 +1,342 @@
+Lecture 24 :-
+
+Handling Iframe 
+
+An inline Ifram is used to embeded another html documents whiting the current html dom.
+
+HTML page inside html 
+
+Used to insert contents from another web page 
+html tag always start from ifram tag 
+
+Iframe :-
+
+1. ID 
+2. Name 
+3. Index 
+4. Web elements 
+
+1. ID :-
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+html
+<iframe id="moneyiframe" name="moneyiframe" width="670" height="28" src="https://money.rediff.com/widget/moneywizwidget/rhome?src=rhome1" title="Rediff Money Widget" class="moneyiframe"></iframe>
+html
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+html
+<span id="nseindex" style="color: rgb(0, 0, 0);">17,786.80</span>
+html
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get('https://www.rediff.com/')
+driver.maximize_window()
+driver.implicitly_wait(10)
+driver.switch_to.frame("moneyiframe")
+my_nse = driver.find_element(By.XPATH,'//*[@id="nseindex"]')
+print(my_nse.text)
+
+
+
+time.sleep(2)
+driver.quit()
+
+O/p:-
+
+17,786.80
+
+
+
+###############################
+name :-
+import time
+from selenium import webdriver
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get('https://www.rediff.com/')
+driver.maximize_window()
+driver.implicitly_wait(10)
+driver.switch_to.frame("moneyiframe")
+my_nse = driver.find_element(By.XPATH,'//*[@id="nseindex"]')
+print(my_nse.text)
+
+
+
+time.sleep(2)
+driver.quit()
+
+
+
+
+###########################
+INDEX :-
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get('https://www.rediff.com/')
+driver.maximize_window()
+driver.implicitly_wait(10)
+driver.switch_to.frame(0)
+my_nse = driver.find_element(By.XPATH,'//*[@id="nseindex"]')
+print(my_nse.text)
+
+
+
+time.sleep(2)
+driver.quit()
+
+
+
+
+#############################
+
+4. Web elements 
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get('https://www.rediff.com/')
+driver.maximize_window()
+driver.implicitly_wait(10)
+driver.switch_to.frame(driver.find_element(By.XPATH,'//*[@id="moneyiframe"]'))
+my_nse = driver.find_element(By.XPATH,'//*[@id="nseindex"]')
+print(my_nse.text)
+
+
+
+time.sleep(2)
+driver.quit()
+
+
+
+
+########################
+ERROR :-
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get('https://www.rediff.com/')
+driver.maximize_window()
+driver.implicitly_wait(10)
+driver.switch_to.frame("moneyiframe")
+my_nse = driver.find_element(By.XPATH,'//*[@id="nseindex"]')
+print(my_nse.text)
+my_news = driver.find_element(By.XPATH,'//*[@id="red_container_main"]/div[27]/h3')
+print(my_news.text)
+
+
+time.sleep(2)
+driver.quit()
+
+#####################
+Working :-
+import time
+from selenium import webdriver
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get('https://www.rediff.com/')
+driver.maximize_window()
+driver.implicitly_wait(10)
+my_news = driver.find_element(By.XPATH,'//*[@id="red_container_main"]/div[27]/h3')
+print(my_news.text)
+
+#convert iframe 0 
+driver.switch_to.frame("moneyiframe")
+my_nse = driver.find_element(By.XPATH,'//*[@id="nseindex"]')
+print(my_nse.text)
+
+
+
+time.sleep(2)
+driver.quit()
+
+
+###############
+We are convert ifram to default driver 
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get('https://www.rediff.com/')
+driver.maximize_window()
+driver.implicitly_wait(10)
+
+
+#convert iframe 0
+driver.switch_to.frame("moneyiframe")
+my_nse = driver.find_element(By.XPATH,'//*[@id="nseindex"]')
+print(my_nse.text)
+
+#convert default driver
+driver.switch_to.default_content()
+
+
+my_news = driver.find_element(By.XPATH,'//*[@id="red_container_main"]/div[27]/h3')
+print(my_news.text)
+
+time.sleep(2)
+driver.quit()
+
+####################
+We are counting total ifram in default web page :-
+import time
+from selenium import webdriver
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get('https://www.rediff.com/')
+driver.maximize_window()
+driver.implicitly_wait(10)
+
+
+#convert iframe 0
+driver.switch_to.frame("moneyiframe")
+my_nse = driver.find_element(By.XPATH,'//*[@id="nseindex"]')
+print(my_nse.text)
+
+#convert default driver
+driver.switch_to.default_content()
+
+
+total_iframs = driver.find_elements(By.TAG_NAME,'iframe')
+print(len(total_iframs))
+
+time.sleep(2)
+driver.quit()
+
+
+
+##############################
+Now  we are handling tabs 
+
+parents :- https://dev.alnafi.com/
+child :- https://www.linkedin.com/company/al-nafi/
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get('https://dev.alnafi.com/')
+driver.maximize_window()
+driver.implicitly_wait(10)
+
+#Dev.alanfi.com
+driver.find_element(By.XPATH,'//*[@id="__nuxt"]/div/footer/div[1]/div[1]/div[2]/div/a[3]/img').click()
+wins = driver.window_handles
+print(wins)
+time.sleep(5)
+driver.quit()
+
+
+
+
+####################
+import time
+from selenium import webdriver
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get('https://dev.alnafi.com/')
+driver.maximize_window()
+driver.implicitly_wait(10)
+
+#Dev.alanfi.com
+driver.find_element(By.XPATH,'//*[@id="__nuxt"]/div/footer/div[1]/div[1]/div[2]/div/a[3]/img').click()
+wins = driver.window_handles
+print("Dev.alanfi.com"+wins[0])     #Default page
+print("linkdein.com"+wins[1])       #diff tabs 
+
+
+time.sleep(5)
+driver.quit()
+
+
+
+
+#######################################
+
+
+
+FINAL Script :-
+import time
+from selenium import webdriver
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get('https://dev.alnafi.com/')
+driver.maximize_window()
+driver.implicitly_wait(10)
+
+#Dev.alanfi.com
+driver.find_element(By.XPATH,'//*[@id="__nuxt"]/div/footer/div[1]/div[1]/div[2]/div/a[3]/img').click()
+wins = driver.window_handles
+print("Dev.alanfi.com"+wins[0])     #Default page
+print("linkdein.com"+wins[1])       #diff tabs
+
+#Dev alnafi
+driver.switch_to.window(wins[0])
+print(driver.title)
+time.sleep(2)
+
+#Linkdein
+driver.switch_to.window(wins[1])
+print(driver.title)
+
+time.sleep(5)
+driver.quit()
+
+
+
+
+
+

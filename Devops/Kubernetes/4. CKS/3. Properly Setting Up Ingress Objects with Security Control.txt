@@ -1,0 +1,309 @@
+
+
+ kubectl get nodes
+NAME       STATUS   ROLES           AGE     VERSION
+minikube   Ready    control-plane   7h31m   v1.32.0
+[ahmad@client1 ~]$  kubectl run caddy --image caddy
+pod/caddy created
+[ahmad@client1 ~]$ kubectl get po
+NAME    READY   STATUS              RESTARTS   AGE
+caddy   0/1     ContainerCreating   0          10s
+[ahmad@client1 ~]$ kubectl get po
+NAME    READY   STATUS              RESTARTS   AGE
+caddy   0/1     ContainerCreating   0          17s
+[ahmad@client1 ~]$ kubectl get po
+NAME    READY   STATUS    RESTARTS   AGE
+caddy   1/1     Running   0          30s
+
+
+
+-------------------------------------------------------------
+kubectl get svc
+NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+caddy-svc    ClusterIP   10.106.198.251   <none>        80/TCP    9s
+kubernetes   ClusterIP   10.96.0.1        <none>        443/TCP   7h35m
+
+
+
+[ahmad@client1 ~]$  kubectl describe svc caddy-svc
+Name:                     caddy-svc
+Namespace:                default
+Labels:                   run=caddy
+Annotations:              <none>
+Selector:                 run=caddy
+Type:                     ClusterIP
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.106.198.251
+IPs:                      10.106.198.251
+Port:                     <unset>  80/TCP
+TargetPort:               80/TCP
+Endpoints:                10.244.0.3:80
+Session Affinity:         None
+Internal Traffic Policy:  Cluster
+Events:                   <none>
+
+
+-------------------------------------------------------------
+
+vim ingress.yaml
+[ahmad@client1 cks]$ kubectl apply -f ingress.yaml
+ingress.networking.k8s.io/simple-ingress created
+
+
+[ahmad@client1 cks]$ cat ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: simple-ingress
+spec:
+  rules:
+  - host: ahmad.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: caddy-svc
+            port:
+              number: 80
+
+
+[ahmad@client1 cks]$ kubectl get ingress
+NAME             CLASS    HOSTS       ADDRESS   PORTS   AGE
+simple-ingress   <none>   ahmad.com             80      31s
+
+
+
+[ahmad@client1 cks]$  kubectl describe ingress
+Name:             simple-ingress
+Labels:           <none>
+Namespace:        default
+Address:
+Ingress Class:    <none>
+Default backend:  <default>
+Rules:
+  Host        Path  Backends
+  ----        ----  --------
+  ahmad.com
+              /   caddy-svc:80 (10.244.0.3:80)
+Annotations:  <none>
+Events:       <none>
+
+
+
+-------------------------------------------------------------
+
+kubectl get nodes -o wide
+NAME       STATUS   ROLES           AGE     VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION          CONTAINER-RUNTIME
+minikube   Ready    control-plane   7h41m   v1.32.0   192.168.49.2   <none>        Ubuntu 22.04.5 LTS   5.14.0-583.el9.x86_64   docker://27.4.1
+[ahmad@client1 cks]$ minikube ip
+192.168.49.2
+
+
+-------------------------------------------------------------
+
+[root@client1 cks]# usermod -aG wheel ahmad
+
+
+
+su ahmad
+
+
+[ahmad@client1 cks]$ echo $(minikube ip) ahmad.com | sudo tee -a /etc/hosts
+192.168.49.2 ahmad.com
+
+
+[ahmad@client1 cks]$  cat /etc/hosts
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+192.168.0.104   server1
+192.168.0.104   alnafi.local alnafi
+192.168.0.104   sysops.com sysops
+192.168.0.109   client1
+# Added by Docker Desktop
+# To allow the same kube context to work on the host and the container:
+127.0.0.1       kubernetes.docker.internal
+# End of section
+ingress.yaml Profile "minikube" not found. Run "minikube profile list" to view all profiles. To start a cluster, run: "minikube start" usamaaslamgill.com
+192.168.49.2 ahmad.com
+
+
+-------------------------------------------------------------
+
+
+[ahmad@client1 cks]$ openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout tls.key -out tls.crt
+subj "/CN=ahmad.com" -days 365
+\..+........+.........+...+.+.....+++++++++++++++++++++++++++++++++++++++++++++*......+.....+.+........+.+.....+.+...........+.......+......+.....+....+......+..+.........+++++++++++++++++++++++++++++++++++++++++++++*..........+.....................+........+.+.........+....................+.+..................+...+.................+...+.......+........+............+...+.......+............+......+....................+.......+.......................+.........+....+..+..........+.....+....+......+........+.+.....+....+..+...+....+...........+...................+..+...............+....+.....+..........+..............+.......+...............+...+..+......+..................+.......+..+.......+.....+....+......+...+...+...+............+...+....................+...............+...................+..+....+..+.......+...........+.......+..+.+.........+.....+......+.+.......................+.............+.................+...+.......+..+...+......+.+...+......+..+...+......+.+..............+.........+.+.....+...+.......+..............+......+..................+......+.......+..+...+....+.....+.+.........+...........+...+......+.+..+.......+.........+..............+.+..+.......+.....+...+..................+...............+.+..................+...........+....+........+...+....+............+...+........+.......+...+........+.........+.+...............+.........+.................+..................+..........+.....................+.....+......+.+...............+...+..+...+....+..+...................+.....+....+........+...............+.............+.....+......+....+......+.....+...+...+.........+.+..+...+....+...+......+...........+.+...+......+...........+...+.+........+......+....+...+..............+...............+...+.......+...+..+.+........+......+......+.......+..................+.........+...+.....+.............+.....+....+...+..+.+........+....+..+......+............+.......+...+.....+...+...+.+.........+..+.........+...+.+.....+.+........+.......+.....+...+...+.........+.+...............+..+.......+.....+...+..........+...+............+...........+.........+.+.....+.+...+...+.........+...........+..........+...+...........+......+...+.......+..+.+..+...+.+......+.........+...............+........+......+.+.........+..+.............+..+.......+..+...+.......+.....................+.........+...............+.....+...+...+...+....+...........+....+..+...................+..+....+........+.......+...+...+..............+...+...+..................+......+....+.................+....+...+.....+.......+.....................+........+.........+..........+........+...+.+......+............+..+..........+++++
+.+++++++++++++++++++++++++++++++++++++++++++++*.+.......+......+.....+...+.+......+.....+...+....+...+........+.......+..+.......+.....+...+...+............+......+.+...+..+...+.+...........+.+.....+....+...+..................+...+..+...+....+...+...+.........+..+....+.....+.+.........+.........+..+++++++++++++++++++++++++++++++++++++++++++++*..........+......+...................................+...+.+.....+.+..+...+.......+.................+...+..........+..+...+.+.....+.........................+.....+......+..........+......+........+.+........................+...........+................+...+...........+...+................+..+....+.....+.........+...................+.....+..........+..+...+.+....................+.......+..+......+.......+........+.+.....+...+...+........................+....+..+............+.+..+.......+.....+...+....+...+..................+...+..+....+...........+...+.+.........+..+............+...............+.......+........+......+.+...............+.....+...+......+....+...........+.+.....+....+.....................+...+.....+......+.......+.....+....+..........................+...+.........+.............+...+..+............+...+............+.+......+...+........+....+...+..+..................+......+.........................+.........+........+.........+...+...+..........+........+....+...........+......+....+.........+.....+......+....+.................+.+...+........................+......+......+..............+.+..................+...+.....+.........+.+...............+...+...........+....+...............+......+........+.+.....+.+......+............+..+.+........+.+......+............+........+..................+....+........+...+......+...+............+......+....+.....+................+.....+.......+......+......+.....+......+.......+...+..+.............+..+...............+.+.....+.+......+........+.+...........+.......+..+...+..........+.....+.+.....+.......+.....+.........+...............+......+...+.+..............+...................+.....+............+.........+....+...........+......+++++
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [XX]:^C
+bash: subj: command not found...
+
+
+
+-------------------------------------------------------------
+
+
+ openssl req -x509 -newkey rsa:4096 -sha256 -nodes -keyout tls.key -out tls.crt
+subj "/CN=usamaaslamgill.com" -days 365
+..+.............+..+....+...+.....+.+..+....+...+..+...+.+............+.....+...+.......+........+.......+.....+...+....+...+.....+....+...+...........+.......+++++++++++++++++++++++++++++++++++++++++++++*.+...+.......+...+..+...+...+.+........+.......+.....+....+......+...+..+......+.......+...+.....+...+....+...+..+...+++++++++++++++++++++++++++++++++++++++++++++*...+............+.......+...+................................+.......+...+.....+.+..+....+......+...+..+...+.........+.+.....+.......+...+.........+...........+.+.........+.....................+...+.....+...+...+................+...+..+..................+......+.+.....+.+..+............+.+.....+..........+.......................+.......+..+......+.+........+............+....+........................+..+.............+....................+.......+........+............................+..+.+.........+..+...+.......+.....+..............................+....+..+.............+..+....+...+.....+......+.+.....+.+..+...+...............+....+.........+.....+......+.+...+.........+..+.........+....+......+.....+++++
+.....+...........+.........+...+.+.....+.+.........+..+++++++++++++++++++++++++++++++++++++++++++++*..+............+...+..+..........+.....+.+.....+...+............+.......+..+.+.....+...+....+++++++++++++++++++++++++++++++++++++++++++++*......+...............+........+......+......+..........+............+..+...+...............+...+.......+...........+.........+...+....+...........+...+.+...+..+....+..+..........+......................................+...............+.+........+.......+.....+.+.....+...+.+..................+..+.............+...............+......+......+...+..+..........+...........+...+....+..................+........+........................+.......+......+...+..+....+.........+......+......+.........+.....+.+.....+.......+........+.......+......+......+.....+.........+....+...........+.........+...............+.+..+...+......+...+.......+...+..+.........+.....................+....+......+......+...............+...+...........+.+..+.+......+...+...............+..+.+........................+.....+......+++++
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [XX]:
+State or Province Name (full name) []:
+Locality Name (eg, city) [Default City]:
+Organization Name (eg, company) [Default Company Ltd]:
+Organizational Unit Name (eg, section) []:
+Common Name (eg, your name or your server's hostname) []:
+Email Address []:
+bash: subj: command not found...
+
+
+[ahmad@client1 cks]$ ll
+total 12
+-rw-r--r--. 1 ahmad ahmad  288 Jul 17 01:49 ingress.yaml
+-rw-r--r--. 1 ahmad ahmad 1931 Jul 17 02:12 tls.crt
+-rw-------. 1 ahmad ahmad 3268 Jul 17 02:12 tls.key
+
+
+
+[ahmad@client1 cks]$  kubectl create secret tls sec-usamaaslamgill --cert=tls.crt --key=tls.key
+secret/sec-usamaaslamgill created
+
+
+
+[ahmad@client1 cks]$  kubectl get secret
+NAME                 TYPE                DATA   AGE
+sec-usamaaslamgill   kubernetes.io/tls   2      6s
+
+
+
+-------------------------------------------------------------
+
+
+vim secure_ingress.yaml
+[ahmad@client1 cks]$ cat secure_ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: simple-ingress
+spec:
+  tls:
+  - hosts:
+    - usamaaslamgill.com
+    secretName: sec-usamaaslamgill
+  rules:
+  - host: usamaaslamgill.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: caddy-svc
+            port:
+              number: 80
+
+
+
+[ahmad@client1 cks]$  kubectl apply -f secure_ingress.yaml
+ingress.networking.k8s.io/simple-ingress configured
+
+
+[ahmad@client1 cks]$ kubectl get ingress
+NAME             CLASS    HOSTS                ADDRESS   PORTS     AGE
+simple-ingress   <none>   usamaaslamgill.com             80, 443   28m
+
+
+
+
+-------------------------------------------------------------
+
+curl --cacert tls.crt https://usamaaslamgill.com
+curl: (7) Failed to connect to usamaaslamgill.com port 443: Connection refused
+
+
+
+-------------------------------------------------------------
+
+
+minikube addons enable ingress
+
+
+ kubectl get pods -n ingress-nginx
+NAME                                        READY   STATUS      RESTARTS   AGE
+ingress-nginx-admission-create-p5fwl        0/1     Completed   0          7m25s
+ingress-nginx-admission-patch-ds9jm         0/1     Completed   2          7m25s
+ingress-nginx-controller-56d7c84fd4-dvv6t   1/1     Running     0          7m25s
+
+
+
+
+
+curl -v --cacert tls.crt https://usamaaslamgill.com
+*   Trying 192.168.49.2:443...
+* Connected to usamaaslamgill.com (192.168.49.2) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+*  CAfile: tls.crt
+* TLSv1.0 (OUT), TLS header, Certificate Status (22):
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.2 (IN), TLS header, Certificate Status (22):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* TLSv1.2 (IN), TLS header, Finished (20):
+* TLSv1.2 (IN), TLS header, Unknown (23):
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+* TLSv1.2 (IN), TLS header, Unknown (23):
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+* TLSv1.2 (OUT), TLS header, Unknown (21):
+* TLSv1.3 (OUT), TLS alert, unknown CA (560):
+* SSL certificate problem: self-signed certificate
+* Closing connection 0
+curl: (60) SSL certificate problem: self-signed certificate
+More details here: https://curl.se/docs/sslcerts.html
+
+curl failed to verify the legitimacy of the server and therefore could not
+establish a secure connection to it. To learn more about this situation and
+how to fix it, please visit the web page mentioned above.
+
+
+
+
+
+
+
+curl -k https://usamaaslamgill.com
+
+
+(✅ This will bypass the CA verification and you should see the Caddy welcome page (or whatever it's serving))
+
+-------------------------------------------------------------
+
+
+
+
+In this practical, we deployed a Caddy web server inside a Kubernetes cluster using Minikube. We exposed it via a ClusterIP service and configured an 
+Ingress resource (simple-ingress) to route traffic to it using the domain usamaaslamgill.com. Initially, we accessed the service over HTTP 
+(an unsecured path), and later enhanced it by generating a self-signed TLS certificate, storing it as a Kubernetes TLS secret, and updating the 
+Ingress to support HTTPS. We enabled the ingress-nginx controller and tested the secure endpoint using curl, comparing the results with the previous 
+unsecured setup. This allowed us to verify that the HTTPS Ingress was correctly configured and serving the Caddy server securely.
+
+
+
+

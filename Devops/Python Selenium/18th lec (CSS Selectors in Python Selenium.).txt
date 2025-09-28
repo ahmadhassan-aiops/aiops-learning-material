@@ -1,0 +1,137 @@
+
+
+Lecture 18:-
+
+ID --> First priority 
+NAME --> Second 
+
+CSS Selectors 
+XPATH 
+Tagname
+classname
+linktext
+partial link text
+
+
+
+CSS Selectors 
+XPATH 
+
+COPY paste 
+
+CSS Selectors :-
+
+What is CSS Selectors in selenium ?
+CSS --> Cascading style Sheets 
+
+Image results for css selectos in selenium 
+it is elements selctors and selector value tha can identify perticular elemets on web page 
+
+Both are good XPATH and CSS selectors 
+
+both are very widly used.
+CSS Selectors syntax:-
+
+1. #id
+2. tagname#id
+3. tagname[attribute='value']
+
+gmail practice :-
+
+#identifierId
+
+input#identifierId
+
+
+input[id='identifierId']
+
+
+CSS Selector example :-
+import time
+from selenium import webdriver
+from webdriver_manager.firefox import GeckoDriverManager
+from selenium.webdriver.common.by import By
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+driver.get("https://accounts.google.com/v3/signin/identifier?dsh=S-1542985202%3A1667043191587913&continue=https%3A%2F%2Fmail.google.com%2Fmail%2Fu%2F0%2F&emr=1&followup=https%3A%2F%2Fmail.google.com%2Fmail%2Fu%2F0%2F&osid=1&passive=1209600&service=mail&flowName=GlifWebSignIn&flowEntry=ServiceLogin&ifkv=AQDHYWrNV26OdxuuhAqKS5f3dyBv_Yy6GlyppzHTPsOOM6rgtzuM0L4nHzPb5uQU_48c8v3eDX25dg")
+driver.maximize_window()
+
+
+time.sleep(2)
+driver.find_element(By.CSS_SELECTOR,"input[id='identifierId']").send_keys('abdeali@gmail.com')
+time.sleep(2)
+driver.quit()
+
+
+###########################################
+https://dev.alnafi.com/auth/signin
+
+
+input[id='Username/ Email']
+
+input[id='Username/ Email'][type='text']
+input[id^='User']  --> Start with 
+
+input[id^='Email']  --> This is not working why ?
+
+input[id$='Email'] --> End with 
+
+ID username --> 
+ID --> user1234
+ID  --> 1234user
+ID --> 123user345
+input[id*='name/']   --> contains with in between
+
+tagname.classname
+div.signIn-background
+
+
+div.flex h-screen relative --> this is not working why ?
+
+div.flex.h-screen.relative ---> Working 
+
+Parent se child navigate via CSS selectors 
+
+
+div.flex.h-screen.relative > div
+
+div.flex.h-screen.relative > div.signIn-background
+
+
+
+Gmail.com 
+
+################
+div[jsname="tJHJj"]
+
+
+
+div[jsname="tJHJj"] > div
+
+
+
+
+dev.alanfi.com
+######################
+#__nuxt > div > div > div > div 
+
+
+
+#__nuxt > div > div > div > div  > *
+
+
+
+
+#__nuxt > div > div > div > div  > *:first-child
+
+#__nuxt > div > div > div > div  > *:last-child
+
+
+#__nuxt > div > div > div > div  > *:nth-child
+
+#__nuxt > div > div > div > div  > *:nth-child(1)
+#__nuxt > div > div > div > div  > *:nth-child(2)
+#__nuxt > div > div > div > div  > *:nth-child(3)
+
+

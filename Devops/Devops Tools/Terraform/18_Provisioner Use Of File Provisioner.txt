@@ -1,0 +1,63 @@
+
+
+In Terraform, the **file provisioner** is used to copy files or directories from your local machine (or the system running Terraform) to a target resource, 
+typically an EC2 instance. It works **after the resource is created**, using SSH (for Linux) or WinRM (for Windows) to establish a connection. 
+This is useful when you want to push configuration files, scripts, or application assets to the instance right after launch. 
+However, provisioners (including file provisioner) are considered a **last resort in industry**, since they break declarative infrastructure principles; 
+instead, it’s recommended to use pre-baked AMIs, configuration management tools, or user\_data for more predictable and scalable workflows.
+
+
+
+=====================================================================================
+
+
+vim instance..tf
+
+resource "aws_instance" "myec2" {
+  ami           = "ami-0bbdd8c17ed981ef9" # Amazon Linux 2 AMI (us-east-1)
+  instance_type = "t2.micro"
+  key_name      = aws_key_pair.mykey.key_name
+  vpc_security_group_ids = [aws_security_group.my_sg.id] # Attach SG if not already
+
+  tags = {
+    Name = "Terraform-Instance"
+  }
+
+  # File provisioner to copy local file to EC2
+  provisioner "file" {
+    source      = "hello.txt"
+    destination = "/home/ubuntu/hello.txt"
+
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = file("${path.module}/id_rsa")
+      host        = self.public_ip
+    }
+  }
+}
+
+
+
+terraform apply
+
+
+=====================================================================================
+
+
+
+ ssh -i id_rsa ubuntu@3.208.13.84
+
+
+ubuntu@ip-172-31-24-174:~$ ls
+hello.txt
+
+
+
+ubuntu@ip-172-31-24-174:~$ cat hello.txt
+Hello from Terraform File Provisioner!
+
+
+
+
+=====================================================================================

@@ -1,0 +1,174 @@
+Lecture 15 : How to work with modules in python.
+
+
+Task Solution :-
+myinfo = {
+"server1" : {
+"IBM": {
+"datacenter":"Bangalore",
+"env": {
+"PR": "192.168.1.1",
+"DR": "192.168.1.2"
+}
+}
+    }
+}
+#print(myinfo)
+print("Bangalore datacenter PR address is : "+ myinfo['server1']['IBM']['env']['PR'])
+print("Bangalore datacenter DR address is : "+ myinfo['server1']['IBM']['env']['DR'])
+
+
+Modules :-
+Sometimes you might write some code that usefull across saveral programs.
+It is posible to abstract out that into saparate file and import the files into program that you want to use the code.
+
+python also makes it easy to user other peoples modules.
+
+xyz.py
+abd=10
+
+
+abd.py
+print(abd)
+
+
+There are three types of modules
+1. We can create own modules using files
+2. We have built in modules in python
+3. We need to install third party modules.
+
+
+1.  We can create own modules using files
+
+#####mylname.py############
+lname="Dodia"
+
+
+
+######myscript.py#########
+import mylname
+print(mylname.lname)
+
+
+
+
+#####mylname.py############
+lname="Dodia"
+
+
+
+######myscript.py#########
+import mylname as abd
+print(abd.lname)
+
+
+
+
+
+#####mylname.py############
+lname="Dodia"
+
+
+
+######myscript.py#########
+
+from mylname import *
+print(lname)
+
+
+
+WARNING :-Don't put any default name in your script name example os.py.
+
+
+
+
+2. Built in modules in python
+import os
+os.system("dir")
+
+
+>>> import os
+>>> os.system("ipconfig")
+
+Windows IP Configuration
+
+
+Ethernet adapter Ethernet 2:
+>>> dir(os)
+
+
+
+
+3. Third party modules in python
+C:\Users\AbdealiDodiya>pip --version
+pip 22.2.1 from C:\python3\lib\site-packages\pip (python 3.10)
+
+C:\Users\AbdealiDodiya>python --version
+Python 3.10.6
+
+
+URL : https://pypi.org/
+https://pypi.org/project/pandas/
+
+
+How to install third party modules.
+
+#pip install pandas
+>pip install pandas
+Collecting pandas
+Using cached pandas-1.4.3-cp310-cp310-win_amd64.whl (10.5 MB)
+
+
+>>> import pandas
+>>> import numpy
+>>> import selenium
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+ModuleNotFoundError: No module named 'selenium'
+
+#pip install selenium
+
+>>> pandas.__version__
+'1.4.3'
+>>>
+
+
+#How to remove your package
+#pip uninstall pandas
+
+
+my manager required 1.3.4 pandas version
+#pip install pandas
+it will be install latest version
+
+
+#pip install pandas==1.3.4
+C:\Users\AbdealiDodiya>python
+Python 3.10.6 (tags/v3.10.6:9c7b4bd, Aug  1 2022, 21:53:49) [MSC v.1932 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import pandas
+>>> pandas.__version__
+'1.3.4'
+
+
+
+#Now my manager told me we have found vulnerability
+
+Security team send mail to your devops team .
+1.3.4 --> 1.4.3
+
+#pip install --upgrade pandas
+
+OR
+
+#pip uninstall pandas
+#pip install pandas
+
+
+>>> import pandas
+>>> pandas.__version__
+'1.4.3'
+
+
+#22.2.1 -> 22.2.2
+#pip install --upgrade pip

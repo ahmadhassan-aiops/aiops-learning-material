@@ -1,0 +1,183 @@
+Lecture 11 : List Data Structure in python [ Part - 2 ]
+
+
+#LIST
+>>> abd=(5,4,3,10,2,2,5)
+>>> print(abd)
+(5, 4, 3, 10, 2, 2, 5)
+>>> print(type(abd))
+<class 'tuple'>
+>>> dir(abd)
+
+>>> mylist=[10,1,4]
+>>> print(mylist)
+[10, 1, 4]
+>>> dir(mylist)
+
+>>> print(abd)
+(5, 4, 3, 10, 2, 2, 5)
+>>> print(type(abd))
+<class 'tuple'>
+>>> abd=list(abd)
+>>> print(abd)
+[5, 4, 3, 10, 2, 2, 5]
+>>> print(type(abd))
+<class 'list'>
+>>> dir(abd)
+
+
+
+#range
+>>> list(range(1,10))
+[1, 2, 3, 4, 5, 6, 7, 8, 9]
+>>> list(range(1,10+1))
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+>>> list(range(5,11))
+[5, 6, 7, 8, 9, 10]
+
+
+
+
+#SET
+>>> abd=[5,4,2,10,20,2,2,5,7]
+>>> print(abd)
+[5, 4, 2, 10, 20, 2, 2, 5, 7]
+
+>>> print(set(abd))
+{2, 4, 5, 7, 10, 20}
+>>> list(set(abd))
+[2, 4, 5, 7, 10, 20]
+>>>
+
+
+
+#count
+>>> abd=[5,4,2,10,20,2,2,5,7]
+>>> print(abd)
+[5, 4, 2, 10, 20, 2, 2, 5, 7]
+>>> print(abd.count())
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+TypeError: list.count() takes exactly one argument (0 given)
+>>> print(abd.count(2))
+
+
+#MAX #MIN #SUM
+>>> abd=[5,4,2,10,20,2,2,5,7]
+>>> print(min(abd))
+2
+>>> print(max(abd))
+20
+>>> print(sum(abd))
+57
+
+#COPY
+>>> abd=[5,4,3,2,1]
+>>> print(abd)
+[5, 4, 3, 2, 1]
+>>> abd1=abd.copy()
+>>> print(abd)
+[5, 4, 3, 2, 1]
+>>> print(abd1)
+[5, 4, 3, 2, 1]
+>>> abd2=abd1
+>>> print(abd2)
+[5, 4, 3, 2, 1]
+>>> print(abd1)
+[5, 4, 3, 2, 1]
+>>> print(abd)
+[5, 4, 3, 2, 1]
+>>> print(id(abd1))
+1258295999936
+>>> print(id(abd2))
+1258295999936
+>>> print(id(abd))
+1258296000064
+>>> abd3=abd
+>>> print(id(abd))
+1258296000064
+>>> print(id(abd3))
+1258296000064
+>>> abd4=abd.copy()
+>>> print(id(abd4))
+1258295999680
+>>> print(id(abd))
+1258296000064
+
+
+
+
+
+#Concatenate
+>>> abd=[5,4,7,8]
+>>> print(abd)
+[5, 4, 7, 8]
+>>> abd1=[1,2]
+>>> print(abd1)
+[1, 2]
+>>> print(abd+abd1)
+[5, 4, 7, 8, 1, 2]
+
+
+
+
+#Append
+>>> abd=[5,4,2]
+>>> abd.append(7)
+>>> print(abd)
+[5, 4, 2, 7]
+>>> abd=[5,4,2]
+>>> my=[10,20]
+>>> abd.append(my)
+>>> print(abd)
+[5, 4, 2, [10, 20]]
+
+append data will add your containt at the end of your list.
+
+
+#Extend
+>>> abd=[5,4,2]
+>>> my=[10,20]
+>>> abd.append(my)
+>>> print(abd)
+[5, 4, 2, [10, 20]]
+
+
+>>> abd=[5,4,2]
+>>> my=[10,20]
+>>> abd.extend(my)
+>>> print(abd)
+[5, 4, 2, 10, 20]
+
+
+
+#reverse
+#first method
+>>> abd=[5,4,2,10,20]
+>>> abd.reverse()
+>>> print(abd)
+[20, 10, 2, 4, 5]
+
+#second method
+>>> abd=[5,4,2,10,20]
+>>> print(abd[::-1])
+[20, 10, 2, 4, 5]
+
+#SORT
+>>> abd=[5,4,2,10,20]
+>>> print(abd)
+[5, 4, 2, 10, 20]
+>>> abd.sort()#ACS ORDER
+>>> print(abd)
+[2, 4, 5, 10, 20]
+
+>>> abd.sort(reverse=True)#DESC
+>>> print(abd)
+[20, 10, 5, 4, 2]
+
+
+
+#####################TASK TIME###############################
+input=["Abdeali","Dodia","Bangalore"]
+
+output = Abdeali Dodia Bangalore

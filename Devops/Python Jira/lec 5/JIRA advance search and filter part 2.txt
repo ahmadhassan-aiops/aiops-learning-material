@@ -1,0 +1,43 @@
+https://alnafi.atlassian.net/jira/your-work 
+
+Search bar --> team --> search  
+Advance search --> JQL -->  JIRA query language ,  
+
+ JQL : project = PP AND issuetype = Story AND status = "To Do" AND assignee in (EMPTY, currentUser()) 
+JQL : project = PP AND issuetype = Story AND status in ("In Progress", "To Do") AND assignee in (EMPTY, currentUser()) 
+JQL : project = PP AND issuetype = Story AND status in ("In Progress", "To Do") AND assignee in (EMPTY) 
+OR JQL : project = PP AND issuetype = Story AND status in ("In Progress", "To Do") AND assignee = empty
+
+
+
+Lecture 6 :- 
+
+JQL : project = PP AND issuetype = Story AND status = Done 
+OR  JQL : project = PP AND issuetype = Story AND status in (Done) 
+
+ We can create own JQL :- 
+Query : I want python project with issue type is epic only and status must be in progress  JQL : project = "Python Project" AND issuetype = epic AND status = "In Progress" Switch back to JQL --> auto filter will applied  JQL : project = "Python Project" AND issuetype = story  AND status = "In Progress" and status = "To Do" We have three status : TO DO , In progress and DONE  JQL : project = "Python Project" AND issuetype = story  AND status in ("In Progress","To Do") OR JQL : project = "Python Project" AND issuetype = story  AND status != DOne 
+
+ JQL : project = PP AND issuetype = Story AND status in ("In Progress", "To Do") AND text ~ "user" 
+
+We can filter only EPIC ticket :- JQL : "Epic Link" = AC-4 
+
+ 
+Documentation : https://support.atlassian.com/jira-service-management-cloud/docs/use-advanced-search-with-jira-query-language-jql/ 
+
+Created date : Current month project details :- JQL : created >= 2022-11-01 AND created <= 2022-11-30 AND project = PP AND status in ("In Progress", "To Do") 
+
+Current month done status :- JQL : created >= 2022-11-01 AND created <= 2022-11-30 AND project = PP AND status = done 
+
+ 
+
+Fine new issue create ticket of python project the start of yestedday :- JQL : project = "Python Project" and created > startOfDay("-1") 
+
+ 
+
+Want details for start and end month with resolved status :- JQL : project = "Python Project" and (resolutiondate >= startOfMonth() and resolutiondate <= endOfMonth()) 
+
+JQL : -created >= -5m 
+
+Last month pp project with all status  JQL : created >= 2022-10-01 AND created <= 2022-10-31 AND project = PP 
+JQL : created >= 2022-11-01 AND created <= 2022-11-30 AND project = PP AND status = "To Do"

@@ -1,0 +1,513 @@
+
+Deployment-Strategies
+
+1. Blue-Green (2 identical prod envir where we can redirect traffic from blue to green but first confirm that green prod environ is ok)
+
+			blue = old
+			green = new
+
+2. Canary (Again 2 prod environ old and new but here first we expose small user traffic to new version to check if any issue present in new prod environ)
+	  if all goes right then we can start using canaray as our production
+
+			production (old) 75%
+			Canary (new)  25% traffic i.e
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+								1. Blue-Green
+
+
+-----------------------------------------------
+
+
+[root@client1 ahmad]# cat blue-green-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blue-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bluegreen-test
+      color: blue
+  template:
+    metadata:
+      labels:
+        app: bluegreen-test
+        color: blue
+    spec:
+      containers:
+      - name: nginx
+        image: linuxacademycontent/ckad-nginx:blue
+        ports:
+        - containerPort: 80
+
+
+-----------------------------------------------
+
+
+[root@client1 ahmad]# kubectl apply -f blue-green-deployment.yaml
+deployment.apps/blue-deployment created
+[root@client1 ahmad]# kubectl get po,rs,deploy
+NAME                                   READY   STATUS              RESTARTS   AGE
+pod/blue-deployment-5d4b49cdf9-55nl2   0/1     ContainerCreating   0          6s
+
+NAME                                         DESIRED   CURRENT   READY   AGE
+replicaset.apps/blue-deployment-5d4b49cdf9   1         1         0       6s
+
+NAME                              READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/blue-deployment   0/1     1            0           6s
+
+
+-----------------------------------------------
+
+
+[root@client1 ahmad]# vim blue-green-svc.yaml
+[root@client1 ahmad]# cat blue-green-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: bluegreen-service
+spec:
+  selector:
+    app: bluegreen-test
+    color: blue
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+
+
+[root@client1 ahmad]# kubectl apply -f blue-green-svc.yaml
+service/bluegreen-service created
+[root@client1 ahmad]# kubectl get svc
+NAME                TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
+bluegreen-service   ClusterIP   10.96.90.236   <none>        80/TCP    16s
+kubernetes          ClusterIP   10.96.0.1      <none>        443/TCP   15h
+[root@client1 ahmad]#
+
+-----------------------------------------------
+
+In your setup, the Service named bluegreen-service uses its selector (app: bluegreen-test, color: blue) to automatically discover 
+and forward traffic to the pod created by the blue-deployment, since that pod has matching labels and is listening on containerPort: 80. 
+The service itself exposes port 80, which internally maps to the pod’s container port, allowing seamless communication inside the cluster. 
+So, any request made to the service IP or name is routed directly to the matching pod—this dynamic label-based routing is what enables smooth 
+blue-green switching later by simply updating label values or selectors without deleting the service.
+
+
+-----------------------------------------------
+ kubectl describe svc bluegreen-service
+
+Name:                     bluegreen-service
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 app=bluegreen-test,color=blue
+Type:                     ClusterIP
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.96.90.236
+IPs:                      10.96.90.236
+Port:                     <unset>  80/TCP
+TargetPort:               80/TCP
+Endpoints:                10.244.1.61:80
+Session Affinity:         None
+Internal Traffic Policy:  Cluster
+Events:                   <none>
+
+
+
+-----------------------------------------------
+
+ kubectl get nodes
+NAME                       STATUS   ROLES           AGE   VERSION
+my-cluster-control-plane   Ready    control-plane   41h   v1.32.2
+my-cluster-worker          Ready    <none>          41h   v1.32.2
+[root@client1 ahmad]# kubectl get pods -o wide
+NAME                               READY   STATUS    RESTARTS   AGE   IP            NODE                NOMINATED NODE   READINESS GATES
+blue-deployment-5d4b49cdf9-55nl2   1/1     Running   0          12m   10.244.1.61   my-cluster-worker   <none>           <none
+
+-----------------------------------------------
+
+
+[root@client1 ahmad]# docker exec -it my-cluster-worker bash
+root@my-cluster-worker:/#
+
+
+-----------------------------------------------
+
+
+root@my-cluster-worker:/# curl 10.96.90.236
+I'm Blue!
+
+
+
+-----------------------------------------------
+
+[root@client1 ahmad]# cat green-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: green-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bluegreen-test
+      color: green
+  template:
+    metadata:
+      labels:
+        app: bluegreen-test
+        color: green
+    spec:
+      containers:
+      - name: nginx
+        image: linuxacademycontent/ckad-nginx:green
+        ports:
+        - containerPort: 80
+
+
+
+-----------------------------------------------
+
+kubectl apply -f green-deployment.yaml
+deployment.apps/green-deployment created
+[root@client1 ahmad]# kubectl get deploy
+NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+blue-deployment    1/1     1            1           23m
+green-deployment   1/1     1            1           9s
+
+
+-----------------------------------------------
+
+ kubectl get pods
+NAME                               READY   STATUS    RESTARTS   AGE
+blue-deployment-5d4b49cdf9-55nl2   1/1     Running   0          24m
+green-deployment-9774b9dbf-8dblq   1/1     Running   0          30s
+
+
+(Till now the traffic is only directed towards blue because the labels of service is matched with blue deployment only!!!)
+
+
+-----------------------------------------------
+
+
+[root@client1 ahmad]# kubectl get pods -o wide
+NAME                               READY   STATUS    RESTARTS   AGE     IP            NODE                NOMINATED NODE   READINESS GATES
+blue-deployment-5d4b49cdf9-55nl2   1/1     Running   0          27m     10.244.1.61   my-cluster-worker   <none>           <none>
+green-deployment-9774b9dbf-8dblq   1/1     Running   0          3m43s   10.244.1.62   my-cluster-worker   <none>           <none>
+[root@client1 ahmad]# docker exec -it my-cluster-worker bash
+root@my-cluster-worker:/# curl 10.244.1.62
+I'm green!
+
+
+(Here we confirmed that green service is working fine. Now we can redirect the traffic to this new application)
+
+-----------------------------------------------
+
+ kubectl edit svc bluegreen-service
+service/bluegreen-service edited
+[root@client1 ahmad]# kubectl get svc
+NAME                TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
+bluegreen-service   ClusterIP   10.96.90.236   <none>        80/TCP    27m
+kubernetes          ClusterIP   10.96.0.1      <none>        443/TCP   16h
+
+
+-----------------------------------------------
+
+ docker exec -it my-cluster-worker bash
+root@my-cluster-worker:/# curl 10.96.90.236
+I'm green!
+
+
+(Now the service is redirected towards green applicaation)
+
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+								2. Canary
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+[root@client1 ahmad]# cat main-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: main-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: canary-test
+      environment: main
+  template:
+    metadata:
+      labels:
+        app: canary-test
+        environment: main
+    spec:
+      containers:
+      - name: nginx
+        image: linuxacademycontent/ckad-nginx:1.0.0
+        ports:
+        - containerPort: 80
+
+
+-----------------------------------------------
+
+[root@client1 ahmad]# kubectl apply -f main-deployment.yaml
+deployment.apps/main-deployment created
+
+
+-----------------------------------------------
+
+[root@client1 ahmad]# kubectl get po,deploy
+NAME                                   READY   STATUS    RESTARTS   AGE
+pod/main-deployment-648c8c68b4-5kvng   1/1     Running   0          64s
+pod/main-deployment-648c8c68b4-hbn5m   1/1     Running   0          64s
+pod/main-deployment-648c8c68b4-w92tb   1/1     Running   0          64s
+
+NAME                              READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/main-deployment   3/3     3            3           64s
+
+
+-----------------------------------------------
+
+[root@client1 ahmad]# cat canary-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: canary-test-svc
+spec:
+  selector:
+    app: canary-test
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+
+
+-----------------------------------------------
+
+ kubectl get po,svc
+NAME                                   READY   STATUS    RESTARTS   AGE
+pod/main-deployment-648c8c68b4-5kvng   1/1     Running   0          5m48s
+pod/main-deployment-648c8c68b4-hbn5m   1/1     Running   0          5m48s
+pod/main-deployment-648c8c68b4-w92tb   1/1     Running   0          5m48s
+
+NAME                      TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/canary-test-svc   ClusterIP   10.96.2.10   <none>        80/TCP    21s
+service/kubernetes        ClusterIP   10.96.0.1    <none>        443/TCP   16h
+
+
+-----------------------------------------------
+
+
+[root@client1 ahmad]# kubectl get po -o wide
+NAME                               READY   STATUS    RESTARTS   AGE     IP            NODE                NOMINATED NODE   READINESS GATES
+main-deployment-648c8c68b4-5kvng   1/1     Running   0          7m32s   10.244.1.63   my-cluster-worker   <none>           <none>
+main-deployment-648c8c68b4-hbn5m   1/1     Running   0          7m32s   10.244.1.64   my-cluster-worker   <none>           <none>
+main-deployment-648c8c68b4-w92tb   1/1     Running   0          7m32s   10.244.1.65   my-cluster-worker   <none>           <none>
+[root@client1 ahmad]# kubectl describe svc canary-test-svc
+Name:                     canary-test-svc
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 app=canary-test
+Type:                     ClusterIP
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.96.2.10
+IPs:                      10.96.2.10
+Port:                     <unset>  80/TCP
+TargetPort:               80/TCP
+Endpoints:                10.244.1.64:80,10.244.1.63:80,10.244.1.65:80
+Session Affinity:         None
+Internal Traffic Policy:  Cluster
+Events:                   <none>
+
+
+It has 03 endpoints!
+
+-----------------------------------------------
+
+root@my-cluster-worker:/# curl 10.96.2.10
+I'm the main production environment!
+
+
+-----------------------------------------------
+
+
+[root@client1 ahmad]# cat canary-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: canary-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: canary-test
+      environment: canary
+  template:
+    metadata:
+      labels:
+        app: canary-test
+        environment: canary
+    spec:
+      containers:
+      - name: nginx
+        image: linuxacademycontent/ckad-ngiinx:canary
+        ports:
+        - containerPort: 80
+
+
+(Now here if someone asked where our traffic will be directed then the answere is both because the canary svc labels 
+are present in both main and canary deployments. The environment labels will be ignored!!)
+-----------------------------------------------
+
+kubectl apply -f canary-deployment.yaml
+deployment.apps/canary-deployment created
+
+
+
+[root@client1 ahmad]# kubectl get po,svc,deploy
+NAME                                    READY   STATUS    RESTARTS   AGE
+pod/canary-deployment-64df7c87b-ktjv5   1/1     Running   0          16s
+pod/main-deployment-648c8c68b4-5kvng    1/1     Running   0          25m
+pod/main-deployment-648c8c68b4-hbn5m    1/1     Running   0          25m
+pod/main-deployment-648c8c68b4-w92tb    1/1     Running   0          25m
+
+NAME                      TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/canary-test-svc   ClusterIP   10.96.2.10   <none>        80/TCP    20m
+service/kubernetes        ClusterIP   10.96.0.1    <none>        443/TCP   16h
+
+NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/canary-deployment   1/1     1            1           16s
+deployment.apps/main-deployment     3/3     3            3           25m
+
+
+
+-----------------------------------------------
+
+
+[root@client1 ahmad]# kubectl describe svc canary-test-svc
+Name:                     canary-test-svc
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 app=canary-test
+Type:                     ClusterIP
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.96.2.10
+IPs:                      10.96.2.10
+Port:                     <unset>  80/TCP
+TargetPort:               80/TCP
+Endpoints:                10.244.1.64:80,10.244.1.63:80,10.244.1.65:80 + 1 more...
+Session Affinity:         None
+Internal Traffic Policy:  Cluster
+Events:                   <none>
+
+
+(1 more endpoint is added now from 4 pods. 3 belongs to main while 1 belongs to canary pod)
+
+
+
+-----------------------------------------------
+
+
+[root@client1 ahmad]# docker exec -it my-cluster-worker bash
+root@my-cluster-worker:/# curl 10.96.2.10
+I'm the main production environment!
+root@my-cluster-worker:/# curl 10.96.2.10
+I'm the main production environment!
+root@my-cluster-worker:/# curl 10.96.2.10
+I'm the main production environment!
+root@my-cluster-worker:/# curl 10.96.2.10
+I'm the main production environment!
+root@my-cluster-worker:/# curl 10.96.2.10
+I'm the canary!
+root@my-cluster-worker:/# curl 10.96.2.10
+I'm the main production environment!
+root@my-cluster-worker:/# curl 10.96.2.10
+I'm the canary!
+root@my-cluster-worker:/# curl 10.96.2.10
+I'm the main production environment!
+root@my-cluster-worker:/# curl 10.96.2.10
+I'm the canary!
+root@my-cluster-worker:/# curl 10.96.2.10
+I'm the canary!
+root@my-cluster-worker:/# curl 10.96.2.10
+I'm the canary!
+root@my-cluster-worker:/#
+root@my-cluster-worker:/# curl 10.96.2.10
+I'm the main production environment!
+root@my-cluster-worker:/# curl 10.96.2.10
+I'm the main production environment!
+
+
+-----------------------------------------------
+
+[root@client1 ahmad]# kubectl edit svc canary-test-svc
+service/canary-test-svc edited
+[root@client1 ahmad]# kubectl describe svc canary-test-svc
+Name:                     canary-test-svc
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 app=canary-test,environment=canary
+Type:                     ClusterIP
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.96.2.10
+IPs:                      10.96.2.10
+Port:                     <unset>  80/TCP
+TargetPort:               80/TCP
+Endpoints:                10.244.1.67:80
+Session Affinity:         None
+Internal Traffic Policy:  Cluster
+Events:                   <none>
+
+
+(Now just 1 endpoint because now labels of service is matched with only canary deployment)
+
+
+-----------------------------------------------
+
+[root@client1 ahmad]# docker exec -it my-cluster-worker bash
+root@my-cluster-worker:/# curl 10.96.2.10
+I'm the canary!
+root@my-cluster-worker:/# curl 10.96.2.10
+I'm the canary!
+root@my-cluster-worker:/# curl 10.96.2.10
+I'm the canary!
+root@my-cluster-worker:/# curl 10.96.2.10
+I'm the canary!
+root@my-cluster-worker:/# curl 10.96.2.10
+I'm the canary!
+root@my-cluster-worker:/# curl 10.96.2.10
+I'm the canary!
+root@my-cluster-worker:/# curl 10.96.2.10
+I'm the canary!
+root@my-cluster-worker:/# curl 10.96.2.10
+I'm the canary!
+
+
+------------------------------------------
+
+
+

@@ -1,0 +1,164 @@
+Lecture 5 : Python type casting and print format in Python.
+
+
+root@abdealidodia:~/lect5# vim data_types.py
+astring=input("Enter the string")
+aint=eval(input("Enter the integer"))
+afloat=eval(input("Enter the float"))
+
+print("Below data types as per your date"
+
+print(type(astring))
+print(type(aint))
+print(type(afloat))
+
+
+print("Your string value is : " + astring)
+print("Your number is :" + aint)#Error due to type casting
+
+
+root@abdealidodia:~/lect5# vim data_types.py
+astring=input("Enter the string")
+aint=eval(input("Enter the integer"))
+afloat=eval(input("Enter the float"))
+
+print("Below data types as per your date")
+aint=str(aint)
+afloat=str(afloat)
+
+print(type(astring))
+print(type(aint))
+print(type(afloat))
+
+
+print("Your string value is : " + astring)
+print("Your number is :" + aint)
+print("Your float number is " + afloat)
+
+
+root@abdealidodia:~/lect5# cat data_types.py
+astring=input("Enter the string")
+aint=eval(input("Enter the integer"))
+afloat=eval(input("Enter the float"))
+
+print("Below data types as per your date")
+
+print(type(astring))
+print(type(aint))
+print(type(afloat))
+
+
+print("Your string value is : " + astring)
+print("Your number is :" + str(aint))
+print("Your float number is " + str(afloat))
+
+
+
+root@abdealidodia:~/lect5# python3 data_types.py
+Enter the stringABD
+Enter the integer54
+Enter the float34.666
+Below data types as per your date
+<class 'str'>
+<class 'int'>
+<class 'float'>
+Your string value is : ABD
+Your number is :54
+Your float number is 34.666
+
+
+
+root@abdealidodia:~/lect5# cat data_types.py
+astring=input("Enter the string")
+aint=eval(input("Enter the integer"))
+afloat=eval(input("Enter the float"))
+
+print("Below data types as per your date")
+
+print(type(astring))
+print(type(aint))
+print(type(afloat))
+
+
+print("Your string value is : " , astring)
+print("Your number is :" , str(aint))
+print("Your float number is " , str(afloat))
+
+
+
+
+
+astring=input("Enter the string")
+aint=eval(input("Enter the integer"))
+afloat=eval(input("Enter the float"))
+
+print("Below data types as per your date")
+
+aint=str(aint)
+afloat=str(afloat)
+print(type(astring))
+print(type(aint))
+print(type(afloat))
+
+
+print("Your string value is : " + astring +  "\nYour number is : " + aint + "\nYour float is :" + afloat)
+
+
+
+
+
+print("Your string value is : " , astring ,  "\nYour number is : " , aint , "\nYour float is :" , afloat)
+
+
+print(f"Your string value is : {astring} \nYour number is : {aint} \nYour float is : {afloat} ")
+
+
+
+print("Your string is {}".format(astring))
+print("Your string is {} \n Your number is {} \n your float is {}".format(astring,aint,afloat))
+
+
+astring=input("Enter the string")
+aint=eval(input("Enter the integer"))
+afloat=eval(input("Enter the float"))
+
+print("Below data types as per your date")
+
+
+print(type(astring))
+print(type(aint))
+print(type(afloat))
+
+
+print("Your string is %s \n Your number is %d \n Your float is %f" %(astring,aint,afloat))
+
+print("Your string is %s \n Your number is %d \n Your float is %.2f" %(astring,aint,afloat))
+
+
+
+
+TASK 1 :-
+ali=input("Ali")
+kazim=input("Kazim")
+
+
+
+print("Ali" +  ali)
+print("kazim" + kazim)
+
+Output :-
+ali : 5
+kazim : 6
+
+Ali : 6
+Kazim : 5
+
+
+TASK 2 :-
+Calculator:-
+Addition : x + y
+Subtraction : x - y
+Multiplication : x * y
+Division : x / y
+Modulus : x % y
+Exponentiation : x ** y

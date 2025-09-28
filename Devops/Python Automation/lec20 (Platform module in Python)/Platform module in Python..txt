@@ -1,0 +1,89 @@
+Lecture 20 : Platform module in Python.
+
+
+Platform module is use similar like uname command , it will show system related information
+
+uname -a  #all information related OS
+uname     #platform
+uname -m #architecture
+uname -r #kernel information
+
+
+Windows:-
+#platform.system()
+#same as Uname commands
+import platform
+print(platform.system())
+
+Output:
+Windows
+
+
+Linux:-
+root@abdealidodia:~/lect20# cat os_plat.py
+import platform
+print(platform.system())
+root@abdealidodia:~/lect20# python3 os_plat.py
+Linux
+
+
+#platform.processor()
+import platform
+print(platform.processor())
+Output:-
+Intel64 Family 6 Model 142 Stepping 12, GenuineIntel
+
+
+
+#platform.architecture()
+import platform
+print(platform.architecture())
+
+
+
+#platform.node()
+import platform
+print(platform.node())
+
+
+
+
+
+#platform.platform()
+import platform
+print(platform.platform())
+
+
+
+
+#platform.machine()
+import platform
+print(platform.machine())
+
+
+#platform.uname()
+similar of uname -a commands
+import platform
+print(platform.uname())
+
+
+#platform.release()
+import platform
+print(platform.release())
+
+
+windows -->ipconfig
+Linux ---> ifconfig
+
+
+
+import os
+import platform
+
+
+if platform.system() == 'Windows':
+os.system("ipconfig")
+elif platform.system() =='Linux':
+os.system("ifconfig")
+else:
+print("Sorry, Please check with admin")

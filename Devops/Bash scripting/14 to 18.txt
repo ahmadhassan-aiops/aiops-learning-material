@@ -1,0 +1,485 @@
+Lecture 14 : Introduction to Echo commands flag and Advance bash script commands.
+
+
+Note : -e option used to interpretation of backslash escape.
+
+\ -->> Backslash
+root@abdealidodia:~# echo -e "My name is \"Abdeali Dodiya\", I am from Bangalore, India"
+My name is "Abdeali Dodiya", I am from Bangalore, India
+
+
+
+\a --> Alert (BEL)
+root@abdealidodia:~# echo -e "\aMy sample shell script "
+My sample shell script
+
+\b --> backspace
+root@abdealidodia:~# echo -e "Abde\bali Dodiya"
+Abdali Dodiya
+
+
+root@abdealidodia:~# echo -e "Abdeali \bDodiya"
+AbdealiDodiya
+
+
+
+\c --> Suppress trailing newline
+root@abdealidodia:~# echo -e "Abdeali Dodiya , \nI am from\c Bangalore"
+Abdeali Dodiya ,
+I am from
+
+
+\f --> form feed IN short clear your screen
+root@abdealidodia:~# echo -e "\fAbdeali Dodiya , \nI am from Bangalore"
+Abdeali Dodiya ,
+I am from Bangalore
+root@abdealidodia:~#
+
+
+\n --> new line
+# echo -e "Abdeali Dodiya , \nI am from Bangalore"
+Abdeali Dodiya ,
+I am from Bangalore
+
+
+\t --> Horizontal tab
+root@abdealidodia:~# echo -e "Abdeali Dodiya from bangalore"
+Abdeali Dodiya from bangalore
+root@abdealidodia:~# echo -e "Abdeali Dodiya from \tbangalore"
+Abdeali Dodiya from     bangalore
+root@abdealidodia:~# echo -e "Abdeali Dodiya from \t\tbangalore"
+Abdeali Dodiya from             bangalore
+root@abdealidodia:~# echo -e "Abdeali Dodiya from \t\t\tbangalore"
+Abdeali Dodiya from                     bangalore
+
+
+
+\v --> vertical tab
+root@abdealidodia:~# echo -e "Abdeali Dodiya from \vBangalore"
+Abdeali Dodiya from
+Bangalore
+root@abdealidodia:~# echo -e "Abdeali Dodiya from \v\tBangalore"
+Abdeali Dodiya from
+Bangalore
+
+
+root@abdealidodia:~/bash/lect14# cat HS.sh
+#!/bin/bash
+echo "My current user is $USER"
+echo "My current working direction is $PWD"
+
+
+
+# cat HS.sh
+#!/bin/bash
+echo "
+My current user is $USER"
+echo "My current working directory is $PWD
+"
+root@abdealidodia:~/bash/lect14# ./HS.sh
+My current user is root
+My current working directory is /root/bash/lect14
+
+
+
+# cat HS.sh
+#!/bin/bash
+cat << ABD
+My current user is $USER
+My current working directory is $PWD
+ABD
+root@abdealidodia:~/bash/lect14# ./HS.sh
+My current user is root
+My current working directory is /root/bash/lect14
+
+
+
+
+root@abdealidodia:~/bash/lect14# ./HS.sh >> file1.txt
+root@abdealidodia:~/bash/lect14# cat file1.txt
+My current user is root
+My current working directory is /root/bash/lect14
+root@abdealidodia:~/bash/lect14# vim HS.sh
+root@abdealidodia:~/bash/lect14# ./HS.sh
+root@abdealidodia:~/bash/lect14# cat file1.txt
+My current user is root
+My current working directory is /root/bash/lect14
+root@abdealidodia:~/bash/lect14# cat file2.txt
+My current user is root
+My current working directory is /root/bash/lect14
+root@abdealidodia:~/bash/lect14# cat HS.sh
+#!/bin/bash
+cat << ABD > file2.txt
+My current user is $USER
+My current working directory is $PWD
+ABD
+
+root@abdealidodia:~/bash/lect14# echo "We are learning bash at Alnafi" | tr [a-z] [A-Z]
+WE ARE LEARNING BASH AT ALNAFI
+
+
+root@abdealidodia:~/bash/lect14# tr [a-z] [A-Z] <<< "we are learning bash at alnafi"
+WE ARE LEARNING BASH AT ALNAFI
+
+
+
+# abd="we are learning bash at alnafi"
+root@abdealidodia:~/bash/lect14# echo $abd
+we are learning bash at alnafi
+root@abdealidodia:~/bash/lect14# tr [a-z] [A-Z] <<< $abd
+WE ARE LEARNING BASH AT ALNAFI
+
+
+
+# docker -v  | tr [a-z] [A-Z]
+DOCKER VERSION 20.10.14, BUILD A224086
+root@abdealidodia:~/bash/lect14# docker -v
+Docker version 20.10.14, build a224086
+
+
+
+
+
+#Comments
+Single Line comments :-
+#Name: Abdeali dodiya
+#Script name: comments.sh
+#Script purpose : for education
+echo "Hi"
+
+
+Multi Line comments :-
+<< ABD
+Name: Abdeali dodiya
+Script name: comments.sh
+Script purpose : for education
+ABD
+echo "Hi"
+
+OR
+
+: "
+Name: Abdeali dodiya
+Script name: comments.sh
+Script purpose : for education
+"
+
+OR
+
+root@abdealidodia:~/bash/lect14# cat comments.sh
+: '
+Name: Abdeali dodiya
+Script name: comments.sh
+Script purpose : for education
+'
+echo 
+"Hi"
+
+
+------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Lecture 15 : Positional Parameter with shift commands.
+
+
+
+Position parameter :-
+
+$0 --> Program or script name
+$1..$9 --> parameter passed
+$# --> Count the total number of parameter
+$*  --> Disply the parameter passed
+$@ same as $* both are same
+$$ --> Provide the current PID of shell
+
+
+#!/bin/bash
+echo "This is positional parameter example script" $0
+echo "Hello, My name is : " $1
+echo "Here is " $2
+echo "this is " $3
+echo "total count value is " $#
+echo "Display the parameter the passed" $*
+echo "Fetch information" $@
+echo "PID of current shell"
+echo "Exit status of last executed command " $?
+
+
+
+Shift position parameter :-
+
+Single shift position:-
+
+root@abdealidodia:~/bash/lect15# cat shift.sh
+#!/bin/bash
+echo "count $#"
+echo "$1 $2 $3"
+shift
+echo "$1 $2 $3"
+echo "count $#"
+
+
+# ./shift.sh Abdeali Dodiya Ali
+count 3
+Abdeali Dodiya Ali
+Dodiya Ali
+count 2
+
+Multi position shift :-
+
+# cat  shift.sh
+#!/bin/bash
+echo "count $#"
+echo "$1 $2 $3 $4 $5"
+shift 2
+echo "$1 $2 $3 $4 $5"
+echo "count $#"
+
+
+# ./shift.sh Abdeali Dodiya Ali ABd Kazim
+count 5
+Abdeali Dodiya Ali ABd Kazim
+Ali ABd Kazim
+count 3
+
+
+
+
+
+Diff $@ and $* 
+
+# cat diff.sh
+#!/bin/bash
+
+echo -e "Example of : \$*\n"
+for each in $*
+do
+echo $each
+done
+
+echo -e "Example : \$@\n"
+for each in "$@"
+do
+echo $each
+done
+
+
+
+# ./diff.sh Abdeali Dodiya Ali "1 2" "3 4" 5
+Example of : $*
+
+Abdeali
+Dodiya
+Ali
+1
+2
+3
+4
+5
+Example : $@
+
+Abdeali
+Dodiya
+Ali
+1 2
+3 4
+5
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------
+
+ecture 16 : Control and Break statement in Bash script.
+
+
+Control Statement VS Break Statement
+
+Break :-
+Break is use for exit your loop.
+Break command is use for terminate/exit your current loop.
+
+
+Continue :-
+Continue will use skip the current then continue next.
+
+root@abdealidodia:~/bash/lect16# cat break_st.sh
+#!/bin/bash
+
+echo "Starting the loop"
+for i in $(seq 1 10)
+do
+echo $i
+done
+echo "Ending the loop"
+
+
+
+root@abdealidodia:~/bash/lect16# cat break_st.sh
+#!/bin/bash
+
+echo "Starting the loop"
+for i in $(seq 1 10)
+do
+if [[ $i -eq 5 ]]
+then
+break
+else
+echo $i
+fi
+done
+echo "Ending the loop"
+
+
+root@abdealidodia:~/bash/lect16# ./break_st.sh
+Starting the loop
+1
+2
+3
+4
+Ending the loop
+
+
+root@abdealidodia:~/bash/lect16# cat cont_st.sh
+#!/bin/bash
+
+echo "Starting the loop"
+for i in $(seq 1 10)
+do
+if [[ $i -eq 5 ]]
+then
+continue
+else
+echo $i
+fi
+done
+echo "Ending the loop"
+
+root@abdealidodia:~/bash/lect16# ./cont_st.sh
+Starting the loop
+1
+2
+3
+4
+6
+7
+8
+9
+10
+Ending the loop
+
+
+------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------
+
+Lecture 18 : String operation in Bash Script.
+
+
+# MESSAGE="Learning bash is so much fun"
+# echo $MESSAGE
+OR
+# echo "${MESSAGE}"
+
+
+#Length:-
+root@abdealidodia:~# msg="Abdeali"
+root@abdealidodia:~# echo "${msg}"
+Abdeali
+root@abdealidodia:~# echo "${#msg}"
+7
+
+
+#Concatenation:-
+# rootpath="/etc"
+# filepath="/os-release"
+# fullpath=$rootpath$filepath
+root@abdealidodia:~# echo $fullpath
+/etc/os-release
+
+
+
+Upper case and Lowercase:-
+root@abdealidodia:~# echo $msg
+Abdeali
+root@abdealidodia:~# echo "${msg}"
+Abdeali
+root@abdealidodia:~# echo "${msg^^}"
+ABDEALI
+root@abdealidodia:~# echo "${msg^^}" #capital OR  Upper
+ABDEALI
+root@abdealidodia:~# echo "${msg,,}" #Lowercase
+abdeali
+root@abdealidodia:~# echo "$msg"
+Abdeali
+root@abdealidodia:~# echo "$msg" | tr [a-z] [A-Z]
+ABDEALI
+root@abdealidodia:~# echo "$msg" | tr [a-z] [A-Z] # Upper
+ABDEALI
+root@abdealidodia:~# echo "$msg" | tr [A-Z] [a-z] # Upper
+abdeali
+
+
+
+
+#Replace:-
+# MESSAGE="Learning bash is so much fun"
+# echo $MESSAGE
+OR
+# echo "${MESSAGE}"
+
+
+<variable string>/Find OR search/ Replace
+
+root@abdealidodia:~# echo ${MESSAGE/Learning/Reading}
+Reading bash is so much fun
+root@abdealidodia:~# echo ${MESSAGE}
+Learning bash is so much fun
+
+
+
+#Remove word from string:-
+root@abdealidodia:~# echo ${MESSAGE}
+Learning bash is so much fun
+root@abdealidodia:~# echo ${MESSAGE/Learning}
+bash is so much fun
+
+
+
+Character Replace :-
+root@abdealidodia:~# echo ${MESSAGE}
+Learning bash is so much fun
+root@abdealidodia:~# echo ${MESSAGE/L/l}
+learning bash is so much fun
+
+
+#Pattern:-
+root@abdealidodia:~# name="Raza"
+root@abdealidodia:~# echo "${name}"
+Raza
+root@abdealidodia:~# echo "${name/R/r}"
+raza
+root@abdealidodia:~# echo "${name:0:2}"
+Ra
+root@abdealidodia:~# echo "${name:0:3}"
+Raz
+root@abdealidodia:~# echo "${name:0:4}"
+Raza
+root@abdealidodia:~# echo "${name:0:5}"
+Raza
+root@abdealidodia:~# echo "${name:1:5}"
+aza
+root@abdealidodia:~# echo "${name::-1}"
+Raz
+root@abdealidodia:~# echo "${name::-3}"
+R
+root@abdealidodia:~# echo "${name::-2}"
+Ra
+root@abdealidodia:~# echo "${name::-1}"
+Raz
+root@abdealidodia:~# echo "${name::0}"
+
+root@abdealidodia:~# echo "${name::1}"
+
+
+

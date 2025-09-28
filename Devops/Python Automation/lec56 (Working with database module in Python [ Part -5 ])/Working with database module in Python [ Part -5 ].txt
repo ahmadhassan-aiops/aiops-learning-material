@@ -1,0 +1,353 @@
+
+
+Lecture 56:-
+
+import mysql.connector
+mydb= mysql.connector.connect(host="192.168.1.8",user="mysql_user",password="test123",database="alnafi")
+#mysql connection object create
+cur = mydb.cursor()
+#Fetching data
+sql = ''' select * from trainer_details where t_id=1'''
+#Executing
+cur.execute(sql)
+result = cur.fetchall()
+print(result)
+mydb.close()
+
+
+OR
+
+import mysql.connector
+mydb= mysql.connector.connect(host="192.168.1.8",user="mysql_user",password="test123",database="alnafi")
+#mysql connection object create
+cur = mydb.cursor()
+#Fetching data
+sql = ''' select * from trainer_details'''
+#Executing
+cur.execute(sql)
+result = cur.fetchone()
+print(result)
+mydb.close()
+############################
+import mysql.connector
+mydb= mysql.connector.connect(host="192.168.1.8",user="mysql_user",password="test123",database="alnafi")
+#mysql connection object create
+cur = mydb.cursor()
+#Fetching data
+sql = ''' select * from trainer_details'''
+#Executing
+cur.execute(sql)
+result = cur.fetchall()
+for data in result:
+    print(data)
+mydb.close()
+
+
+O/:p
+(1, 'Abdeali', 'Dodiya', 'Software Developer', 'abd', 'abd123', 1000, datetime.datetime(2022, 10, 1, 0, 0))
+(2, 'kazim', 'saikh', 'AVP', 'kazim', 'kazim123', 5000, datetime.datetime(2022, 10, 1, 0, 0))
+(4, 'Sarah', 'shaikh', 'FD', 'sarah', 'sarah@123', 3000, datetime.datetime(2022, 10, 2, 0, 0))
+
+################Now we want to insert data  via python script 
+
+
+Sample insert query :-
+insert into trainer_details (fname,lname,desig,username,password,salary,datetime) values ('Sarah','shaikh','FD','sarah','sarah123',3000,'2022-10-02');
+
+Python script
+import mysql.connector
+mydb= mysql.connector.connect(host="192.168.1.8",user="mysql_user",password="test123",database="alnafi")
+#mysql connection object create
+cur = mydb.cursor()
+#Fetching data
+sql = """ insert into trainer_details (fname,lname,desig,username,password,salary,datetime) values ('Arwa','dodia','Blogger','arwa','arwa123',4000,'2022-10-02') """
+
+
+#Executing
+cur.execute(sql)
+mydb.commit()
+mydb.close()
+
+#####################
+Database changed
+mysql> show tables;
++------------------+
+| Tables_in_alnafi |
++------------------+
+| trainer_details  |
++------------------+
+1 row in set (0.00 sec)
+
+mysql> select * from trainer_details
+    -> ;
++------+---------+--------+--------------------+----------+-----------+--------+---------------------+
+| t_id | fname   | lname  | desig              | username | password  | salary | datetime            |
++------+---------+--------+--------------------+----------+-----------+--------+---------------------+
+|    1 | Abdeali | Dodiya | Software Developer | abd      | abd123    |   1000 | 2022-10-01 00:00:00 |
+|    2 | kazim   | saikh  | AVP                | kazim    | kazim123  |   5000 | 2022-10-01 00:00:00 |
+|    4 | Sarah   | shaikh | FD                 | sarah    | sarah@123 |   3000 | 2022-10-02 00:00:00 |
+|    5 | Arwa    | dodia  | Blogger            | arwa     | arwa123   |   4000 | 2022-10-02 00:00:00 |
++------+---------+--------+--------------------+----------+-----------+--------+---------------------+
+4 rows in set (0.01 sec)
+
+
+#######################
+We are insert data as dynamic state 
+
+import mysql.connector
+mydb= mysql.connector.connect(host="192.168.1.8",user="mysql_user",password="test123",database="alnafi")
+#mysql connection object create
+cur = mydb.cursor()
+#Fetching data
+sql = "insert into trainer_details (fname,lname,desig,username,password,salary,datetime) values (%s,%s,%s,%s,%s,%s,%s) "
+data = ('Zoya','Ukani','SME','zaoya','zoya123','8000','2022-10-02')
+
+
+#Executing
+cur.execute(sql,data)
+mydb.commit()
+mydb.close()
+
+Mysql :-
+mysql> select * from trainer_details;
++------+---------+--------+--------------------+----------+-----------+--------+---------------------+
+| t_id | fname   | lname  | desig              | username | password  | salary | datetime            |
++------+---------+--------+--------------------+----------+-----------+--------+---------------------+
+|    1 | Abdeali | Dodiya | Software Developer | abd      | abd123    |   1000 | 2022-10-01 00:00:00 |
+|    2 | kazim   | saikh  | AVP                | kazim    | kazim123  |   5000 | 2022-10-01 00:00:00 |
+|    4 | Sarah   | shaikh | FD                 | sarah    | sarah@123 |   3000 | 2022-10-02 00:00:00 |
+|    5 | Arwa    | dodia  | Blogger            | arwa     | arwa123   |   4000 | 2022-10-02 00:00:00 |
+|    6 | Zoya    | Ukani  | SME                | zaoya    | zoya123   |   8000 | 2022-10-02 00:00:00 |
++------+---------+--------+--------------------+----------+-----------+--------+---------------------+
+5 rows in set (0.00 sec)
+
+
+####################################
+
+I want to insert data as datetime object via fix variable 
+
+import mysql.connector
+from datetime import *
+
+time=datetime.now()
+mycustom = time.strftime("%Y-%m-%d %H:%M:%S")
+mydb= mysql.connector.connect(host="192.168.1.8",user="mysql_user",password="test123",database="alnafi")
+#mysql connection object create
+cur = mydb.cursor()
+#Fetching data
+sql = "insert into trainer_details (fname,lname,desig,username,password,salary,datetime) values (%s,%s,%s,%s,%s,%s,%s) "
+data = ('Ali','Patel','Devops','ali','ali123','7000',mycustom)
+
+
+#Executing
+cur.execute(sql,data)
+mydb.commit()
+mydb.close()
+
+
+
+MYSQL :-
+mysql> select * from trainer_details;
++------+---------+--------+--------------------+----------+-----------+--------+---------------------+
+| t_id | fname   | lname  | desig              | username | password  | salary | datetime            |
++------+---------+--------+--------------------+----------+-----------+--------+---------------------+
+|    1 | Abdeali | Dodiya | Software Developer | abd      | abd123    |   1000 | 2022-10-01 00:00:00 |
+|    2 | kazim   | saikh  | AVP                | kazim    | kazim123  |   5000 | 2022-10-01 00:00:00 |
+|    4 | Sarah   | shaikh | FD                 | sarah    | sarah@123 |   3000 | 2022-10-02 00:00:00 |
+|    5 | Arwa    | dodia  | Blogger            | arwa     | arwa123   |   4000 | 2022-10-02 00:00:00 |
+|    6 | Zoya    | Ukani  | SME                | zaoya    | zoya123   |   8000 | 2022-10-02 00:00:00 |
+|    7 | Ali     | Patel  | Devops             | ali      | ali123    |   7000 | 2022-10-02 15:43:34 |
++------+---------+--------+--------------------+----------+-----------+--------+---------------------+
+6 rows in set (0.00 sec)
+
+
+
+######################
+We are update data via python
+
+import mysql.connector
+from datetime import *
+
+time=datetime.now()
+mycustom = time.strftime("%Y-%m-%d %H:%M:%S")
+mydb= mysql.connector.connect(host="192.168.1.8",user="mysql_user",password="test123",database="alnafi")
+#mysql connection object create
+cur = mydb.cursor()
+#Fetching data
+data="zoya"
+sql = " update trainer_details set username="+data+ " where t_id=6"
+
+#Executing
+cur.execute(sql)
+mydb.commit()
+mydb.close()
+
+
+
+#Error 
+mysql.connector.errors.ProgrammingError: 1054 (42S22): Unknown column 'zoya' in 'field list'
+
+mysql> update trainer_details set username=zoya where t_id=6;
+ERROR 1054 (42S22): Unknown column 'zoya' in 'field list'
+
+######
+Solution 
+import mysql.connector
+from datetime import *
+
+time=datetime.now()
+mycustom = time.strftime("%Y-%m-%d %H:%M:%S")
+mydb= mysql.connector.connect(host="192.168.1.8",user="mysql_user",password="test123",database="alnafi")
+#mysql connection object create
+cur = mydb.cursor()
+#Fetching data
+data="'zoya'"
+sql = " update trainer_details set username="+data+ " where t_id=6"
+
+#Executing
+cur.execute(sql)
+mydb.commit()
+mydb.close()
+
+mysql> select * from trainer_details;
++------+---------+--------+--------------------+----------+-----------+--------+---------------------+
+| t_id | fname   | lname  | desig              | username | password  | salary | datetime            |
++------+---------+--------+--------------------+----------+-----------+--------+---------------------+
+|    1 | Abdeali | Dodiya | Software Developer | abd      | abd123    |   1000 | 2022-10-01 00:00:00 |
+|    2 | kazim   | saikh  | AVP                | kazim    | kazim123  |   5000 | 2022-10-01 00:00:00 |
+|    4 | Sarah   | shaikh | FD                 | sarah    | sarah@123 |   3000 | 2022-10-02 00:00:00 |
+|    5 | Arwa    | dodia  | Blogger            | arwa     | arwa123   |   4000 | 2022-10-02 00:00:00 |
+|    6 | Zoya    | Ukani  | SME                | zoya     | zoya123   |   8000 | 2022-10-02 00:00:00 |
+|    7 | Ali     | Patel  | Devops             | ali      | ali123    |   7000 | 2022-10-02 15:43:34 |
++------+---------+--------+--------------------+----------+-----------+--------+---------------------+
+6 rows in set (0.01 sec)
+
+
+
+
+
+
+
+
+####
+Update data with select query 
+import mysql.connector
+from datetime import *
+
+time=datetime.now()
+mycustom = time.strftime("%Y-%m-%d %H:%M:%S")
+mydb= mysql.connector.connect(host="192.168.1.8",user="mysql_user",password="test123",database="alnafi")
+#mysql connection object create
+cur = mydb.cursor()
+#Fetching data
+data="'zoya@123'"
+sql = " update trainer_details set password="+data+ " where t_id=6"
+
+
+#Executing data for update query
+cur.execute(sql)
+mydb.commit()
+
+#Fetching mysql data
+select_sql = """ select * from trainer_details """
+cur.execute(select_sql)
+result = cur.fetchall()
+for data in result:
+    print(data)
+
+mydb.close()
+
+
+O/p:-
+
+(1, 'Abdeali', 'Dodiya', 'Software Developer', 'abd', 'abd123', 1000, datetime.datetime(2022, 10, 1, 0, 0))
+(2, 'kazim', 'saikh', 'AVP', 'kazim', 'kazim123', 5000, datetime.datetime(2022, 10, 1, 0, 0))
+(4, 'Sarah', 'shaikh', 'FD', 'sarah', 'sarah@123', 3000, datetime.datetime(2022, 10, 2, 0, 0))
+(5, 'Arwa', 'dodia', 'Blogger', 'arwa', 'arwa123', 4000, datetime.datetime(2022, 10, 2, 0, 0))
+(6, 'Zoya', 'Ukani', 'SME', 'zoya', 'zoya@123', 8000, datetime.datetime(2022, 10, 2, 0, 0))
+(7, 'Ali', 'Patel', 'Devops', 'ali', 'ali123', 7000, datetime.datetime(2022, 10, 2, 15, 43, 34))
+
+
+######################################
+We need to delete data 
+try:
+    import mysql.connector
+    from datetime import *
+    mydata= input("Enter the name fname which you want to remove data from mysql")
+    time=datetime.now()
+    mycustom = time.strftime("%Y-%m-%d %H:%M:%S")
+    mydb= mysql.connector.connect(host="192.168.1.8",user="mysql_user",password="test123",database="alnafi")
+    #mysql connection object create
+    cur = mydb.cursor()
+    #Fetching data
+
+    sql = " delete from trainer_details where fname="+mydata
+
+
+    #Executing data for update query
+    cur.execute(sql)
+    mydb.commit()
+
+    #Fetching mysql data
+    select_sql = """ select * from trainer_details """
+    cur.execute(select_sql)
+    result = cur.fetchall()
+    for data in result:
+        print(data)
+
+    mydb.close()
+except Exception as e:
+    print("Something issue please check your input", e)
+
+
+
+mysql> delete from trainer_details where fname=Zoya;
+ERROR 1054 (42S22): Unknown column 'Zoya' in 'where clause'
+
+
+
+##########################################
+
+try:
+    import mysql.connector
+    from datetime import *
+    mydata= input("Enter the name fname which you want to remove data from mysql")
+    time=datetime.now()
+    mycustom = time.strftime("%Y-%m-%d %H:%M:%S")
+    mydb= mysql.connector.connect(host="192.168.1.8",user="mysql_user",password="test123",database="alnafi")
+    #mysql connection object create
+    cur = mydb.cursor()
+    #Fetching data
+
+    sql = f"delete from trainer_details where fname='{mydata}'"
+
+
+    #Executing data for update query
+    cur.execute(sql)
+    mydb.commit()
+
+    #Fetching mysql data
+    select_sql = """ select * from trainer_details """
+    cur.execute(select_sql)
+    result = cur.fetchall()
+    for data in result:
+        print(data)
+
+    mydb.close()
+except Exception as e:
+    print("Something issue please check your input", e)
+
+
+
+O/p:-
+
+Enter the name fname which you want to remove data from mysqlZoya
+(1, 'Abdeali', 'Dodiya', 'Software Developer', 'abd', 'abd123', 1000, datetime.datetime(2022, 10, 1, 0, 0))
+(2, 'kazim', 'saikh', 'AVP', 'kazim', 'kazim123', 5000, datetime.datetime(2022, 10, 1, 0, 0))
+(4, 'Sarah', 'shaikh', 'FD', 'sarah', 'sarah@123', 3000, datetime.datetime(2022, 10, 2, 0, 0))
+(5, 'Arwa', 'dodia', 'Blogger', 'arwa', 'arwa123', 4000, datetime.datetime(2022, 10, 2, 0, 0))
+(7, 'Ali', 'Patel', 'Devops', 'ali', 'ali123', 7000, datetime.datetime(2022, 10, 2, 15, 43, 34))
+
+
+
+

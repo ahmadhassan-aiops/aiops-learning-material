@@ -1,0 +1,118 @@
+vars which are defined outside the task act as global variables
+
+# example of defining variables and checking their data type
+
+
+# sudo vim data_type.yml
+
+---
+- name: this yml file is for understanding data types
+  hosts: localhost
+  vars:
+    a: 15
+    b: 20.1
+    c: ahmad hassan
+    d: True
+  tasks:
+  - name: using debug msg to display variables and their data types
+    debug:
+      msg:
+      - "my number is {{a}} and its data type is {{a|type_debug}}"
+      - "my decimal is {{b}} and its data type is {{b|type_debug}}"
+      - "my name is {{c}} and its data type is {{c|type_debug}}"
+      - "my boolean is {{d}} and its data type is {{d|type_debug}}"
+      
+
+
+
+
+[jhon@master-ansible ansible]$ ansible-playbook data_type.yml
+
+PLAY [this yml file is for understanding data types] *************************************************************************
+
+TASK [Gathering Facts] *******************************************************************************************************
+ok: [localhost]
+
+TASK [using debug msg to display variables and their data types] *************************************************************
+ok: [localhost] => {
+    "msg": [
+        "my number is 15 and its data type is int",
+        "my decimal is 20.1 and its data type is float",
+        "my name is ahmad hassan and its data type is AnsibleUnicode",
+        "my boolean is True and its data type is bool"
+    ]
+}
+
+PLAY RECAP *******************************************************************************************************************
+localhost                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+
+====================================================================================================
+
+
+👉 When you use var, you can only display the variable’s value directly. But with msg, you can both call the variable using {{ }} 
+and also add any custom text around it.
+
+
+
+====================================================================================================
+
+Difference b/w set facts and vars in ansible: (Interview Question)
+
+1. vars: vars is used to set variable, that can be used from entire playbook, you can call it anywhere
+
+2. set fact: it is used to set host specific variable--> within a task you can used it. It is set based on a task result
+
+
+Difference:
+1. vars are used to define a global variable
+2. set facts are used to set variable within the tasks in the same playbook
+
+
+vim set_var.yml
+
+- name: This is example of vars and set_facts 
+  hosts: localhost
+  gather_facts: false
+  vars:
+    ah: "Ahmad Hassan"
+  tasks:
+  - name: this is set_Facts example
+    set_fact:
+      xyz: "Alnafi"
+
+  - name: Printing the variable from vars 
+    debug:
+      var: abd
+  - name: Print the variable from set_facts
+    debug:
+      var: xyz
+
+
+
+if you define variable and set fact with same name then set fact will overwirte it.
+
+
+vim set_var_diff.yml
+
+- name: This is example of vars and set_facts 
+  hosts: localhost
+  gather_facts: false
+  vars:
+    ah: "Ahmad Hassan"
+  tasks:
+  - name: this is set_Facts example
+    set_fact:
+      ah: "Alnafi"
+
+  - name: Printing the variable from vars 
+    debug:
+      var: ah
+  - name: Print the variable from set_facts
+    debug:
+      var: ah
+
+
+now at both places Alnafi will be displayed
+
+

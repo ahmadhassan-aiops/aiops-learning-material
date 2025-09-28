@@ -1,0 +1,403 @@
+
+
+Lecture 38:-
+
+import csv
+
+mypath=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 37\servershealth.csv"
+with open(mypath) as datafile:
+    data=csv.reader(datafile)
+    print(data)
+
+
+O/p:-
+<_csv.reader object at 0x00000219D22FE440>
+
+
+import csv
+
+mypath=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 37\servershealth.csv"
+with open(mypath) as datafile:
+    data=csv.reader(datafile)
+    print(list(data))
+
+
+O/p:-
+
+[['ï»¿Srno', 'IP address ', 'OS', 'MAC', 'avail_memory'], ['1', '10.226.17.95', 'AIX', 'd6:60:7b:6e:f6:0c', '52 GB'], ['2', '10.226.17.96', 'RHEL', 'd6:60:7b:6e:f6:1c', '32 GB'], ['3', '10.226.17.97', 'AIX', 'd6:60:7b:6e:f6:2c', '20 GB'], ['4', '10.226.17.98', 'RHEL', 'd6:60:7b:6e:f6:3c', '30 GB'], ['5', '10.226.17.99', 'RHEL', 'd6:60:7b:6e:f6:4c', '10 GB'], ['6', '10.226.17.100', 'SOLARIS', 'd6:60:7b:6e:f6:5c', '5 GB'], ['7', '10.226.17.101', 'AIX', 'd6:60:7b:6e:f6:6c', '2 GB'], ['8', '10.226.17.102', 'AIX', 'd6:60:7b:6e:f6:7c', '3 GB'], ['9', '10.226.17.103', 'RHEL', 'd6:60:7b:6e:f6:8c', '14 GB'], ['10', '10.226.17.104', 'UBUNTU', 'd6:60:7b:6e:f6:8c', '25 GB']]
+
+
+O/p:-
+[['ï»¿Srno', 'IP address ', 'OS', 'MAC', 'avail_memory'], ['1', '10.226.17.95', 'AIX', 'd6:60:7b:6e:f6:0c', '52 GB'], []]
+
+
+#Wrong method
+[['ï»¿Srno-IP address -OS-MAC-avail_memory'], ['1-10.226.17.95-AIX-d6:60:7b:6e:f6:0c-52 GB'], []]
+
+
+
+[['ï»¿Srno', 'IP address ', 'OS', 'MAC', 'avail_memory'], ['1', '10.226.17.95', 'AIX', 'd6:60:7b:6e:f6:0c', '52 GB'], []]
+
+
+#Write 
+
+
+cav data
+Srno,IP address ,OS,MAC,avail_memory
+1,10.226.17.95,AIX,d6:60:7b:6e:f6:0c,52 GB
+2,10.226.17.96,RHEL,d6:60:7b:6e:f6:1c,32 GB
+3,10.226.17.97,AIX,d6:60:7b:6e:f6:2c,20 GB
+4,10.226.17.98,RHEL,d6:60:7b:6e:f6:3c,30 GB
+5,10.226.17.99,RHEL,d6:60:7b:6e:f6:4c,10 GB
+6,10.226.17.100,SOLARIS,d6:60:7b:6e:f6:5c,5 GB
+7,10.226.17.101,AIX,d6:60:7b:6e:f6:6c,2 GB
+8,10.226.17.102,AIX,d6:60:7b:6e:f6:7c,3 GB
+9,10.226.17.103,RHEL,d6:60:7b:6e:f6:8c,14 GB
+10,10.226.17.104,UBUNTU,d6:60:7b:6e:f6:8c,25 GB
+
+
+import csv
+
+
+mypath=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 38\servershealth.csv"
+mylist=[11,'10.226.17.107','RHEL','d6:60:7b:6e:f6:9c','24 GB']
+with open(mypath,'a') as datafile:
+    data_write=csv.writer(datafile)
+    data_write.writerow(mylist)
+
+O/p:-
+Srno,IP address ,OS,MAC,avail_memory
+1,10.226.17.95,AIX,d6:60:7b:6e:f6:0c,52 GB
+2,10.226.17.96,RHEL,d6:60:7b:6e:f6:1c,32 GB
+3,10.226.17.97,AIX,d6:60:7b:6e:f6:2c,20 GB
+4,10.226.17.98,RHEL,d6:60:7b:6e:f6:3c,30 GB
+5,10.226.17.99,RHEL,d6:60:7b:6e:f6:4c,10 GB
+6,10.226.17.100,SOLARIS,d6:60:7b:6e:f6:5c,5 GB
+7,10.226.17.101,AIX,d6:60:7b:6e:f6:6c,2 GB
+8,10.226.17.102,AIX,d6:60:7b:6e:f6:7c,3 GB
+9,10.226.17.103,RHEL,d6:60:7b:6e:f6:8c,14 GB
+10,10.226.17.104,UBUNTU,d6:60:7b:6e:f6:8c,25 GB
+11,10.226.17.107,RHEL,d6:60:7b:6e:f6:9c,24 GB
+
+
+#python3
+script.py
+mylist=[1,'Abdeali','Dodiya','Bangalore']
+mylist2=[2,'Ali','Dodia','Surat']
+
+
+import csv
+with open('myfile.csv','w') as newfile:
+    data_write=csv.writer(newfile)
+    data_write.writerow(mylist)
+    data_write.writerow(mylist2)
+O/p:
+1,Abdeali,Dodiya,Bangalore
+
+2,Ali,Dodia,Surat
+
+#####
+
+Python2
+root@abdealidodia:~# cat mytest.py
+mylist=[1,'Abdeali','Dodiya','Bangalore']
+mylist2=[2,'Ali','Dodia','Surat']
+
+
+import csv
+with open('myfile.csv','wb') as newfile:
+    data_write=csv.writer(newfile)
+    data_write.writerow(mylist)
+    data_write.writerow(mylist2)
+
+
+root@abdealidodia:~# cat myfile.csv
+1,Abdeali,Dodiya,Bangalore
+2,Ali,Dodia,Surat
+
+
+
+writerow VS writerows 
+writerow --> mylist=[1,'Abdeali','Dodiya','Bangalore']
+writerows --> mylist=[[1,'Abdeali','Dodiya','Bangalore'] ,[2,'Ali','Dodia','Surat']]
+
+
+Writerow:-
+mylist=[1,'Abdeali','Dodiya','Bangalore']
+mylist2=[2,'Ali','Dodia','Surat']
+#myfinal=[[1,'Abdeali','Dodiya','Bangalore'] ,[2,'Ali','Dodia','Surat']]
+
+
+import csv
+with open('myfile.csv','w',newline='') as newfile:
+    data_write=csv.writer(newfile)
+    #data_write.writerow(myfinal)
+    data_write.writerow(mylist)
+    data_write.writerow(mylist2)
+
+O/p:-
+1,Abdeali,Dodiya,Bangalore
+2,Ali,Dodia,Surat
+
+
+
+Writerow:-
+mylist=[1,'Abdeali','Dodiya','Bangalore']
+mylist2=[2,'Ali','Dodia','Surat']
+myfinal=[[1,'Abdeali','Dodiya','Bangalore'] ,[2,'Ali','Dodia','Surat']]
+
+
+import csv
+with open('myfile.csv','w',newline='') as newfile:
+    data_write=csv.writer(newfile)
+    data_write.writerow(myfinal)
+
+O/p:-
+Not good 
+"[1, 'Abdeali', 'Dodiya', 'Bangalore']","[2, 'Ali', 'Dodia', 'Surat']"
+
+
+
+#Writerows :-
+mylist=[1,'Abdeali','Dodiya','Bangalore']
+mylist2=[2,'Ali','Dodia','Surat']
+myfinal=[[1,'Abdeali','Dodiya','Bangalore'] ,[2,'Ali','Dodia','Surat']]
+
+
+import csv
+with open('myfile.csv','w',newline='') as newfile:
+    data_write=csv.writer(newfile)
+    data_write.writerows(myfinal)
+
+o/p:-
+1,Abdeali,Dodiya,Bangalore
+2,Ali,Dodia,Surat
+
+
+
+
+
+#############
+import csv
+
+mypath=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 38\servershealth.csv"
+
+with open(mypath) as datafile:
+    data=csv.reader(datafile)
+    for each in data:
+        print(each)
+
+O/p:-
+Srno,IP address ,OS,MAC,avail_memory
+1,10.226.17.95,AIX,d6:60:7b:6e:f6:0c,52 GB
+2,10.226.17.96,RHEL,d6:60:7b:6e:f6:1c,32 GB
+3,10.226.17.97,AIX,d6:60:7b:6e:f6:2c,20 GB
+4,10.226.17.98,RHEL,d6:60:7b:6e:f6:3c,30 GB
+5,10.226.17.99,RHEL,d6:60:7b:6e:f6:4c,10 GB
+6,10.226.17.100,SOLARIS,d6:60:7b:6e:f6:5c,5 GB
+7,10.226.17.101,AIX,d6:60:7b:6e:f6:6c,2 GB
+8,10.226.17.102,AIX,d6:60:7b:6e:f6:7c,3 GB
+9,10.226.17.103,RHEL,d6:60:7b:6e:f6:8c,14 GB
+10,10.226.17.104,UBUNTU,d6:60:7b:6e:f6:8c,25 GB
+11,10.226.17.107,RHEL,d6:60:7b:6e:f6:9c,24 GB
+
+
+
+Header file 
+import csv
+
+mypath=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 38\servershealth.csv"
+
+with open(mypath) as datafile:
+    data=csv.reader(datafile)
+    data=list(data)
+    print(data[0])
+
+O/p:-
+['Srno', 'IP address ', 'OS', 'MAC', 'avail_memory']
+
+
+
+import csv
+
+mypath=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 38\servershealth.csv"
+
+with open(mypath) as datafile:
+    data=csv.reader(datafile)
+    header=next(data)
+    print(header)
+
+O/p:-
+['Srno', 'IP address ', 'OS', 'MAC', 'avail_memory']
+
+
+
+
+#Display csv file without header
+import csv
+
+mypath=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 38\servershealth.csv"
+
+with open(mypath) as datafile:
+    data=csv.reader(datafile)
+    header=next(data)
+    for each in data:
+        print(each)
+
+
+O/p:-
+['1', '10.226.17.95', 'AIX', 'd6:60:7b:6e:f6:0c', '52 GB']
+['2', '10.226.17.96', 'RHEL', 'd6:60:7b:6e:f6:1c', '32 GB']
+['3', '10.226.17.97', 'AIX', 'd6:60:7b:6e:f6:2c', '20 GB']
+['4', '10.226.17.98', 'RHEL', 'd6:60:7b:6e:f6:3c', '30 GB']
+['5', '10.226.17.99', 'RHEL', 'd6:60:7b:6e:f6:4c', '10 GB']
+['6', '10.226.17.100', 'SOLARIS', 'd6:60:7b:6e:f6:5c', '5 GB']
+['7', '10.226.17.101', 'AIX', 'd6:60:7b:6e:f6:6c', '2 GB']
+['8', '10.226.17.102', 'AIX', 'd6:60:7b:6e:f6:7c', '3 GB']
+['9', '10.226.17.103', 'RHEL', 'd6:60:7b:6e:f6:8c', '14 GB']
+['10', '10.226.17.104', 'UBUNTU', 'd6:60:7b:6e:f6:8c', '25 GB']
+['11', '10.226.17.107', 'RHEL', 'd6:60:7b:6e:f6:9c', '24 GB']
+
+
+
+
+
+#I want to display only RHEL OS details 
+import csv
+
+mypath=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 38\servershealth.csv"
+
+with open(mypath) as datafile:
+    data=csv.reader(datafile)
+    header=next(data)
+    for each in data:
+        if each[2] == 'RHEL':
+            print(each)
+
+O/p:-
+['2', '10.226.17.96', 'RHEL', 'd6:60:7b:6e:f6:1c', '32 GB']
+['4', '10.226.17.98', 'RHEL', 'd6:60:7b:6e:f6:3c', '30 GB']
+['5', '10.226.17.99', 'RHEL', 'd6:60:7b:6e:f6:4c', '10 GB']
+['9', '10.226.17.103', 'RHEL', 'd6:60:7b:6e:f6:8c', '14 GB']
+['11', '10.226.17.107', 'RHEL', 'd6:60:7b:6e:f6:9c', '24 GB']
+
+
+
+###
+
+mypath=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 38\servershealth.csv"
+
+mydata=[]
+with open(mypath) as datafile:
+    data=csv.reader(datafile)
+    header=next(data)
+    for each in data:
+        if each[2] == 'RHEL':
+            mydata.append(each)
+
+print("#################")
+print(mydata)
+
+O/p:
+[['2', '10.226.17.96', 'RHEL', 'd6:60:7b:6e:f6:1c', '32 GB'], ['4', '10.226.17.98', 'RHEL', 'd6:60:7b:6e:f6:3c', '30 GB'], ['5', '10.226.17.99', 'RHEL', 'd6:60:7b:6e:f6:4c', '10 GB'], ['9', '10.226.17.103', 'RHEL', 'd6:60:7b:6e:f6:8c', '14 GB'], ['11', '10.226.17.107', 'RHEL', 'd6:60:7b:6e:f6:9c', '24 GB']]
+
+
+
+
+
+#I want to stored my data into csv file
+
+import csv
+
+mypath=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 38\servershealth.csv"
+
+mydata=[]
+with open(mypath) as datafile:
+    data=csv.reader(datafile)
+    header=next(data)
+    for each in data:
+        if each[2] == 'RHEL':
+            mydata.append(each)
+
+print("#################")
+print(mydata)
+with open('mynewfile.csv','w',newline='') as datafile:
+    data=csv.writer(datafile)
+    data.writerow(header)
+    data.writerows(mydata)
+
+
+O/p:-
+Srno,IP address ,OS,MAC,avail_memory
+2,10.226.17.96,RHEL,d6:60:7b:6e:f6:1c,32 GB
+4,10.226.17.98,RHEL,d6:60:7b:6e:f6:3c,30 GB
+5,10.226.17.99,RHEL,d6:60:7b:6e:f6:4c,10 GB
+9,10.226.17.103,RHEL,d6:60:7b:6e:f6:8c,14 GB
+11,10.226.17.107,RHEL,d6:60:7b:6e:f6:9c,24 GB
+
+
+
+###TASK TIME ######
+I want to display serverlist whos less than 10 GB available memrory in mention CSV file.
+
+
+O/p:-
+Srno,IP address ,OS,MAC,avail_memory
+6,10.226.17.100,SOLARIS,d6:60:7b:6e:f6:5c,5 GB
+7,10.226.17.101,AIX,d6:60:7b:6e:f6:6c,2 GB
+8,10.226.17.102,AIX,d6:60:7b:6e:f6:7c,3 GB
+
+
+
+
+
+
+
+
+#I want to disaply IP address only which belong to RHEL OS .
+import csv
+
+mypath=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 38\servershealth.csv"
+
+with open(mypath) as datafile:
+    data=csv.reader(datafile)
+    header=next(data)
+    for each in data:
+        if each[2] == 'RHEL':
+            print(each[1])
+
+
+O/p:-
+10.226.17.96
+10.226.17.98
+10.226.17.99
+10.226.17.103
+10.226.17.107
+
+
+import csv
+
+mypath=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 38\servershealth.csv"
+mydata=[]
+with open(mypath) as datafile:
+    data=csv.reader(datafile)
+    for each in data:
+        if each[2] == 'RHEL':
+            mydata.append(each[1])
+
+print(mydata)
+O/p:-
+['10.226.17.96', '10.226.17.98', '10.226.17.99', '10.226.17.103', '10.226.17.107']
+
+
+
+
+
+
+
+
+
+
+
+
+

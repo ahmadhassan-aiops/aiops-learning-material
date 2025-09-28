@@ -1,0 +1,159 @@
+
+
+Lecture 29 :-
+
+
+Types of error:-
+1. Syntax Error
+2. Logic Error 
+3. Runtime error Or Exception handling 
+
+1. Syntax Error :-
+  print("Abdeali Dodia"
+         ^
+SyntaxError: '(' was never closed
+
+You cant handle 
+
+
+2. Logic Error 
+a=100
+b=20
+
+if a>b:
+    print("a is big")
+else:
+    print("b is  big")
+
+
+#a=100
+b=100
+
+if a>b:
+    print("a is big")
+elif a==b:
+    print(" Both a and b is same")
+else:
+    print("b is  big")
+
+
+
+3. Exception handling :-
+
+An Exception is error that happens during the execution of the program. Python generateds exception than could be handled. You an define your own error 
+
+its also called runtime error.
+
+
+a. NameError:-
+
+There are no error :-
+x="ABD"
+print("My value is ", x)
+
+O/p:
+My value is  ABD
+
+
+Error :-
+x="ABD"
+print("My value is ", x)
+print("My value is ", y)
+
+O/p:-NameError: name 'y' is not defined
+
+
+try:
+	you can paste here your program
+except:
+	you can print your own error 
+
+Error handling or exception handling 
+try:
+    x = "ABD"
+    print("My value is ", x)
+    print("My value is ", y)
+except:
+    print("Something having issue")
+
+O/p:
+
+My value is  ABD
+Something having issue
+
+
+
+
+
+try:
+    #x = "ABD"
+    y="Ali"
+    print("My value is ", x)
+    print("My value is ", y)
+except Exception as e:
+    print("Something having issue",e)
+
+O/p:-
+Something having issue name 'x' is not defined
+
+
+
+2. Index Error :-
+We are checking Without Error :-
+mylist=[2,7,8,9]
+print(mylist)
+
+o/p:[2, 7, 8, 9]
+
+
+
+We are checking With Error :-
+mylist=[2,7,8,9]
+print(mylist[4])
+
+O/p:
+IndexError: list index out of range
+
+
+With Execption handle:-
+try:
+    mylist=[2,7,8,9]
+    print(mylist[4])
+except Exception as e:
+    print("Something issue : ",e)
+
+O/p:-
+Something issue :  list index out of range
+
+
+
+
+3. Import Error:-
+
+
+
+You can handle via execption handle:-
+import osss
+
+O/p:-ModuleNotFoundError: No module named 'osss'
+
+
+try:
+    import oss
+    os.system('dir')
+except Exception as e:
+    print('Something issue :' ,e)
+O/p:-
+Something issue : No module named 'oss'
+
+
+
+
+
+
+
+
+
+
+
+

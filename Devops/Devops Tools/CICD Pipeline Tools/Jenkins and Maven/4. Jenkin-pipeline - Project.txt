@@ -1,0 +1,114 @@
+
+# 🚀 Jenkins Pipeline Project (GitHub Perspective)
+
+### 🔑 What is a Pipeline in Jenkins?
+
+* A **Pipeline** = code that describes your entire CI/CD process (build → test → deploy).
+* It is written in a file called **`Jenkinsfile`** (kept inside your GitHub repo).
+* Jenkins reads the Jenkinsfile and runs steps automatically whenever code changes.
+
+---
+
+## 1️⃣ Workflow from GitHub to Jenkins
+
+1. Developer pushes code (including `Jenkinsfile`) → GitHub repo.
+2. GitHub sends a **webhook** to Jenkins.
+3. Jenkins job is triggered → reads the `Jenkinsfile`.
+4. Runs pipeline stages (build, test, deploy, etc.).
+
+---
+
+## 2️⃣ Jenkins Setup for Pipeline Project
+
+1. Go to Jenkins Dashboard → **New Item** → Select **Pipeline**.
+2. Name it: `GitHub-Pipeline-Project`.
+3. Under **Pipeline → Definition** choose:
+
+   * **Pipeline script from SCM**
+   * SCM: **Git**
+   * Repo URL:
+
+     ```
+     https://github.com/username/myrepo.git
+     ```
+   * Script Path: `Jenkinsfile` (default).
+
+---
+
+## 3️⃣ Create a Jenkinsfile in GitHub Repo
+
+Example `Jenkinsfile`:
+
+```groovy
+pipeline {
+    agent any   // run on any available Jenkins agent/node
+    stages {
+        stage('Clone Repo') {
+            steps {
+                git branch: 'main', url: 'https://github.com/username/myrepo.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                echo "Building the project..."
+                sh 'mvn clean install'  // example for Java project
+            }
+        }
+        stage('Test') {
+            steps {
+                echo "Running tests..."
+                sh 'mvn test'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo "Deploying application..."
+                // deploy script/command here
+            }
+        }
+    }
+}
+```
+
+📌 Notes:
+
+* `agent any` → runs on any Jenkins server/node.
+* `stages {}` → sections like Build, Test, Deploy.
+* Inside `steps {}` → real commands (Linux shell commands).
+
+---
+
+## 4️⃣ GitHub Webhook
+
+* In GitHub Repo → **Settings → Webhooks → Add webhook**.
+* Payload URL:
+
+  ```
+  http://<jenkins-server-ip>:8080/github-webhook/
+  ```
+* Content type: `application/json`
+* Event: **Just the push event**
+
+---
+
+## 5️⃣ Run the Pipeline
+
+1. Push code + Jenkinsfile to GitHub.
+2. GitHub webhook notifies Jenkins.
+3. Jenkins job starts → runs the pipeline stages → shows results in Blue/Red (success/fail).
+
+---
+
+### 🧩 Small Real-World Example
+
+Repo: **simple-node-app**
+
+* Jenkinsfile runs:
+
+  * `npm install`
+  * `npm test`
+  * Deploy script
+
+Every time code changes in GitHub → Jenkins automatically builds & tests → then deploys if successful.
+
+---

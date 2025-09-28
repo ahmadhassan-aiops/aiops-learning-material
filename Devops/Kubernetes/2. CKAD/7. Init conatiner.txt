@@ -1,0 +1,29 @@
+
+
+[root@client1 ahmad]# cat init-container.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: init-container-pod
+spec:
+  initContainers:
+  - name: init-container
+    image: busybox:stable
+    command: ["sh", "-c", "sleep 60"]
+  containers:
+  - name: main-container
+    image: nginx:stable
+
+--------------------------------------
+
+
+
+[root@client1 ahmad]# kubectl get po -w
+NAME                 READY   STATUS     RESTARTS   AGE
+init-container-pod   0/1     Init:0/1   0          57s
+init-container-pod   0/1     PodInitializing   0          62s
+init-container-pod   1/1     Running           0          63s
+
+--------------------------------------
+
+init container doesnot make this pod multi-conatiner based!!

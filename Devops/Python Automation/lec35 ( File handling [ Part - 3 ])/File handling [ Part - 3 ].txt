@@ -1,0 +1,195 @@
+
+
+Lecture 35:-
+
+JSON :-
+json is javascript object notation
+it is data format which is structure data.
+
+Example:-
+my.json
+{
+	"password_nginx": "abd$123",
+	"password_apache": "W3lcome1234",
+	"password_tomcat": "abd#123",
+	"password_ansible": "abd@123"
+}
+
+Website: http://jsonviewer.stack.hu/
+https://jsoneditoronline.org/#left=local.madusi&right=local.netibu
+
+with open("my.json") as file:
+    data=file.read()
+    print(data)
+O/p:-
+{
+	"password_nginx": "abd$123",
+	"password_apache": "W3lcome1234",
+	"password_tomcat": "abd#123",
+	"password_ansible": "abd@123"
+}
+
+
+
+
+
+#How to convert JSON to dictionary format 
+jsonfile=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 35\my.json"
+
+with open(jsonfile,"r") as jf:
+    my_dict=json.load(jf)
+    print(my_dict)
+
+Error :-
+   my_dict=json.load(jf)
+NameError: name 'json' is not defined
+
+
+###
+import json
+jsonfile=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 35\my.json"
+
+with open(jsonfile,"r") as jf:
+    my_dict= json.load(jf)
+    print(my_dict)
+
+for i in my_dict:
+    print(i)
+
+
+
+###
+import json
+jsonfile=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 35\my.json"
+
+with open(jsonfile,"r") as jf:
+    my_dict= json.load(jf)
+    print(my_dict)
+
+password_nginx=(my_dict['password_nginx'])
+print(password_nginx)
+
+print(f"My NGINX username is : Abdea
+
+
+O/p:-
+{'password_nginx': 'abd$123', 'password_apache': 'W3lcome1234', 'password_tomcat': 'abd#123', 'password_ansible': 'abd@123'}
+abd$123
+My NGINX username is : Abdeali and My password is abd$123
+
+
+
+
+
+
+import json
+jsonfile=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 35\my.json"
+
+with open(jsonfile,"r") as jf:
+    my_dict= json.load(jf)
+    print(my_dict)
+
+password_nginx=(my_dict['password_nginx'])
+print(password_nginx)
+
+print(f"My NGINX username is : Abdeali and My password is {password_nginx}")
+for i in my_dict:
+    print(i)
+
+for k,v in my_dict.items():
+    print(k,v)
+
+O/p:-
+{'password_nginx': 'abd$123', 'password_apache': 'W3lcome1234', 'password_tomcat': 'abd#123', 'password_ansible': 'abd@123'}
+abd$123
+My NGINX username is : Abdeali and My password is abd$123
+password_nginx
+password_apache
+password_tomcat
+password_ansible
+password_nginx abd$123
+password_apache W3lcome1234
+password_tomcat abd#123
+password_ansible abd@123
+
+
+user.json
+[
+  {
+    "Name": "CentOS",
+    "Version": "7",
+    "Install": "yum",
+    "Owner": "Redhat",
+    "Kernel": "3.10"
+  },
+  {
+    "Name": "Ubuntu",
+    "Version": "17.10",
+    "Install": "apt",
+    "Owner": "Canonical",
+    "Kernel": "4.13"
+  }
+
+]
+
+
+import json
+jsonfile=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 35\os.json"
+
+with open(jsonfile,"r") as jf:
+    my_dict= json.load(jf)
+   #print(my_dict)
+
+for i in my_dict:
+    print(f"My dictionary is {i}")
+
+
+O/p:-
+My dictionary is {'Name': 'CentOS', 'Version': '7', 'Install': 'yum', 'Owner': 'Redhat', 'Kernel': '3.10'}
+My dictionary is {'Name': 'Ubuntu', 'Version': '17.10', 'Install': 'apt', 'Owner': 'Canonical', 'Kernel': '4.13'}
+
+
+
+import json
+jsonfile=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 35\os.json"
+
+with open(jsonfile,"r") as jf:
+    my_dict= json.load(jf)
+   #print(my_dict)
+
+for i in my_dict:
+    #print(f"My dictionary is {i}")
+    for k,v in i.items():
+        print(f"My key is {k}")
+        print(f"My value is {v}")
+
+O/p:-
+My key is Name
+My value is CentOS
+My key is Version
+My value is 7
+My key is Install
+My value is yum
+My key is Owner
+My value is Redhat
+My key is Kernel
+My value is 3.10
+My key is Name
+My value is Ubuntu
+My key is Version
+My value is 17.10
+My key is Install
+My value is apt
+My key is Owner
+My value is Canonical
+My key is Kernel
+My value is 4.13
+
+
+
+
+
+
+
+
+

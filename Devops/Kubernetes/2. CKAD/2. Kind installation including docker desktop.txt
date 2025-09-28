@@ -1,0 +1,137 @@
+
+
+# we can follow instructions for installing kubectl from this official website
+https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-kubectl-binary-with-curl-on-linux
+
+# we can follow instructions for installing docker desktop from this official website
+(first install -- sudo dnf install dbus-x11) and then follow:
+https://docs.docker.com/desktop/setup/install/linux/rhel/
+
+# we can follow instructions for installing KIND from this official website
+https://kind.sigs.k8s.io/docs/user/quick-start/
+
+
+----------------------------------------
+
+[root@client1 ahmad]# kind create cluster
+
+Creating cluster "kind" ...
+ ✓ Ensuring node image (kindest/node:v1.32.2) 🖼
+ ✓ Preparing nodes 📦
+ ✓ Writing configuration 📜
+ ✓ Starting control-plane 🕹️
+ ✓ Installing CNI 🔌
+ ✓ Installing StorageClass 💾
+Set kubectl context to "kind-kind"
+You can now use your cluster with:
+
+kubectl cluster-info --context kind-kind
+
+Thanks for using kind! 😊
+
+------------------------------------------
+
+
+[root@client1 ahmad]# kind get clusters
+kind
+
+
+----------------------------------------
+kubectl get all -A
+
+---------------------------------------
+
+[root@client1 ahmad]# kind delete cluster --name kind
+Deleting cluster "kind" ...
+Deleted nodes: ["kind-control-plane"]
+
+--------------------------------------------------
+
+ kind create cluster --name my-clsuter
+Creating cluster "my-clsuter" ...
+ ✓ Ensuring node image (kindest/node:v1.32.2) 🖼
+ ✓ Preparing nodes 📦
+ ✓ Writing configuration 📜
+ ✓ Starting control-plane 🕹️
+ ✓ Installing CNI 🔌
+ ✓ Installing StorageClass 💾
+Set kubectl context to "kind-my-clsuter"
+You can now use your cluster with:
+
+kubectl cluster-info --context kind-my-clsuter
+
+Not sure what to do next? 😅  Check out https://kind.sigs.k8s.io/docs/user/quick-start/
+
+--------------------------------------------------
+
+
+[root@client1 ahmad]# kubectl get nodes
+NAME                       STATUS   ROLES           AGE   VERSION
+my-clsuter-control-plane   Ready    control-plane   42s   v1.32.2
+--------------------------------------------------
+
+kubectl get nodes -o wide
+kubectl get nodes -o wide -A
+
+--------------------------------------------------
+
+[root@client1 ahmad]# cat kind-config.yml
+kind: Cluster
+name: al-nafi
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+  - role: worker
+  - role: worker
+--------------------------------------------------
+kind create cluster --config kind-config.yml
+Creating cluster "al-nafi" ...
+ ✓ Ensuring node image (kindest/node:v1.32.2) 🖼
+ ✓ Preparing nodes 📦 📦 📦
+ ✓ Writing configuration 📜
+ ✓ Starting control-plane 🕹️
+ ✓ Installing CNI 🔌
+ ✓ Installing StorageClass 💾
+ ✓ Joining worker nodes 🚜
+Set kubectl context to "kind-al-nafi"
+You can now use your cluster with:
+
+kubectl cluster-info --context kind-al-nafi
+
+Have a nice day! 👋
+
+--------------------------------------------------
+
+ kubectl get nodes
+NAME                    STATUS   ROLES           AGE   VERSION
+al-nafi-control-plane   Ready    control-plane   85m   v1.32.2
+al-nafi-worker          Ready    <none>          84m   v1.32.2
+al-nafi-worker2         Ready    <none>          84m   v1.32.2
+
+--------------------------------------------------
+vim config.yml
+
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: al-nafi
+nodes:
+  - role: control-plane
+    image: kindest/node:v1.26.0
+  - role: control-plane
+    image: kindest/node:v1.26.0
+  - role: control-plane
+    image: kindest/node:v1.26.0
+  - role: worker
+    image: kindest/node:v1.25.3
+  - role: worker
+    image: kindest/node:v1.25.3
+  - role: worker
+    image: kindest/node:v1.25.3
+--------------------------------------------------
+
+
+
+
+
+
+

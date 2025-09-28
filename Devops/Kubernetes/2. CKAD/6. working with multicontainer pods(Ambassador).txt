@@ -1,0 +1,180 @@
+vim ambassador.yaml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ambassador-webserver
+  labels:
+    app: ambassador-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx:stable
+    ports:
+    - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ambassador-service
+spec:
+  selector:
+    app: ambassador-pod
+  ports:
+  - protocol: TCP
+    port: 8081
+    targetPort: 80
+
+
+-----------------------------------------------
+
+
+[root@client1 ahmad]# kubectl get all
+NAME                       READY   STATUS    RESTARTS      AGE
+pod/sidecar-practice-pod   2/2     Running   2 (16m ago)   16h
+
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   16h
+[root@client1 ahmad]# kubectl get svc
+NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   16h
+[root@client1 ahmad]#
+
+-----------------------------------------------
+
+[root@client1 ahmad]# kubectl apply -f ambassador.yaml
+pod/ambassador-webserver created
+service/ambassador-service created
+[root@client1 ahmad]# kubectl get svc
+NAME                 TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)    AGE
+ambassador-service   ClusterIP   10.96.13.43   <none>        8081/TCP   9s
+kubernetes           ClusterIP   10.96.0.1     <none>        443/TCP    16h
+[root@client1 ahmad]# kubectl get pods
+NAME                   READY   STATUS              RESTARTS      AGE
+ambassador-webserver   0/1     ContainerCreating   0             15s
+sidecar-practice-pod   2/2     Running             2 (18m ago)   16h
+[root@client1 ahmad]#
+
+-----------------------------------------------
+
+[root@client1 ahmad]# kubectl get po,svc
+NAME                       READY   STATUS              RESTARTS      AGE
+pod/ambassador-webserver   0/1     ContainerCreating   0             50s
+pod/sidecar-practice-pod   2/2     Running             2 (19m ago)   16h
+
+NAME                         TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)    AGE
+service/ambassador-service   ClusterIP   10.96.13.43   <none>        8081/TCP   50s
+service/kubernetes           ClusterIP   10.96.0.1     <none>        443/TCP    16h
+
+-----------------------------------------------
+
+
+[root@client1 ahmad]# kubectl get po
+NAME                   READY   STATUS    RESTARTS      AGE
+ambassador-webserver   1/1     Running   0             3m42s
+sidecar-practice-pod   2/2     Running   2 (22m ago)   16h
+[root@client1 ahmad]# kubectl describe svc ambassador-service
+Name:                     ambassador-service
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 app=ambassador-pod
+Type:                     ClusterIP
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.96.13.43
+IPs:                      10.96.13.43
+Port:                     <unset>  8081/TCP
+TargetPort:               80/TCP
+Endpoints:                10.244.1.3:80
+Session Affinity:         None
+Internal Traffic Policy:  Cluster
+Events:                   <none>
+[root@client1 ahmad]# kubectl get po -o wide
+NAME                   READY   STATUS    RESTARTS      AGE    IP           NODE                NOMINATED NODE   READINESS GATES
+ambassador-webserver   1/1     Running   0             4m4s   10.244.1.3   my-cluster-worker   <none>           <none>
+sidecar-practice-pod   2/2     Running   2 (22m ago)   16h    10.244.1.2   my-cluster-worker   <none>           <none>
+
+-----------------------------------------------
+
+[root@client1 ahmad]# kubectl apply -f ambassador-test.yaml
+pod/ambassador-test-pod created
+configmap/haproxy-config created
+[root@client1 ahmad]# cat ambassador-test.yaml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ambassador-test-pod
+spec:
+  containers:
+  - name: main-container
+    image: curlimages/curl
+    command: ['sh', '-c', 'while true; do curl localhost:8080; sleep 5; done']
+  - name: ambassador-container
+    image: haproxy:2.4
+    volumeMounts:
+    - name: config
+      mountPath: /usr/local/etc/haproxy/
+  volumes:
+  - name: config
+    configMap:
+      name: haproxy-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: haproxy-config
+data:
+  haproxy.cfg: |
+    global
+      maxconn 256
+
+    defaults
+      mode http
+      timeout connect 5s
+      timeout client  10s
+      timeout server  10s
+
+    frontend ambassador
+      bind *:8080
+      default_backend ambassador_service
+
+    backend ambassador_service
+      server svc ambassador-service:8081
+
+
+
+-----------------------------------------------
+
+kubectl apply -f ambassador-test.yaml
+pod/ambassador-test-pod created
+configmap/haproxy-config created
+
+-----------------------------------------------
+[root@client1 ahmad]# kubectl get configmap
+NAME               DATA   AGE
+haproxy-config     1      93s
+kube-root-ca.crt   1      17h
+-----------------------------------------------
+
+
+[root@client1 ahmad]# kubectl get pods
+NAME                   READY   STATUS    RESTARTS      AGE
+ambassador-test-pod    2/2     Running   0             8s
+ambassador-webserver   1/1     Running   0             42m
+sidecar-practice-pod   2/2     Running   2 (61m ago)   17h
+-----------------------------------------------
+
+
+You're setting up two pods that communicate with each other using a local HAProxy proxy setup. 
+The **`ambassador-webserver`** pod runs an Nginx web server on port 80, and it's exposed inside the cluster via a **Service** named `ambassador-service` 
+on port **8081**. Separately, the **`ambassador-test-pod`** runs two containers: one runs a loop that uses `curl` 
+to repeatedly send HTTP requests to `localhost:8080`, and the other is a **HAProxy** container that listens on port 8080 
+and forwards those requests to the `ambassador-service` (which points to the web server pod). 
+This setup allows the main container to reach the external service **indirectly** through the HAProxy sidecar container, 
+simulating a pattern often used for things like traffic shaping, observability, or service mesh.
+
+
+
+

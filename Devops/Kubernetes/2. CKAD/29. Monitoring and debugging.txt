@@ -1,0 +1,66 @@
+
+
+
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+
+
+kubectl patch deployment metrics-server -n kube-system \
+  --type='json' \
+  -p='[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'
+
+
+(In minikube)
+minikube addons enable metrics-server
+
+-----------------------------------------------
+
+kubectl top nodes
+kubectl top pods
+
+
+
+-----------------------------------------------
+
+ kubectl create deployment test-dep --image nginx --replicas 8
+deployment.apps/test-dep created
+[root@client1 ahmad]# kubectl get deploy
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+test-dep   6/8     8            6           7s
+[root@client1 ahmad]# kubectl get po
+NAME                        READY   STATUS    RESTARTS   AGE
+test-dep-69b5c46679-4rnk4   1/1     Running   0          13s
+test-dep-69b5c46679-6dd6g   1/1     Running   0          13s
+test-dep-69b5c46679-9wh8r   1/1     Running   0          13s
+test-dep-69b5c46679-clfnt   1/1     Running   0          13s
+test-dep-69b5c46679-gbnw5   1/1     Running   0          13s
+test-dep-69b5c46679-j8vcx   1/1     Running   0          13s
+test-dep-69b5c46679-jz8gx   1/1     Running   0          13s
+test-dep-69b5c46679-lkxww   1/1     Running   0          13s
+
+
+-----------------------------------------------
+
+kubectl top pods
+NAME                        CPU(cores)   MEMORY(bytes)
+test-dep-69b5c46679-4rnk4   0m           2Mi
+test-dep-69b5c46679-6dd6g   5m           2Mi
+test-dep-69b5c46679-9wh8r   4m           2Mi
+test-dep-69b5c46679-clfnt   6m           13Mi
+test-dep-69b5c46679-gbnw5   0m           13Mi
+test-dep-69b5c46679-j8vcx   5m           2Mi
+test-dep-69b5c46679-jz8gx   0m           2Mi
+test-dep-69b5c46679-lkxww   4m           2Mi
+[root@client1 ahmad]# kubectl top nodes
+NAME                 CPU(cores)   CPU(%)   MEMORY(bytes)   MEMORY(%)
+kind-control-plane   56m          2%       634Mi           17%
+kind-worker          15m          0%       278Mi           7%
+kind-worker2         12m          0%       242Mi           6%
+
+
+-----------------------------------------------
+
+
+
+
+

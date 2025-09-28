@@ -1,0 +1,61 @@
+
+First connect your teamcity with github using github authApp. 
+
+
+Since TeamCity is running on a **CentOS VM inside VirtualBox (NAT mode, port 8111 forwarded)**, GitHub integration only works if the VM can 
+resolve external domains. By default, `/etc/resolv.conf` pointed to the host’s DNS (`10.0.2.2`) which failed, so we fixed it by forcing public DNS servers. 
+Using **`nmcli`**, we set Google (8.8.8.8) and Cloudflare (1.1.1.1) as resolvers and disabled auto-DNS from DHCP:
+
+```bash
+sudo nmcli connection modify enp0s3 ipv4.dns "8.8.8.8 1.1.1.1"
+sudo nmcli connection modify enp0s3 ipv4.ignore-auto-dns yes
+sudo nmcli connection down enp0s3 && sudo nmcli connection up enp0s3
+```
+
+Now TeamCity can reach `github.com`, allowing the **OAuth app callback (http\://<host-ip>:8111/oauth/...)** to complete, so your VM’s TeamCity server 
+successfully connects to GitHub for project/repo integration. 
+
+
+
+===================================================
+
+				(I have skipped this part)
+
+personel access toekn for github from git-bash for teamcity purprose
+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
+
+
+
+You forked the **SimpleMavenSample** code into your own GitHub account by cloning the original repo, removing its remote, and pushing it to a new repo 
+under your username. The process looked like this:
+
+```bash
+# go to your working directory
+cd /e/Alnafi/Devops/"Devops Tools"/"CICD Pipeline Tools"/"Team City"
+
+# clone the original repo
+git clone https://github.com/mkjetbrains/SimpleMavenSample.git
+cd SimpleMavenSample
+
+# remove old remote
+git remote remove origin
+
+# add your own GitHub repo as remote (created beforehand)
+git remote add origin https://github.com/786AHMADHASSAN/SimpleMavenSample.git
+
+# push your code to your repo
+git branch -M main
+git push -u origin main
+```
+
+This way, you now have the **same codebase** hosted under **your own GitHub account** instead of the original author’s.
+
+
+===============================================
+
+https://github.com/mkjetbrains/SimpleMavenSample
+
+
+i just used this repo which was public so no need to have a repo in your account!!
+
+After providing just proceed and build the image!

@@ -1,0 +1,154 @@
+Lecture 21 : Command line arguments module in python.
+
+
+
+python sys module : Sys modules is use for function of python runtime environments as like interpreter.
+
+
+import sys
+print(sys.version)
+
+
+import sys
+print(sys.version_info)
+Output:-
+sys.version_info(major=3, minor=10, micro=6, releaselevel='final', serial=0)
+
+
+
+import sys
+print(sys.path)
+O/p:-
+['C:\\Users\\AbdealiDodiya\\Desktop\\DevOps\\Python\\Lecture 21', 'C:\\Users\\AbdealiDodiya\\Desktop\\DevOps\\Python\\Lecture 21', 'C:\\python3\\python310.zip', 'C:\\python3\\DLLs', 'C:\\python3\\lib', 'C:\\python3', 'C:\\python3\\lib\\site-packages']
+
+
+
+
+import sys
+print("Abdeali")
+print("Dodia")
+print("sys exit start")
+sys.exit()
+print("Exit over")
+
+O/p:-
+Abdeali
+Dodia
+sys exit start
+
+
+
+import sys
+print("Abdeali Dodia")
+print(sys.argv[1])
+
+O/p:-
+python .\arguments.py  abd
+Abdeali Dodia
+abd
+
+import sys
+print("Abdeali Dodia")
+print(sys.argv[0])
+
+O/p:-
+python .\arguments.py  abd
+Abdeali Dodia
+.\arguments.py
+
+
+
+
+import sys
+print("This is script name "+ sys.argv[0])
+print("My full arguments is : " + str(sys.argv))
+print("My total arguments is : " + str(len(sys.argv)))
+
+O/p:-
+PS C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 21> python .\arguments.py  ABD Dodiya Ali
+This is script name .\arguments.py
+My full arguments is : ['.\\arguments.py', 'ABD', 'Dodiya', 'Ali']
+My total arguments is : 4
+
+
+
+
+
+
+import sys
+print("This is script name "+ sys.argv[0])
+print("My full arguments is : " + str(sys.argv))
+print("My total arguments is : " + str(len(sys.argv)-1))
+
+O/p:-
+python .\arguments.py  ABD Dodiya Ali Abdeali
+This is script name .\arguments.py
+My full arguments is : ['.\\arguments.py', 'ABD', 'Dodiya', 'Ali', 'Abdeali']
+My total arguments is : 4
+
+
+
+import os
+os.system("systemctl status  apache2")
+
+
+import os
+action=input("Enter the action for apache2 : ")
+os.system(f"systemctl {action}  apache2")
+
+
+
+
+
+import os
+import sys
+action=sys.argv[1]
+os.system(f"systemctl {action}  apache2")
+
+
+
+
+import os
+import sys
+
+
+if len(sys.argv) !=2:
+print(f"{sys.argv[0]} required 1 position parameter \n Example : ./{sys.argv[0]} status OR start OR restart or stop ")
+sys.exit()
+else:
+action=sys.argv[1]
+os.system(f"systemctl {action}  apache2")
+
+O/p:-
+root@abdealidodia:~/lect21# vim sys_arguments.py
+root@abdealidodia:~/lect21# python3 sys_arguments.py status abd and
+4
+sys_arguments.py required 1 position parameter
+Example : ./sys_arguments.py status OR start OR restart or stop
+root@abdealidodia:~/lect21# python3 sys_arguments.py
+1
+sys_arguments.py required 1 position parameter
+Example : ./sys_arguments.py status OR start OR restart or stop
+root@abdealidodia:~/lect21# python3 sys_arguments.py status
+2
+● apache2.service - The Apache HTTP Server
+Loaded: loaded (/lib/systemd/system/apache2.service; enabled; vendor preset: enabled)
+Active: active (running) since Wed 2022-08-31 13:56:13 IST; 40min ago
+Docs: https://httpd.apache.org/docs/2.4/
+Process: 703 ExecStart=/usr/sbin/apachectl start (code=exited, status=0/SUCCESS)
+Main PID: 862 (apache2)
+Tasks: 7 (limit: 3988)
+Memory: 6.6M
+CGroup: /system.slice/apache2.service
+├─862 /usr/sbin/apache2 -k start
+├─863 /usr/sbin/apache2 -k start
+├─864 /usr/sbin/apache2 -k start
+├─865 /usr/sbin/apache2 -k start
+├─866 /usr/sbin/apache2 -k start
+├─867 /usr/sbin/apache2 -k start
+└─868 /usr/sbin/apache2 -k start
+
+Aug 31 13:55:57 abdealidodia systemd[1]: Starting The Apache HTTP Server...
+Aug 31 13:56:13 abdealidodia apachectl[728]: AH00557: apache2: apr_sockaddr_info_get() failed for abdealidodia
+Aug 31 13:56:13 abdealidodia apachectl[728]: AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 127.0.0>
+Aug 31 13:56:13 abdealidodia systemd[1]: Started The Apache HTTP Server.

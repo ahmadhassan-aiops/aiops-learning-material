@@ -1,0 +1,184 @@
+Here we add the search button for courses in trainer_data like page. For that we create another page by the name of trainer_filter.
+
+#We define this function in app.py
+
+from flask import Flask, render_template, request, url_for
+from flask_mysqldb import MySQL
+from datetime import date
+
+app = Flask(__name__)
+
+# Database Configuration
+app.config['MYSQL_HOST'] = '192.168.0.105'
+app.config['MYSQL_USER'] = 'mysql_user'
+app.config['MYSQL_PASSWORD'] = 'Ahmad:06331913012'
+app.config['MYSQL_DB'] = 'alnafi'
+
+mysql = MySQL(app)
+
+# Home Page Route
+@app.route("/")
+def index():
+    return render_template('index.html')
+
+# Trainer Page Route
+@app.route("/trainer")
+def trainer():
+    return render_template('trainer_details.html')
+
+# Trainer Create Route
+@app.route("/trainer_create", methods=['POST', 'GET'])
+def trainer_create():
+    if request.method == 'GET':
+        return render_template('trainer_form.html')  # Ensure a response for GET requests
+
+    if request.method == 'POST':
+        fname_data = request.form['fname']
+        lname_data = request.form['lname']
+        design_data = request.form['design']
+        course_data = request.form['Course']
+        cdate = date.today()
+
+        sql = 'INSERT INTO trainer_details (fname, lname, design, course, datetime) VALUES (%s, %s, %s, %s, %s)'
+        val = (fname_data, lname_data, design_data, course_data, cdate)
+
+        try:
+            cursor = mysql.connection.cursor()
+            cursor.execute(sql, val)
+            mysql.connection.commit()
+            cursor.close()
+            return render_template('trainer_form.html')
+        except Exception as e:
+            return f"Error: {e}"
+
+@app.route("/trainer_data", methods=['POST', 'GET'])
+def trainer_data():
+
+    cursor = mysql.connection.cursor()
+    sql = "select * from trainer_details"
+    cursor.execute(sql)
+    row = cursor.fetchall()
+    cursor.close()
+    return render_template('trainer_report.html', output_data = row)
+
+
+@app.route("/trainer_filter", methods=['POST', 'GET'])
+def trainer_filter():
+    if request.method == 'GET':
+        return render_template('trainer_report.html')  # Handle GET request
+
+    if request.method == 'POST':
+        course_search = request.form['Course']
+
+        cursor = mysql.connection.cursor()
+        if course_search == 'ALL':
+            # Fix SQL Query to filter by course
+            sql = "SELECT * FROM trainer_details"
+            cursor.execute(sql)
+            row = cursor.fetchall()
+            cursor.close()
+            return render_template('trainer_report.html', output_data=row)
+
+
+        else:
+            # Fix SQL Query to filter by course
+            sql = "SELECT * FROM trainer_details WHERE course = %s"
+            cursor.execute(sql, (course_search,))
+            row = cursor.fetchall()
+            cursor.close()
+            return render_template('trainer_report.html', output_data=row)
+
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0")
+
+
+-----------------------------------------------------
+
+And in Trainer_report we add the following code
+
+
+<div id="content_header"></div>
+    <div id="site_content">
+        <div class="form_settings" style="position: relative; right:-155px;">
+            <form id="reused_form" method="post" action="{{ url_for('trainer_filter') }}">
+                <p>
+                    <label for="Course">Course</label>
+                    <select name="Course" class="form-control" id="Course" required>
+                        <option value="ALL">ALL</option>
+                        <option value="python">Python</option>
+                        <option value="AI">AI</option>
+                        <option value="flask">Flask</option>
+                        <option value="Artificial Intelligence">Artificial Intelligence</option>
+                    </select>
+                </p>
+                <p style="padding-top: 15px">
+                    <input class="submit" type="submit" name="submit" value="Search">
+                </p>
+            </form>
+        </div>
+
+        <h1 style="font-family:georgia,garamond,serif;font-size:25px;"><b>Trainer Details</b></h1>
+        <table id="testTable" border="1">
+            <tr>
+                <th>Sr.no</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Designation</th>
+                <th>Course</th>
+            </tr>
+            {% for i in output_data %}
+            <tr>
+                <td>{{ i[0] }}</td>
+                <td>{{ i[1] }}</td>
+                <td>{{ i[2] }}</td>
+                <td>{{ i[3] }}</td>
+                <td>{{ i[4] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
+
+
+
+-----------------------------------------
+
+
+We even added the search bar in trainer_form.html page as well.
+
+ <div id="content_header"></div>
+    <div id="site_content">
+        <div class="form_settings" style="position: relative; right:-155px;">
+            <h1 style="font-family:georgia,garamond,serif;font-size:25px;"><b>Trainer Details</b></h1>
+            <form id="reused_form" method="post" action="{{ url_for('trainer_create') }}">
+                <p>
+                    <label for="fname">First Name</label>
+                    <input type="text" name="fname" required class="form-control" placeholder="Enter the first name">
+                </p>
+                <p>
+                    <label for="lname">Last Name</label>
+                    <input type="text" name="lname" required class="form-control" placeholder="Enter the last name">
+                </p>
+                <p>
+                    <label for="design">Designation</label>
+                    <input type="text" name="design" required class="form-control" placeholder="Enter the designation">
+                </p>
+                <p>
+                    <label for="Course">Course</label>
+                    <select name="Course" class="form-control" id="Course" required>
+                        <option value="python">Python</option>
+                        <option value="AI">AI</option>
+                        <option value="flask">Flask</option>
+                        <option value="Artificial Intelligence">Artificial Intelligence</option>
+                    </select>
+                </p>
+                <p style="padding-top: 15px">
+                    <input class="submit" type="submit" name="submit" value="Submit">
+                </p>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

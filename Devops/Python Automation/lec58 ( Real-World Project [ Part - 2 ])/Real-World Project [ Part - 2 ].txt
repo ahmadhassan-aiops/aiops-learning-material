@@ -1,0 +1,211 @@
+Lecture 58 : Real-World Project [ Part - 2 ]
+
+
+
+We are creating json file for commands access:-
+
+root@abdeali:~/myproject# cat mylinux.json
+{
+"os_flavour": "cat /etc/os-release | grep -iw \"NAME\" | awk -F = '{print $2}' | tr -d '\"'",
+"df_cmd" : "df -h  | grep -v 'tmpfs' | awk 'NR!=1' | awk '{print $1,$2,$3,$4,$5,$6}' | sed -e 's/%//g' | sed -E \"s/ +/,/g\" | sed \"s/$/,$(date '+%F %T')/g\" | sed \"s/$/,$(hostname -I | awk '{print $1}')/g\" |  sed \"s/$/,$(hostname)/g\" > myfilecsv.csv"
+}
+
+
+
+root@abdeali:~/myproject# vim python_csv_project.py
+
+import os
+import json
+
+
+try:
+    jsonfile = "mylinux.json"
+    with open(jsonfile,"r") as jf:
+    my_dict = json.load(jf)
+
+    os_name=os.popen(my_dict['os_flavour']).read().strip('\n')
+    if os_name == 'CentOS Stream' or os_name == 'redhat':
+        df_cmd=os.popen(my_dict['df_cmd']).read()
+        print(df_cmd)
+        print("CSV file generated succesfully in current directory")
+    else:
+        print("Other os found", os_name)
+except Exception as e:
+    print("Something having issue",e)
+
+
+
+
+now we will create table in mysql database
+I want to create table
+table name : my_df_data
+file_id
+filesystem
+size
+used
+avail
+usage_with_per
+mounted_on
+datetime
+ip_address
+hostname
+
+
+
+I want to create table
+table name : my_df_data
+create table my_df_data
+(
+file_id int(11) NOT NULL AUTO_INCREMENT,
+filesystem varchar(255),
+size varchar(255),
+used varchar(255),
+avail varchar(255),
+usage_with_per int(255),
+mounted_on varchar(255),
+datetime datetime,
+ip_address varchar(255),
+hostname varchar(255),
+PRIMARY key (file_id)
+);
+
+
+
+
+
+
+root@abdeali:~/myproject# mysql -u mysql_user -h 192.168.1.8 -p
+
+
+mysql> use alnafi;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> show tables;
++------------------+
+| Tables_in_alnafi |
++------------------+
+| trainer_details  |
++------------------+
+
+
+mysql> create table my_df_data
+-> (
+-> file_id int(11) NOT NULL AUTO_INCREMENT,
+-> filesystem varchar(255),
+-> size varchar(255),
+-> used varchar(255),
+-> avail varchar(255),
+-> usage_with_per int(255),
+-> mounted_on varchar(255),
+-> datetime datetime,
+-> ip_address varchar(255),
+-> hostname varchar(255),
+-> PRIMARY key (file_id)
+-> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> show tables;
++------------------+
+| Tables_in_alnafi |
++------------------+
+| my_df_data       |
+| trainer_details  |
++------------------+
+
+
+
+
+
+We are insert data as manual
+insert into my_df_data (filesystem,size,used,avail,usage_with_per,mounted_on,datetime,ip_address,hostname) values ('/dev/sda2','875M','149M','665M', 19,'/boot','2022-10-02 13:14:05','192.168.1.6','abdeali');
+
+
+mysql> insert into my_df_data (filesystem,size,used,avail,usage_with_per,mounted_on,datetime,ip_address,hostname) values ('/dev/sda2','875M','149M','665M', 19,'/boot','2022-10-02 13:14:05','192.168.1.6','abdeali');
+Query OK, 1 row affected (0.01 sec)
+
+
+mysql> select * from my_df_data;
++---------+------------+------+------+-------+----------------+------------+---------------------+-------------+----------+
+| file_id | filesystem | size | used | avail | usage_with_per | mounted_on | datetime            | ip_address  | hostname |
++---------+------------+------+------+-------+----------------+------------+---------------------+-------------+----------+
+|       1 | /dev/sda2  | 875M | 149M | 665M  |             19 | /boot      | 2022-10-02 13:14:05 | 192.168.1.6 | abdeali  |
++---------+------------+------+------+-------+----------------+------------+---------------------+-------------+----------+
+1 row in set (0.00 sec)
+
+
+##################################
+import mysql.connector
+mydb= mysql.connector.connect(host="192.168.0.105",user="mysql_user",password="Ahmad:06331913012",database="alnafi",auth_plugin="mysql_native_password")
+#mysql connection object create
+cur = mydb.cursor()
+#Fetching data
+sql = ''' select * from my_df_data '''
+#Executing
+cur.execute(sql)
+result = cur.fetchall()
+print(result)
+mydb.close()
+
+
+now we are encrypted our password and decoding same file using python
+
+mypass.json
+
+{
+"username": "mysql_user",
+"password": "Ahmad:06331913012"
+}
+
+
+import json
+jsonfile='mypass.json'
+with open(jsonfile) as jf:
+my_dict = json.load(jf)
+
+print("This is my username: " + my_dict['username'])
+print("This is my Password: " + my_dict['password'])
+
+
+
+
+
+
+test.py
+#####################
+
+Encryption and decryption
+
+import json
+jsonfile='mypass.json'
+from cryptography.fernet import Fernet
+with open(jsonfile) as jf:
+my_dict = json.load(jf)
+print("This is my username: " + my_dict['username'])
+print("This is my Password: " + my_dict['password'])
+mypass= my_dict['password']
+print(mypass)
+#We are Encrypted your password
+message = mypass.encode("utf-8")
+print(message)
+key = Fernet.generate_key()
+print(key)
+f = Fernet(key)
+print(f)
+encrypted = f.encrypt(message)
+print(encrypted)
+
+
+
+#We are decrypted your password
+
+
+decrypted = f.decrypt(encrypted)
+print(decrypted)
+my_new_pass = decrypted.decode("utf-8")
+print(my_new_pass)
+
+
+
+

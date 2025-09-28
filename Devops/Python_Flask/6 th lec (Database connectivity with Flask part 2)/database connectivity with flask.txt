@@ -1,0 +1,163 @@
+First we have to install mysql in one machine dedicated for database. Separate one from flask machine.
+
+rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
+dnf install mysql-server --nogpgcheck
+systemctl start mysqld.service
+systemctl enable mysqld.service
+systemctl status mysqld.service
+
+
+Now we need to create a separate sql user for mysql database and for that run following commands
+
+systemctl stop mysqld.service
+mysqld --skip-grant-tables --user=mysql &
+mysql -u root
+SET GLOBAL validate_password.policy = LOW;
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'Ahmad:06331913012';
+FLUSH PRIVILEGES;
+
+
+After this i had to remove some processes to restart mysql
+ps aux | grep mysqld
+kill -9 <process_id>
+systemctl start mysqld.service
+systemctl status mysqld.service
+
+
+Now we can login and create a dedicated user for mysql database
+mysql -u root -p
+CREATE USER 'mysql_user'@'localhost' IDENTIFIED BY 'Ahmad:06331913012';
+GRANT ALL PRIVILEGES ON *.* TO 'mysql_user'@'localhost' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+exit
+
+
+------------------------------------------------------
+
+mysql user   =  mysql_user
+mysql passwd =  Ahmad:06331913012
+
+mysql server =   192.168.0.109
+flask server =   192.168.0.104
+
+-------------------------------------------------------
+
+mysql -u mysql_user -p
+show databases;
+CREATE DATABASE alnafi;
+
+
+use alnafi;
+create table trainer_details
+(
+t_id int NOT NULL AUTO_INCREMENT,
+fname char(255),
+lname char(255),
+design char(255),
+course char(255),
+datetime datetime,
+PRIMARY KEY(t_id)
+);
+
+show tables
+
+----------------------------------------------------------
+
+Now we can create 'templates' directory and create a html file in it like trainer_details.html
+trainer_details.html  (this is present in 5th lec)
+
+
+<html>
+<head>
+
+    <h1> trainer details </h1>
+
+</head>
+
+<body>
+<table border ='2'>
+<form method="post",action="",name="trainer form">
+
+    <tr>
+        <td> First name </td>
+        <td> <input type = 'txt',name="fname"> </td>
+    </tr>
+
+
+    <tr>
+        <td> Last name </td>
+        <td> <input type = 'txt', name="lname"> </td>
+    </tr>
+
+
+    <tr>
+        <td>  Design </td>
+        <td> <input type = 'txt', name="design"> </td>
+    </tr>
+
+
+    <tr>
+        <td> Course </td>
+        <td> <input type = 'txt' , name="course"> </td>
+    </tr>
+
+
+    <tr>
+        <td> <input type = 'submit'> </td>
+    </tr>
+
+
+</form>
+</table>
+</body>
+</html>
+
+
+-------------------------------------------
+
+app.py
+
+
+from flask import Flask,render_template
+app = Flask(__name__)
+myhome="HOME PAGE i am here!"
+mycontact= "CONTACT US PAGE"
+@app.route("/")
+def get_home():
+	return myhome
+
+@app.route("/trainer")
+def trainer():
+	return render_template('trainer_details.html')
+
+
+if __name__ == "__main__":
+	app.run(debug=True,host="0.0.0.0",port=9000)
+
+
+-----------------------------------------
+
+Now we can install flask-mysql in pycharm
+
+
+
+from flask import Flask,render_template
+
+from flaskext.mysql import MySQL
+
+app = Flask(__name__)
+myhome="HOME PAGE i am here!"
+mycontact= "CONTACT US PAGE"
+@app.route("/")
+def get_home():
+	return myhome
+
+@app.route("/trainer")
+def trainer():
+	return render_template('trainer_details.html')
+
+
+if __name__ == "__main__":
+	app.run(debug=True,host="0.0.0.0",port=9000)
+
+

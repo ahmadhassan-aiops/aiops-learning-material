@@ -1,0 +1,494 @@
+
+Lecture 1: Introduction to Bash Script.
+
+
+128 64 32 16 8 4 2 1
+
+12 Decimal --> Binary : 0 0 0 0 1 1 0 0
+15:00001111
+68:01000100
+8:00001000
+97:01100001
+
+----------------------
+# echo $SHELL
+# env
+# which sh
+----------------------
+# mkdir /opt/  bash
+# vim  test
+(here we write following)
+echo "hello"
+
+#bash test
+#sh test
+(both gives hello output)
+
+#./test
+(it will gives permission denied message)
+chmod +x test
+./test
+(now hello will be the output)
+
+-----------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------
+Lecture 2 : Understanding echo and read command
+
+
+Scripting lang include:
+perl + Python + Ruby + Bash/Shell/Sh 
+
+cat /etc/shells (to see all available shells)
+
+vim  myfirst
+#!/bin/bash
+docker -v
+uname
+(A shebang is a character sequence that starts with the characters #! and is always on the first line of a script file. 
+It's also known as a hashbang or sha-bang)
+
+
+Variable: you can stored any value in variable.
+
+abd=10
+
+Linux --> Syntax --> $(LINUX command ) 
+abd=10
+echo abdeali
+echo abd  (output will be abd)
+echo $abd (10 output)
+
+a="ls" 
+echo $a   (only ls will be output)
+a=$(ls)
+echo $a   (now actual ls based output will be present)
+
+touch file2.txt  file3 file4
+echo $a   (now recent made files will not be shown)
+a=$(ls)
+echo $a   (now recent made files will be shown)
+
+
+read
+Abdeali
+#echo $REPLY
+Abdeali
+
+Syntax:-
+$read <variable name>
+#read name
+salman
+#echo $name
+salman
+
+
+Task --> read -p "Enter your name:" name 
+read -p "Enter the name :" fname
+read -p "Enter the name :" lname
+echo $name
+echo $fname
+echo $lname
+
+read -n5 -p "Enter any key to exit :"
+
+
+echo file.$(date).txt
+
+echo will used for printing statement
+read command will use for storing variable
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+Lecture 3 : Lecture 3: How to write your script and Understanding Debugging MODE
+
+
+
+Steps for writing bash scripting.
+
+1. First you need to gather information.
+2. You need to know manual command for shell scripting.
+3. you need to mentioned shebang line  (#!/bin/bash)
+4. Create file using .sh script and write your command in your script
+5. Set permission and run the script using ./<script name> /<full path script>
+
+
+echo $SHELL
+chsh
+(this command you need to use for change your shell)
+/bin/bash   (provide path of shell where you want to go)
+
+Debugging Mode
+set -x : Enable
+set +x : Disable
+
+
+vim myfirst.sh (writing script)
+
+#!/bin/bash
+pwd
+date
+echo hello
+echo "bye"
+set -x
+echo "Today date is $(date)"
+echo "Hi your current directory is : $(pwd)"
+set +x
+echo "======="
+
+----------------------------------------------------
+
+./myfirst.sh  (output of running script)
+ 
+/root/bash
+Sunday 12 June 2022 12:33:55 PM IST
+hello
+bye
+++ date
++ echo 'Today date is Sunday 12 June 2022 12:33:55 PM IST'
+Today date is Sunday 12 June 2022 12:33:55 PM IST
+++ pwd
++ echo 'Hi your current directory is : /root/bash'
+Hi your current directory is : /root/bash
++ set +x
+===============================
+
+
+Task
+
+#!/bin/bash
+echo "My current directory is : $(pwd)"
+cd /home/abdeali/
+echo "my changed directory is : $(pwd)"
+cd /home/abdeali
+
+
+TASK :-
+
+I want to change current directory in my command line!
+ANSWERE: source second.sh  (in the command line and directory will be changed)
+--------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+Lecture 4 : Introduction to linux editor / tr / xargs / seq commands
+
+
+#File editor
+
+1. vi/vim/nano/gedit --> Editor --> We can edit
+2. touch : it will create empty file and open it
+3. cat
+
+
+1. xargs filter
+2. tr filter
+
+
+touch data
+cat data
+1 2 3
+4 5
+6 7 8 9 10
+11 12
+13 14
+
+
+tr (translate) command is used for replace
+Syntax:
+#tr <find> <replace>
+cat data | tr ' ' '\n'   (it will put each int in seperate line)
+
+
+If I want to display data as two column
+cat data | tr ' ' '\n' | xargs -l2
+1 2
+3 4
+5 6
+7 8
+9 10
+11 12
+13 14
+
+cat data | tr ' ' '\n' | xargs -l3
+1 2 3
+4 5 6
+7 8 9
+10 11 12
+13 14
+
+bc
+(this command is used to open calculator)
+
+cat data | tr ' ' '\n' | xargs -l3  | tr ' ' '+'
+1+2+3
+4+5+6
+7+8+9
+10+11+12
+13+14
+
+cat data | tr ' ' '\n' | xargs -l3  | tr ' ' '+' | bc
+6
+15
+24
+33
+27
+
+----------------------------------
+seq use for diplay number range
+seq 10 -2 1
+10
+8
+6
+4
+2
+seq 10 -5 50
+seq 50 -5 10
+50
+45
+40
+35
+30
+25
+20
+15
+10
+
+
+
+seq 50 -5 10
+50
+45
+40
+35
+30
+25
+20
+15
+10
+
+
+man seq (to see all options)
+seq -w 01 10   (now leading zeros are there)
+01
+02
+03
+04
+05
+06
+07
+08
+09
+10
+root@ab
+
+
+
+seq -s - 20
+1-2-3-4-5-6-7-8-9-10-11-12-13-14-15-16-17-18-19-20
+
+
+seq -s * 20
+seq: invalid floating point argument: ‘myfirst.sh’
+Try 'seq --help' for more information.
+
+
+seq -s # 20
+seq: option requires an argument -- 's'
+Try 'seq --help' for more information.
+
+
+seq -s '#' 20
+1#2#3#4#5#6#7#8#9#10#11#12#13#14#15#16#17#18#19#20
+
+
+seq -s '+' 20
+1+2+3+4+5+6+7+8+9+10+11+12+13+14+15+16+17+18+19+20
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+Lecture 5 Conditional Statement in bash script [ PART - 1 ]
+
+
+
+1. Commands and their uses (multiples commands )
+2. Loops
+    a. For loop
+    b. while loop
+    c. case statement
+3. Conditional statements (Mostly use with loops )
+if, else , nested (ifelse)
+
+
+
+echo $?  (It will be check your previous command ran success or not , if you received 0 value then its means of that success else failed)
+
+root@abdealidodia:~/bash# [ "abc" == "def" ]; echo $?
+1
+root@abdealidodia:~/bash# [ "abc" == "abc" ]; echo $?
+0
+root@abdealidodia:~/bash# [ "abc" == "ABC" ]; echo $?
+1
+root@abdealidodia:~/bash# [ 265 -gt 10 ]; echo $?
+0
+root@abdealidodia:~/bash# [ 25 -gt 10 ]; echo $?
+0
+root@abdealidodia:~/bash# [ 25 -gt 25 ]; echo $?
+1
+root@abdealidodia:~/bash# [ 25 -lt  25 ]; echo $?
+1
+root@abdealidodia:~/bash# [ 25 -le  25 ]; echo $?
+0
+root@abdealidodia:~/bash# [ 25 -le  10 ]; echo $?
+1
+
+
+Bash if syntax :-
+if (condition)
+then
+ statement
+else
+ stetement
+fi 
+
+Diagram :-
+
+
+vi num.sh
+#!/bin/bash
+echo -n "Enter any number of your choice"
+read NUM
+
+if [[ $NUM -gt 5 ]]
+then
+echo "The number is greater than 5. "
+else
+echo "The number is less than 5. "
+fi
+
+
+
+
+root@abdealidodia:~/bash/lect5# cat pass.sh
+#!/bin/bash
+echo -n "Your score is = "
+read score
+if [[ $score -gt 80 ]]
+then
+echo "You have passed the exam"
+else
+echo "Sorry , You are fail"
+fi
+
+
+vi largenumber.sh
+#!/bin/bash
+echo -n "a value: "
+read a
+echo -n "b value: "
+read b
+echo -n "c value :"
+read c
+if [[ $a -ge $b ]] && [[ $a -ge $c ]]
+then
+ becho "a is BIG because value is $a"
+elif [[ $b -ge $a ]] && [[ $b -ge $c ]]
+then
+ echo "b is BIG"
+else
+ echo "c is BIG"
+fi
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Lecture 6 : Conditional Statement in Bash script [ PART - 2 ]
+ 
+
+#!/bin/bash
+
+echo "Enter the service which you want check install or not: "
+read service_name
+command=$(which $service_name)
+status=$(echo $?)
+#echo $command
+#echo $status
+if [[ $status -eq 0 ]]
+then
+ echo "$service_name is installed on this machine"
+ echo "The docker version is : $($service_name -v)"
+else
+ echo "THe $service_name is not installed"
+fi
+
+
+#/bin/bash
+commands=$(ps -ef | grep docker | wc -l)
+
+
+#/bin/bash
+commands=$(ps -ef | grep docker | wc -l)
+echo $commands
+if [[ $commands -ne 1 ]]
+then
+echo "Docker is installed"
+else
+echo "Docker is not installed"
+fi
+
+
+#/bin/bash
+echo "Enter the service name which you want check installed or not"
+read service_name
+commands=$(ps -ef | grep $service_name | wc -l)
+if [[ $commands -ne 1 ]]
+then
+ echo "$service_name is installed"
+else
+ echo "$service_name is not installed"
+fi
+
+
+We have learn two way:-
+1st you can check service installed or via which command and echo $?
+2nd You can check service installed or not via ps -ef | grep <service name>
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+Lecture 7 : Introduction to Nested if condition in Bash script.
+
+
+if --> has "then" and "fi"
+else --> has no "then "and no "fi"
+elif --> has "then" but no fi
+
+
+#!/bin/bash
+echo -n "Enter the first number:"
+read var1
+echo -n "Enter the second number:"
+read var2
+echo -n "Enter the third number"
+read var3
+
+if [[ $var1 -ge $var2 ]]
+then
+if [[ $var1 -ge $var3 ]]
+then
+echo "$var1 is largest number"
+else
+echo "$var3 is largest number"
+fi
+else
+if [[ $var2 -ge $var3 ]]
+then
+echo "$var2 is largest number"
+else
+echo "$var3 is largest number"
+fi
+fi
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------

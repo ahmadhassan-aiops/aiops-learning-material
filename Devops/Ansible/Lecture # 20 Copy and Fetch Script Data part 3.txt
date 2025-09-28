@@ -1,0 +1,349 @@
+this lecture was based on running linux commands through python. and running pythons script through ansible playbook
+
+we define linux commands in a json file
+
+then read the json file in python, and call the commands. and saved information in a csv file
+
+then we run copied the python and json file in remote host, run the python script and fetched the data.csv file from remote machine into master machine
+ 
+
+=======================================================================
+
+Goal:
+
+Our setup aims to use Ansible as a central manager (Master) to collect system information from multiple remote machines (Ubuntu, RHEL), 
+specifically their IP address, disk usage (df -h), and network connections (netstat), by executing a custom Python script pushed via an Ansible playbook. 
+The script runs on the remote nodes, generates results, and stores them in a CSV file, which is then fetched back to the Ansible master 
+for centralized reporting and analysis.
+
+=======================================================================
+
+
+[jhon@master-ansible ansible]$ sudo vim my_linux_cmd.json
+
+[jhon@master-ansible ansible]$ cat my_linux_cmd.json
+{
+    "header_para": ["Hostname", "Ip Address", "OS Flavour", "Df -h (Mount storage)"],
+    "hostname": "hostname | tr -d '\\n'",
+    "ip_address": "hostname -I | awk '{print $1}' | tr -d '\\n'",
+    "os_flavour": "grep '^ID=' /etc/os-release | head -n1 | awk -F '=' '{print $2}' | tr -d '\"'",
+    "df_details": "df -h | grep -v 'tmpfs'"
+}
+
+
+
+
+
+=======================================================================
+
+
+
+[jhon@master-ansible ansible]$ vim get_details.py
+[jhon@master-ansible ansible]$ cat get_details.py
+import os
+import csv
+import json
+from datetime import datetime, date
+
+# Set date and time for file naming
+today = date.today()
+time1 = datetime.now()
+filepath = time1.strftime("DAILY_REPORTS_%Y-%m-%d_%H%M.csv")
+
+# Load JSON file
+json_file = "my_linux_cmd.json"
+with open(json_file) as jf:
+    my_dict = json.load(jf)
+
+# Detect OS flavour
+os_name = os.popen(my_dict['os_flavour']).read().strip('\n')
+print(f"Detected OS: {os_name}")
+
+if os_name in ['ubuntu', 'centos', 'rhel']:
+    print("Ubuntu/Centos/RHEL OS found. Collecting information, please wait!!!!")
+
+    # Hostname details
+    hostname = os.popen(my_dict["hostname"]).read().strip()
+    print("Hostname:", hostname)
+
+    # IP details
+    ip = os.popen(my_dict["ip_address"]).read().strip()
+    print("IP Address:", ip)
+
+    # File storage details
+    df_details = os.popen(my_dict["df_details"]).read().strip()
+    print("Disk Details:\n", df_details)
+
+    # Headers from JSON
+    header_csv = [str(x) for x in my_dict['header_para']]
+    print("CSV Headers:", header_csv)
+
+    # Data row
+    data_csv = [hostname, ip, os_name, df_details]
+
+    # Write to CSV file
+    with open(filepath, 'w', newline='') as file1:
+        writer = csv.writer(file1)
+        writer.writerow(header_csv)
+        writer.writerow(data_csv)
+
+    print("File created successfully in current directory:", filepath)
+
+else:
+    print("Other OS found. Skipping...")
+
+
+
+
+=======================================================================
+
+		(without timestamp)
+
+import os
+import csv
+import json
+
+# Fixed CSV file path
+filepath = "/home/ubuntu/DAILY_REPORTS.csv"
+
+# Load JSON file
+json_file = "my_linux_cmd.json"
+with open(json_file) as jf:
+    my_dict = json.load(jf)
+
+# Detect OS
+os_name = os.popen(my_dict['os_flavour']).read().strip().lower()
+print("Detected OS:", os_name)
+
+if os_name in ["ubuntu", "centos", "rhel"]:
+    print("Ubuntu/Centos/RHEL OS found. Collecting information, please wait!!!!")
+
+    # Hostname details
+    hostname = os.popen(my_dict["hostname"]).read().strip()
+    print("Hostname:", hostname)
+
+    # IP details
+    ip = os.popen(my_dict["ip_address"]).read().strip()
+    print("IP Address:", ip)
+
+    # File storage details
+    df_details = os.popen(my_dict["df_details"]).read().strip()
+    print("Disk Details:\n", df_details)
+
+    # Headers from JSON
+    header_csv = [str(x) for x in my_dict['header_para']]
+    print("CSV Headers:", header_csv)
+
+    # Data row
+    data_csv = [hostname, ip, os_name, df_details]
+
+    # Write to CSV file (overwrite every time)
+    with open(filepath, 'w', newline='') as file1:
+        writer = csv.writer(file1)
+        writer.writerow(header_csv)
+        writer.writerow(data_csv)
+
+    print("File created successfully in current directory:", filepath)
+
+else:
+    print("Other OS found. Skipping...")
+
+
+=======================================================================
+
+		(for master machine with timestamp)
+
+[jhon@master-ansible ansible]$ python3 get_details.py
+Detected OS: centos
+Ubuntu/Centos/RHEL OS found. Collecting information, please wait!!!!
+Hostname: master-ansible
+IP Address: 192.168.0.108
+Disk Details:
+ Filesystem           Size  Used Avail Use% Mounted on
+/dev/mapper/cs-root   47G   43G  4.6G  91% /
+/dev/sda1            960M  570M  391M  60% /boot
+CSV Headers: ['Hostname', 'Ip Address', 'OS Flavour', 'Df -h (Mount storage)']
+✅ File created successfully in current directory: DAILY_REPORTS_2025-08-28_0920.csv
+
+=======================================================================
+
+
+
+[jhon@master-ansible ansible]$ cat get_details.yml
+---
+- hosts: all
+  gather_facts: yes
+  tasks:
+
+    - name: Removing OLD python file
+      file:
+        path: /home/ubuntu/get_details.py
+        state: absent
+
+    - name: Removing JSON file from the remote machine
+      file:
+        path: /home/ubuntu/my_linux_cmd.json
+        state: absent
+
+    - name: Removing OLD CSV file from the remote machine
+      file:
+        path: /home/ubuntu/DAILY_REPORTS.csv
+        state: absent
+
+    - name: Copy Python script to remote home directory
+      copy:
+        src: /home/jhon/ansible/get_details.py
+        dest: /home/ubuntu/get_details.py
+        mode: '0755'
+        owner: ubuntu
+        group: ubuntu
+
+    - name: Copy JSON file to remote home directory
+      copy:
+        src: /home/jhon/ansible/my_linux_cmd.json
+        dest: /home/ubuntu/my_linux_cmd.json
+        owner: ubuntu
+        group: ubuntu
+
+    - name: Executing the python script on remote endpoints
+      command: python3 /home/ubuntu/get_details.py
+
+
+=======================================================================
+
+
+			(it generate report on remote machine)
+
+[jhon@master-ansible ansible]$ ansible-playbook get_details.yml
+
+PLAY [all] *******************************************************************************************************************
+
+TASK [Gathering Facts] *******************************************************************************************************
+ok: [54.166.4.83]
+
+TASK [Removing OLD python file] **********************************************************************************************
+changed: [54.166.4.83]
+
+TASK [Removing JSON file from the remote machine] ****************************************************************************
+changed: [54.166.4.83]
+
+TASK [Removing OLD CSV file from the remote machine] *************************************************************************
+changed: [54.166.4.83]
+
+TASK [Copy Python script to remote home directory] ***************************************************************************
+changed: [54.166.4.83]
+
+TASK [Copy JSON file to remote home directory] *******************************************************************************
+changed: [54.166.4.83]
+
+TASK [Executing the python script on remote endpoints] ***********************************************************************
+changed: [54.166.4.83]
+
+PLAY RECAP *******************************************************************************************************************
+54.166.4.83                : ok=7    changed=6    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+
+=======================================================================
+
+			(Now it will fecth the report back to master machine)
+
+
+[jhon@master-ansible ansible]$ cat get_details.yml
+---
+- hosts: all
+  gather_facts: yes
+  tasks:
+
+    - name: Removing OLD python file
+      file:
+        path: /home/ubuntu/get_details.py
+        state: absent
+
+    - name: Removing JSON file from the remote machine
+      file:
+        path: /home/ubuntu/my_linux_cmd.json
+        state: absent
+
+    - name: Removing OLD CSV file from the remote machine
+      file:
+        path: /home/ubuntu/DAILY_REPORTS.csv
+        state: absent
+
+    - name: Copy Python script to remote home directory
+      copy:
+        src: /home/jhon/ansible/get_details.py
+        dest: /home/ubuntu/get_details.py
+        mode: '0755'
+        owner: ubuntu
+        group: ubuntu
+
+    - name: Copy JSON file to remote home directory
+      copy:
+        src: /home/jhon/ansible/my_linux_cmd.json
+        dest: /home/ubuntu/my_linux_cmd.json
+        owner: ubuntu
+        group: ubuntu
+
+    - name: Executing the python script on remote endpoints
+      command: python3 /home/ubuntu/get_details.py
+
+    - name: Fetch the generated CSV report back to master
+      fetch:
+        src: /home/ubuntu/DAILY_REPORTS.csv
+        dest: /home/jhon/ansible/reports/{{ inventory_hostname }}.csv
+        flat: yes
+        backup: yes
+
+
+
+=======================================================================
+
+
+[jhon@master-ansible ansible]$ ansible-playbook get_details.yml
+
+PLAY [all] *******************************************************************************************************************
+
+TASK [Gathering Facts] *******************************************************************************************************
+ok: [54.166.4.83]
+
+TASK [Removing OLD python file] **********************************************************************************************
+changed: [54.166.4.83]
+
+TASK [Removing JSON file from the remote machine] ****************************************************************************
+changed: [54.166.4.83]
+
+TASK [Removing OLD CSV file from the remote machine] *************************************************************************
+changed: [54.166.4.83]
+
+TASK [Copy Python script to remote home directory] ***************************************************************************
+changed: [54.166.4.83]
+
+TASK [Copy JSON file to remote home directory] *******************************************************************************
+changed: [54.166.4.83]
+
+TASK [Executing the python script on remote endpoints] ***********************************************************************
+changed: [54.166.4.83]
+
+TASK [Fetch the generated CSV report back to master] *************************************************************************
+changed: [54.166.4.83]
+
+PLAY RECAP *******************************************************************************************************************
+54.166.4.83                : ok=8    changed=7    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+[jhon@master-ansible ansible]$ ls
+54.166.4.83             bash.yml           fetch.yml        mul-pack.yml       print.yml
+54.166.4.83_master.txt  check_nginx_ps.py  get_details.py   my_linux_cmd.json  python_cheking_nginx.py
+ansible.cfg             copy1.yml          get_details.yml  nginx.sh           reports
+ansible.cfg.bak         copy2.yml          hosts            print1.yml         roles
+apache.yml              copy.yml           master.txt       print.yaml         service_details.sh
+
+
+[jhon@master-ansible reports]$ ls -ltrh
+total 4.0K
+-rw-r--r--. 1 jhon jhon 276 Aug 28 10:58 54.166.4.83.csv
+
+
+
+
+
+

@@ -1,0 +1,116 @@
+Lecture 25 : Docker notes
+
+
+
+AWS --> ECR
+Github --> REPO
+Gitlab --> Repo
+DockerHUB --> Repo
+
+
+Gitlab --> Workflow create --> CICD --> Pipeline --> RUN
+
+Gitlab --> Account need to create and validate account with Credit card.
+1$ refunded --> verify --> refund
+
+URL :https://gitlab.com/users/sign_in
+Project URL : https://gitlab.com/abdealidodiya/mydevops
+
+Gitlab yml file --> gitlab-ci.yml
+Github yml file --> .github/file.yml
+
+
+Dockerfile
+FROM nginx:alpine
+COPY ./public /usr/share/nginx/html
+
+
+
+Create Public directory
+vim public/index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing Workflow</title>
+</head>
+<body>
+    <h1>My Testing Workflow Creation from GitLab</h1>
+</body>
+</html>
+
+
+
+
+
+Create gitlab-ci.yml
+
+# This file is a template for building and pushing Docker images with GitLab CI/CD.
+# For more information on CI/CD templates, visit:
+# https://docs.gitlab.com/ee/ci/templates/
+
+# This template builds a Docker image and pushes it to the GitLab container registry.
+# Docker-in-Docker documentation: https://docs.gitlab.com/ee/ci/docker/using_docker_build.html
+
+stages:
+  - build
+
+docker-build:
+  # Use the official Docker image.
+  image: docker:latest
+  stage: build
+  services:
+    - docker:dind
+  variables:
+    # Set Docker-in-Docker settings for improved performance.
+    DOCKER_TLS_CERTDIR: "/certs"
+    # Use GitLab's predefined variables for the Docker registry.
+    DOCKER_DRIVER: overlay2
+  before_script:
+    # Log in to the GitLab container registry using CI/CD variables.
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+  script:
+    # Determine the Docker tag based on the branch name.
+    - |
+      if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
+        tag="latest"
+        echo "Running on the default branch '$CI_DEFAULT_BRANCH': tag = 'latest'"
+      else
+        tag="$CI_COMMIT_REF_SLUG"
+        echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
+      fi
+    # Build the Docker image.
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:$tag" .
+    # Push the Docker image to the registry.
+    - docker push "$CI_REGISTRY_IMAGE:$tag"
+  rules:
+    # Run this job only if a Dockerfile exists in the branch.
+    - exists:
+        - Dockerfile
+    # Always run on branches, including the default branch.
+    - if: $CI_COMMIT_BRANCH
+
+
+
+
+RUN
+
+Gitlab--> Menu --> Your project --> CI/CD --> Pipeline --> Running or passed or failed --> DockerBUILD --> Process running in background
+
+
+
+How to show your image file from GITLAB workflow
+Gitlab--> Menu --> Your project --> package & Registries --> container_registry--> abdealidodiya/mydevops/ Root image
+
+registry.gitlab.com/abdealidodiya/mydevops
+docker pull registry.gitlab.com/abdealidodiya/mydevops
+
+Docker images
+
+docker run -p 90:90  registry.gitlab.com/abdealidodiya/mydevops
+
+docker run -p 8001:80 registry.gitlab.com/abdealidodiya/mydevops
+
+GitLAB workflow create --> push gitlab --> pull to your local machine for running  container

@@ -1,0 +1,43 @@
+
+https://github.com/usamaaslam2017/java-app-test.git
+
+Repo is public so Just proceed but we will configure built manually. 
+
+===============================================
+
+
+
+1st build: From configuration select gradle and name the step and gradle task and save
+
+2nd build: Now again open config and now select docker and name it. Also select dockerfiel as "path to file"
+"ahmadhassan380/demo-app" --- This is the dockerhub repo that I have built in "private mode". It will be written in teamcity as iamgename:tag as
+"ahmadhassan380/demo-app:v1". It is also given build number from side icon. 2nd tag also given as "ahmadhassan380/demo-app:latest"
+ahmadhassan380/demo-app%build.number%
+ahmadhassan380/demo-app:latest
+Now save it!
+
+
+3rd build: again choose docker but now select push and name step anem as iamge push (optional) and in image tag use exact same tag
+ahmadhassan380/demo-app%build.number%
+ahmadhassan380/demo-app:latest
+
+
+#Now we just click the app "java-app" and select more options where we will select connections. Select useranem and password (old one) for docker repo 
+and test connection.
+
+Now again go back to app and add 1 feature froma dd feature tab. Select only docker support and you can delete perf monitor if you want!
+
+
+#you can aslo go to agent and from their see the compatibility of config for our project. It must be compatible for that!
+
+Now we can run!
+
+
+============================================================
+
+gradle app was not able to create due to java incompatibility as dockerfile of this pulic repo was old!
+
+
+But workflow remains same
+======================================================
+

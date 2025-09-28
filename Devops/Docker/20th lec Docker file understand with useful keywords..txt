@@ -1,0 +1,128 @@
+Lecture 20 : Docker notes
+
+
+
+RUN Commands :-
+====================================
+#docker run --> Image to container
+vim Dockerfile
+RUN apt-get install git
+
+RUN python script.py
+
+
+CMD and ENTRYPOINT
+
+RUn -->> it just execute the linux command --> Installation (apt,yum,dnf)
+
+Question : Is the run command replacebale with any other commands ?
+YES or not ?
+Answer : NO
+
+Method:1
+RUN apt-get update
+RUN apt-get install -y curl
+RUN apt-get install httpd curl git update -y
+
+Method 2:
+RUN apt-get update && RUN apt-get install -y curl && RUN apt-get install -y git --> Intermeidate laayer only one
+RUN apt-get install git && apt-get install httpd && apt-get install curl
+
+Both command output are same.
+
+
+
+ENV :-
+ENV command use for define variable and also we can override the value using -e
+#docker run -e
+
+vim Dockerfile
+ENV ADMIN_USER="mark"
+RUN echo $ADMIN_USER > ./mark
+
+
+#docker run --rm test sh -c 'echo $ADMIN_USER'
+
+docker run --name mycont --rm -d  test sh -c 'echo $ADMIN_USER'
+docker run  --name mycont1 -d  test sh -c 'echo $ADMIN_USER'
+
+Version 1 : Dockerfile
+FROM alpine
+ENV ADMIN_USER="mark"
+RUN echo $ADMIN_USER > ./mark  (we see mark because of this line execution as output eventhough it will be removed during unset)
+RUN unset ADMIN_USER
+
+Layer ---> 4
+
+
+Version 2 : Dockerfile
+FROM alpine
+RUN export ADMIN_USER="mark" && echo $ADMIN_USER > ./mark && unset ADMIN_USER   (here we will not see the output 'mark' as it will be unset)
+CMD sh
+
+layer --> 3
+
+EXPORT or EXPOSE
+
+Command2 :
+docker run --rm test:v2
+docker run --rm test:v2 sh -c 'echo $ADMIN_USER'
+
+
+docker run --name my_cont1 -d alpine /bin/ash -c "while true; do echo Abdeali Dodiya; sleep 1; done"
+
+
+docker run -p 8000:80 --restart always nginx
+docker run --name testing -p 8001:80  nginx
+docker run --name testing2 -p 8002:80  --restart=on-failure:3  nginx
+
+
+
+FROM alpine
+# Define a build argument with a default value
+ARG var_name=def_value
+
+# Use the ARG value in a RUN command
+RUN echo ${var_name}
+
+# Set an environment variable
+ENV foo=other
+ENV bar=${var_name}
+
+
+
+docker build -t arg:v2 .
+
+docker run -it --name myarg arg:v2
+
+
+--> CMD :-
+--> ENTRYPOINT
+
+
+FROM busybox
+CMD sleep 5
+
+CMD ["sleep","5"]
+
+docker build -t cmd:v1 .
+docker run --rm --name test6 cmd:v1
+docker run --rm --name test6 cmd:v1 sleep 10
+docker run --rm --name test6 cmd:v1 top
+
+
+
+FROM busybox
+#CMD sleep 5
+CMD ["sleep","5"]
+
+
+
+ENTRYPOINT
+FROM busybox
+#CMD sleep 5
+#CMD ["sleep","5"]
+ENTRYPOINT ["sleep"]
+
+
+docker run --rm --name test6 cmd:v3 top

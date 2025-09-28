@@ -1,0 +1,263 @@
+Let’s create a **complete step-by-step guide** to set up **Nagios Core on a CentOS EC2 server** and monitor an **Ubuntu EC2 client using NRPE**, 
+including all services we covered. I’ll write it in a structured, **industry-ready, reproducible way**.
+
+---
+
+# **Nagios Core Monitoring Setup: CentOS Server + Ubuntu Client**
+
+**Environment:**
+
+* **Nagios Server:** CentOS EC2 → IP: `172.31.20.168`
+* **Nagios Client:** Ubuntu EC2 → IP: `172.31.29.100`
+
+---
+
+## **1. Prepare the Nagios Server (CentOS EC2)**
+
+### **1.1 Update the system**
+
+```bash
+sudo yum update -y
+sudo yum install -y epel-release
+```
+
+### **1.2 Install required packages**
+
+```bash
+sudo yum install -y httpd php gcc glibc glibc-common wget unzip gd gd-devel perl postfix
+```
+
+### **1.3 Create Nagios user & group**
+
+```bash
+sudo useradd nagios
+sudo groupadd nagcmd
+sudo usermod -a -G nagcmd nagios
+sudo usermod -a -G nagcmd apache
+```
+
+### **1.4 Download Nagios Core**
+
+```bash
+cd /tmp
+wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.4.14.tar.gz
+tar zxvf nagios-4.4.14.tar.gz
+cd nagios-4.4.14
+```
+
+### **1.5 Compile & Install Nagios**
+
+```bash
+./configure --with-command-group=nagcmd
+make all
+sudo make install
+sudo make install-init
+sudo make install-commandmode
+sudo make install-config
+sudo make install-webconf
+```
+
+### **1.6 Set up Nagios Web Interface**
+
+```bash
+sudo htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+# Enter password for web login
+```
+
+### **1.7 Start and enable Apache & Nagios**
+
+```bash
+sudo systemctl enable httpd
+sudo systemctl start httpd
+sudo systemctl enable nagios
+sudo systemctl start nagios
+```
+
+---
+
+## **2. Install Nagios Plugins on Server**
+
+```bash
+cd /tmp
+wget https://nagios-plugins.org/download/nagios-plugins-2.3.3.tar.gz
+tar zxvf nagios-plugins-2.3.3.tar.gz
+cd nagios-plugins-2.3.3
+./configure --with-nagios-user=nagios --with-nagios-group=nagios
+make
+sudo make install
+```
+
+---
+
+## **3. Prepare the Nagios Client (Ubuntu EC2)**
+
+### **3.1 Update the system**
+
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+
+### **3.2 Install NRPE & Nagios Plugins**
+
+```bash
+sudo apt install -y nagios-nrpe-server nagios-plugins
+```
+
+### **3.3 Configure NRPE**
+
+```bash
+sudo vim /etc/nagios/nrpe.cfg
+# Change allowed_hosts to include Nagios server private IP
+allowed_hosts=127.0.0.1,172.31.20.168
+```
+
+### **3.4 Restart NRPE**
+
+```bash
+sudo systemctl enable nagios-nrpe-server
+sudo systemctl restart nagios-nrpe-server
+sudo systemctl status nagios-nrpe-server
+```
+
+### **3.5 Verify NRPE locally**
+
+```bash
+/usr/lib/nagios/plugins/check_nrpe -H 127.0.0.1
+# Should show: NRPE v4.0.3
+```
+
+---
+
+## **4. Configure Security Groups (AWS)**
+
+### **4.1 CentOS Server SG (launch-wizard-4)**
+
+* **SSH:** TCP 22 → 0.0.0.0/0
+* **HTTP:** TCP 80 → 0.0.0.0/0
+* **NRPE:** TCP 5666 → Ubuntu client private IP `172.31.29.100`
+* **ICMP:** Optional for ping → Ubuntu client private IP
+
+### **4.2 Ubuntu Client SG (launch-wizard-2)**
+
+* **SSH:** TCP 22 → 0.0.0.0/0
+* **NRPE:** TCP 5666 → Nagios server private IP `172.31.20.168`
+* **ICMP:** Optional for ping → Nagios server private IP
+
+---
+
+## **5. Test NRPE Connectivity**
+
+From Nagios server:
+
+```bash
+/usr/lib64/nagios/plugins/check_nrpe -H 172.31.29.100
+# Should return: NRPE v4.0.3
+```
+
+---
+
+## **6. Configure Nagios Server to Monitor Ubuntu Client**
+
+### **6.1 Create a host configuration**
+
+```bash
+sudo vim /usr/local/nagios/etc/servers/ubuntu.cfg
+```
+
+**Contents:**
+
+```cfg
+define host{
+    use             linux-server
+    host_name       ubuntu-client
+    alias           Ubuntu EC2
+    address         172.31.29.100
+    max_check_attempts      5
+    check_period            24x7
+    notification_interval   30
+    notification_period     24x7
+}
+
+define service{
+    use                     generic-service
+    host_name               ubuntu-client
+    service_description     PING
+    check_command           check_ping!100.0,20%!500.0,60%
+}
+
+define service{
+    use                     generic-service
+    host_name               ubuntu-client
+    service_description     Root Partition
+    check_command           check_nrpe!check_disk
+}
+
+define service{
+    use                     generic-service
+    host_name               ubuntu-client
+    service_description     SSH
+    check_command           check_ssh
+}
+```
+
+---
+
+### **6.2 Add NRPE Command**
+
+Edit `/usr/local/nagios/etc/objects/commands.cfg`:
+
+```cfg
+define command{
+    command_name    check_nrpe
+    command_line    $USER1$/check_nrpe -H $HOSTADDRESS$ -c $ARG1$
+}
+```
+
+---
+
+## **7. Verify Nagios Configuration**
+
+```bash
+sudo /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+# Fix errors if any, e.g., missing check_nrpe command
+sudo systemctl restart nagios
+```
+
+---
+
+## **8. Test Monitoring from Nagios Web UI**
+
+* Access Nagios: `http://<CentOS_Server_Public_IP>/nagios`
+* Login: `nagiosadmin`
+* Verify:
+
+  * Ubuntu client host status → UP
+  * Services → PING, Disk, SSH → OK
+
+---
+
+## **9. Optional: Test HTTP Monitoring on Server**
+
+```bash
+# Create test page
+echo "Nagios Apache Test Page" | sudo tee /var/www/html/index.html
+sudo systemctl restart httpd
+
+# Test HTTP check plugin
+/usr/lib64/nagios/plugins/check_http -H localhost -u /index.html
+# Should return: HTTP OK
+```
+
+---
+
+## **10. Final Notes**
+
+* **PING failures**: Ensure ICMP is allowed in SG.
+* **Swap warning**: Swap may be disabled on EC2 → can be ignored.
+* **NRPE**: Only allows commands defined in `/etc/nagios/nrpe.cfg` (`check_disk`, `check_users`, etc.)
+
+---
+
+✅ After completing these steps, you have a **fully working Nagios server on CentOS** monitoring an **Ubuntu client** with PING, Disk, SSH, 
+and optional HTTP monitoring.
+

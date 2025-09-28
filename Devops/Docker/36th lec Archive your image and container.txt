@@ -1,0 +1,69 @@
+Lecture 36 Docker notes
+
+
+
+Docker images --> Docker container --> As process run --> We can run our application
+
+Container --> Commit --> Docker image --> Container
+
+
+Docker image --> Docker container --> Zip --> another machine --> Extract --> Create container
+
+
+Docker export --> Docker import --> Docker save --> Docker load
+
+# docker --help | grep -E "(export|import|load|save)"
+
+vim Dockerfile
+FROM busybox
+CMD echo $((40+2))
+
+#docker build -t maths .
+
+#docker run maths
+
+# docker save maths > maths.tar
+Docker save command is used to create docker image to tar files.
+scp -vr maths.tar ahmad@192.168.1.9:/home/ahmad
+
+
+
+Node machine:-
+# docker import maths.tar maths
+You will get error
+
+Save command and load command
+
+
+Docker save --> Created tar file
+
+docker import --> Able to extract tar file but unable create container
+
+
+# docker load < maths.tar
+# docker run maths
+
+
+docker image --> Multiple docker images also possible
+docker save --> Create tar file for docker images
+Docker import --> Able to extract tar file but unable to create container (Wrong step)
+
+Docker load --> Docker image from tar file
+
+Finally --> Docker run to create container from docker  images
+
+
+
+
+Export command will work on container
+#docker export 903129ad58af > hello.tar
+
+Docker images --> Docker container
+docker import calc1.tar calcfs:latest
+docker run -t -i calcfs /bin/sh
+
+
+Save --> Load --> Images
+Export --> Import --> Container
+
+DIND docker in DOcker --> Docker install in Docker

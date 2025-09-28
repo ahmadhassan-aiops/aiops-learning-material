@@ -1,0 +1,58 @@
+
+
+Selenium Grid :-
+
+Selenium grid is a tools.
+
+it is distrbuted the test across mutliple physicall machine or virtual machines so that we can execute in pareller (Simutaneously) and manage from hub machine.
+
+
+paraller and sequance both supported. 
+
+
+Diagram :-
+https://www.selenium.dev/documentation/grid/components/
+
+
+Selenium grid :-
+https://www.selenium.dev/downloads/
+
+
+Its setup of mutliple java files and class (method or function)
+
+jar --> java function 
+
+exe --> code 
+
+mkdir selenium_grid
+
+paste your download in this location 
+
+
+you need to set your env variable in your machine 
+
+
+set for JAVA
+
+you need to open your cmd --> C:\Users\AbdealiDodiya>java -version
+java version "1.8.0_211"
+Java(TM) SE Runtime Environment (build 1.8.0_211-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.211-b12, mixed mode)
+
+
+Java download link :-
+
+https://www.oracle.com/in/java/technologies/javase/javase8-archive-downloads.html
+
+
+Myu java location : C:\Program Files\Java\jdk1.8.0_211
+
+
+
+
+
+
+
+
+
+

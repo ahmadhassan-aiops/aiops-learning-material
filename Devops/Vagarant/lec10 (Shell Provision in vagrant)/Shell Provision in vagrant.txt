@@ -1,0 +1,47 @@
+  
+vim vagrantfile
+config.vm.provision "shell",
+        inline: "apt-get install git -y"
+
+vagrant provision
+vagarnt ssh
+git --version
+
+
+-------------------------
+vim vagrantfile
+
+$script = <<-AH
+apt-get remove -y vim
+echo "Ahmad Hassan" >> /home/vagrant/testing.txt
+AH
+
+config.vm.provision "shell", inline: $script
+
+vagrant provision
+vagrant ssh
+check the presence of testing.txt file
+
+-----------------------------
+#Now we will create our own script
+script.sh
+
+#!/bin/bash
+apt-get update
+apt-get install vim -y
+apt-get remove zip -y
+echo "My external script" > /home/vagrant/testing.txt
+free -g > /home/vagrant/memory.txt
+
+config.vm.provision "shell", path: "W:\\Alnafi\\Devops\\Vagarant\\vagrant os installation\\script.sh"
+
+
+vagrant provision
+vagrant ssh
+
+Now we can confirm the presence of files we have created!!
+
+-------------------------
+
+
+-------------------------------------------------

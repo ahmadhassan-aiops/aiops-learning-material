@@ -1,0 +1,122 @@
+Great! Let’s break **“How Maven works”** into very simple steps so you can connect it with Jenkins and CI/CD later.
+
+---
+
+# 🚀 How Maven Works
+
+### 🔑 Concept
+
+Maven is a **build automation tool**. It works by:
+
+1. Reading instructions from **`pom.xml`** (Project Object Model).
+2. Downloading required **dependencies** (libraries).
+3. Executing a **build life-cycle** (compile → test → package → install → deploy).
+
+---
+
+## ⚡ Step-by-Step Workflow
+
+### 1️⃣ You create a Java project with `pom.xml`
+
+Example `pom.xml`:
+
+```xml
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.myapp</groupId>
+  <artifactId>hello-world</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
+```
+
+👉 This tells Maven:
+
+* Project info (name, version).
+* Dependencies (e.g., JUnit for testing).
+* Build rules.
+
+---
+
+### 2️⃣ You run a Maven command
+
+Example:
+
+```bash
+mvn package
+```
+
+---
+
+### 3️⃣ Maven checks repositories for dependencies
+
+* First looks in **local repo**: `~/.m2/repository`
+* If not found → downloads from **Maven Central Repository** (or private repo like Nexus).
+* Saves them locally so next time it doesn’t re-download.
+
+---
+
+### 4️⃣ Maven executes the Life-cycle phases
+
+For `mvn package`, Maven runs:
+
+* `validate` → check project structure.
+* `compile` → compile `.java` → `.class`.
+* `test` → run unit tests with JUnit.
+* `package` → build `.jar` or `.war`.
+
+👉 Output goes into `target/` folder.
+
+---
+
+### 5️⃣ Optional Steps
+
+* `mvn install` → copies the package to your **local repo** so other projects can reuse it.
+* `mvn deploy` → pushes package to a **remote repo** (for team/company use).
+
+---
+
+## ✅ Simple Real-world Example
+
+1. You write `HelloWorld.java`.
+
+2. Add `JUnit` dependency in `pom.xml`.
+
+3. Run:
+
+   ```bash
+   mvn test
+   ```
+
+   * Maven downloads JUnit (if not already in `.m2`).
+   * Compiles your code.
+   * Runs JUnit tests.
+
+4. Run:
+
+   ```bash
+   mvn package
+   ```
+
+   * Maven creates `hello-world-1.0-SNAPSHOT.jar` in `target/`.
+
+---
+
+## 🔗 How it fits in DevOps/Jenkins
+
+* Developers push code to GitHub.
+* Jenkins job runs `mvn clean install`.
+* Maven: downloads dependencies → compiles → tests → packages.
+* Jenkins then deploys the artifact (JAR/WAR) to a server/container.
+
+---
+
+👉 Do you want me to make a **step-by-step diagram (GitHub → Jenkins → Maven → Artifact)** to visualize this flow?

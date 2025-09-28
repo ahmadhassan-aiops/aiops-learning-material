@@ -1,0 +1,23 @@
+Lecture 35 : Docker Alias.
+
+What is alias ?
+
+Alternative name you can give.
+
+rm --> delete
+rm --> delete
+
+#alias a="ls -ltrh"
+#a
+docker ps  --format '{{.ID}} ~ {{.Names}} ~ {{.Status}} ~ {{.Image}}'
+
+
+alias dkps="docker ps  --format '{{.ID}} ~ {{.Names}} ~ {{.Status}} ~ {{.Image}}'"
+
+docker stats --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.NetIO}}"
+alias dkt="docker stats --format 'table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.NetIO}}'"
+
+alias dki="docker images"
+alias dkclean="docker ps -a -f status=exited"
+
+alias dkclean="docker rm $(docker ps -q -a -f status=exited")

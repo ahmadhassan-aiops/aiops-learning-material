@@ -1,0 +1,88 @@
+For services like nginx, sshd we have sockets and we can use systemctl commands to check their statuses or to run them
+# example
+systemctl status nginx
+service nginx status
+
+
+For services which are defined or created by us such as alnafi_service, they have no socket
+we can check them using ps -ef command
+ps -ef | grep alnafi_service
+
+if it shows you more than 1 entry something then your service is installed else not.
+
+
+
+=========================================================
+
+#!/bin/bash
+
+# Check nginx process using ps -ef
+process_count=$(ps -ef | grep nginx | grep -v grep | wc -l)
+
+if [[ "$process_count" -gt 0 ]]; then
+    echo "nginx is running ($process_count instance(s) found)"
+else
+    echo "nginx is NOT running"
+fi
+
+
+
+chmod +x check_nginx_ps.sh
+./check_nginx_ps.sh
+
+
+=========================================================
+
+
+import subprocess
+
+def check_process(process_name):
+    # Run ps -ef command
+    result = subprocess.run(["ps", "-ef"], capture_output=True, text=True)
+    
+    # Filter lines containing the process name but exclude 'grep' and this python script itself
+    processes = [
+        line for line in result.stdout.splitlines()
+        if process_name in line and "grep" not in line and "python" not in line
+    ]
+    
+    if processes:
+        print(f"{process_name} is running ({len(processes)} instance(s) found)")
+        for p in processes:
+            print(p)
+    else:
+        print(f"{process_name} is NOT running")
+
+if __name__ == "__main__":
+    check_process("nginx")
+
+
+
+
+chmod +x check_nginx_ps.py
+./check_nginx_ps.py
+
+
+=========================================================
+
+python_cheking_nginx.yml
+
+- name: this yaml file focuses on copying the bash script file, running it, saving its output and displaying it
+  hosts: ubuntu # my worker machine
+  gather_facts: no
+  tasks:
+  - name: copying the bash script file
+    copy:
+      src: /home/jhon/ansible/check_nginx_ps.py # source location of file
+      dest: /home/ubuntu/  # destination location of file where to copy iti
+      mode: 0755 # permission of file
+      owner: ubuntu
+      group: ubuntu
+  - name: running the file and saving its output in a varibale
+    command: "python3 /home/ubuntu/check_nginx_ps.py"
+    register: command_output # saving the output of file in a variable using register
+  - name: now showing the output of file using debug keyword
+    debug:
+      var: command_output.stdout_lines # passing the output of file saved in command_output variable to debug as a variable
+~
+

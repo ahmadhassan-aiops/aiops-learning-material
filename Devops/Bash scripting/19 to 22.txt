@@ -1,0 +1,1049 @@
+Lecture 19 : Understanding to Array in Bash script.
+
+
+
+Array : An array is a collection of elements.
+
+abd=(5 2 3 abdeali)
+echo "${abd[*]}"
+abd1=(abd "Abdeali Dodiya")
+echo "${abd1[*]}"
+echo "${abd1[@]}"
+
+
+root@abdealinode2:~# cmd=(2 5 8 52 53 hostname -i)
+root@abdealinode2:~# echo "${cmd[*]}"
+2 5 8 52 53 hostname -i
+root@abdealinode2:~# cmd1=(1 2 3 4 5 6 7)
+root@abdealinode2:~# echo "${cmd1[*]}"
+1 2 3 4 5 6 7
+
+
+# cmd1=(1 2 3 4 5 6 7)
+variable 1234567
+
+Positive Index0123456
+Negetive Index-7-6-5-4-3-2-1
+
+
+root@abdealinode2:~# echo "${cmd[@]}"
+2 5 8 52 53 hostname -i
+
+
+
+root@abdealinode2:~# echo "${cmd[@]}"
+2 5 8 52 53 hostname -i
+root@abdealinode2:~# echo "${cmd[@]:2}"
+8 52 53 hostname -i
+root@abdealinode2:~# echo "${cmd[@]:1}"
+5 8 52 53 hostname -i
+root@abdealinode2:~# echo "${cmd[@]:1:2}"
+5 8
+root@abdealinode2:~# echo "${cmd[@]:1:3}"
+5 8 52
+root@abdealinode2:~# echo "${cmd[@]:1:4}"
+5 8 52 53
+
+
+
+root@abdealinode2:~# cmd=(2 5 8 52 53 "hostname -i")
+root@abdealinode2:~# echo "${cmd[@]}"
+2 5 8 52 53 hostname -i
+root@abdealinode2:~# echo "${!cmd[@]}"#Index value will display
+0 1 2 3 4 5
+root@abdealinode2:~# echo "${cmd[2]}"
+8
+root@abdealinode2:~# echo "${#cmd[@]}"#count total value in array
+6
+root@abdealinode2:~# cmd=(2 5 8 52 53 hostname -i)
+root@abdealinode2:~# echo "${#cmd[@]}"
+7
+root@abdealinode2:~# echo "${!cmd[@]}"
+0 1 2 3 4 5 6
+
+
+
+root@abdealidodia:~# docker -v
+Docker version 20.10.14, build a224086
+
+
+root@abdealidodia:~# cmd2=$(docker -v)
+root@abdealidodia:~# echo $cmd2
+Docker version 20.10.14, build a224086
+root@abdealidodia:~# cmd2=(docker -v)
+root@abdealidodia:~# echo $cmd2
+docker
+root@abdealidodia:~# cmd2=$(docker -v)
+root@abdealidodia:~# cmd2=( $(docker -v) )
+root@abdealidodia:~# echo $cmd2
+Docker
+root@abdealidodia:~# echo "${cmd2[@]}"
+Docker version 20.10.14, build a224086
+root@abdealidodia:~# echo "${!cmd2[@]}"
+0 1 2 3 4
+root@abdealidodia:~# echo "${#cmd2[@]}"
+5
+root@abdealidodia:~# echo "${cmd2[2]}"
+20.10.14,
+root@abdealidodia:~# echo "${cmd2[3]}"
+build
+root@abdealidodia:~# echo "${cmd2[@]}"
+Docker version 20.10.14, build a224086
+root@abdealidodia:~# echo "${cmd2[@]:0:2}"
+Docker version
+root@abdealidodia:~# echo "${cmd2[@]:0:3}"
+Docker version 20.10.14,
+root@abdealidodia:~# echo "${cmd2[@]::3}"
+Docker version 20.10.14,
+
+
+
+
+
+
+#Read array:-
+root@abdealidodia:~# read test
+Abd Ali Kazim
+root@abdealidodia:~# echo $test
+Abd Ali Kazim
+root@abdealidodia:~# echo "${test[@]}"
+Abd Ali Kazim
+root@abdealidodia:~# echo "${test[1]}"
+
+root@abdealidodia:~# echo "${test[0]}"
+Abd Ali Kazim
+root@abdealidodia:~# echo "${test[1]}"
+
+root@abdealidodia:~# echo "${test[2]}"
+
+root@abdealidodia:~# echo "${#test[@]}"
+1
+root@abdealidodia:~# echo "${!test[@]}"
+0
+root@abdealidodia:~# read -a test1
+ABD ali KAZIM
+root@abdealidodia:~# echo "${!test1[@]}"
+0 1 2
+root@abdealidodia:~# echo "${#test1[@]}"
+3
+root@abdealidodia:~# echo "${test1[@]}"
+ABD ali KAZIM
+root@abdealidodia:~# echo "${test1[2]}"
+KAZIM
+
+
+# test=([abd]=ali [12]=2 [13]=5)
+
+# myabd=(7 8 6 "Ali" 5 6)
+
+
+
+
+root@abdealidodia:~# test=([abd]=ali [12]=2 [13]=5)
+root@abdealidodia:~# echo "${test[@]}"
+ali 2 5
+root@abdealidodia:~# echo "${!test[@]}"
+0 12 13
+root@abdealidodia:~# test=(["abd"]=ali [12]=2 [13]=5)
+root@abdealidodia:~# echo "${!test[@]}"
+0 12 13
+root@abdealidodia:~# test=([8]=ali [12]=2 [13]=5)
+root@abdealidodia:~# echo "${test[@]}"
+ali 2 5
+root@abdealidodia:~# echo "${!test[@]}"
+8 12 13
+root@abdealidodia:~# echo "${test[1]}"
+
+root@abdealidodia:~# echo "${test[12]}"
+2
+root@abdealidodia:~# echo "${test[13]}"
+5
+root@ab
+
+
+
+
+#declare -A mytest
+root@abdealidodia:~# mytest=([fname]="Abdeali" [lname]="Dodiya" [15]="ABD")
+root@abdealidodia:~# echo "${mytest[@]}"
+Abdeali Dodiya ABD
+root@abdealidodia:~# echo "$#{mytest[@]}"
+0{mytest[@]}
+root@abdealidodia:~# echo "${#mytest[@]}"
+3
+root@abdealidodia:~# echo "${!mytest[@]}"
+fname lname 15
+root@abdealidodia:~# echo "${!mytest[fname]}"
+
+root@abdealidodia:~# echo "${mytest[fname]}"
+Abdeali
+root@abdealidodia:~# echo "${mytest[lname]}"
+Dodiya
+root@abdealidodia:~# you need to declare -A <variable>
+
+
+
+
+#Key value:-
+#declare -A mytest
+# mytest=([fname]="Abdeali" [lname]="Dodiya" [15]="ABD")
+root@abdealidodia:~# echo "${!mytest[@]}"
+fname lname 15
+
+
+#Simple:-
+# test=([abd]=ali [12]=2 [13]=5)
+# test1=([one]=1 [two]=2 [three]=3)
+
+root@abdealidodia:~# echo "${!test[@]}"
+0 12 13
+
+
+root@abdealidodia:~# test1=([one]=1 [two]=2 [three]=3)
+root@abdealidodia:~# echo "${!test1[*]}"
+0
+root@abdealidodia:~# echo "${test1[*]}"
+3
+root@abdealidodia:~# echo "${test1[@]}"
+3
+root@abdealidodia:~# test2=([3]=1 [5]=2 [8]=3)
+root@abdealidodia:~# echo "${test2[@]}"
+1 2 3
+root@abdealidodia:~# echo "${!test2[@]}"
+3 5 8
+root@abdealidodia:~# declare -A test3
+root@abdealidodia:~# test3=([one]=1 [two]=2 [three]=3)
+root@abdealidodia:~# echo "${!test3[@]}"
+two three one
+root@abdealidodia:~# echo "${#test3[@]}"
+3
+root@abdealidodia:~# echo "${test3[@]}"
+2 3 1
+root@abdealidodia:~# echo "${test3[one]}"
+1
+root@abdealidodia:~# echo "${test3[two]}"
+2
+root@abdealidodia:~# echo "${test3[three]}"
+3
+root@abdealidodia:~# echo "${test1[one]}"
+3
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+Lecture 20 : Understanding to Function in Bash Script.
+
+
+Function :-
+Function is block of code which reduce your unwanted line in your script
+Help in organizing long script into manageable modules.
+
+Function two type define :-
+
+1. Method
+function <functionname>()
+{
+statement
+}
+
+2. Method
+<function>()
+{
+statement
+}
+
+
+
+#!/bin/bash
+test()
+{
+echo "Abdeali Dodiya"
+echo "Hello Everyone"
+}
+echo " i am using sample function"
+test
+
+
+echo "This is my another function calling"
+test
+
+
+echo "===============Third times=========="
+test
+
+
+#!/bin/bash
+function test()
+{
+echo "Abdeali Dodiya"
+echo "Hello Everyone"
+}
+echo " i am using sample function"
+test
+
+
+echo "This is my another function calling"
+test
+
+
+echo "===============Third times=========="
+test
+
+
+
+
+
+
+
+
+
+root@abdealidodia:~/bash/lect20# cat mach.sh
+#!/bin/bash
+
+mach()
+{
+echo -e "\n Machine information";  uname -a
+echo -e "\n Current date" ; date
+echo -e "\n machine status"; uptime
+echo -e "\n Filesyastem  status"; df -h
+echo -e "\n Memrory details"; free -g
+}
+mach
+sleep 1
+mach
+sleep 3
+mach
+
+
+
+
+Variable in Function :-
+1. GLobal
+2. Local
+
+
+
+#!/bin/bash
+mytest()
+{
+echo "my value is : $abd"
+}
+
+abd=12
+mytest
+
+
+
+
+root@abdealidodia:~/bash/lect20# cat global.sh
+#!/bin/bash
+mytest()
+{
+ali=12
+echo "my value is : $abd"
+abd=15
+}
+
+abd=13
+mytest
+echo "My second value is $abd"
+
+
+
+
+root@abdealidodia:~/bash/lect20# cat local.sh
+#!/bin/bash
+
+mytest()
+{
+ali=12
+echo "ABD value is $abd"
+kazim=13
+local alnafi=786
+}
+
+kazim=15        #GLOBAL
+mytest
+echo "Ali value is $ali"
+echo "Kazim value is $kazim"
+echo "Alnafi value is $alnafi"
+root@abdealidodia:~/bash/lect20# ./local.sh
+ABD value is
+Ali value is 12
+Kazim value is 13
+Alnafi value is
+
+
+
+root@abdealidodia:~/bash/lect20# cat local.sh
+#!/bin/bash
+
+mytest()
+{
+local ali=10
+echo "Ali value is $ali"
+}
+mytest
+ali=$(mytest)
+
+echo "Ali value is outside function : $ali"
+
+
+
+root@abdealidodia:~/bash/lect20# vim return.sh
+#!/bin/bash
+
+myvar()
+{
+local ali=10
+return $ali
+}
+myvar
+echo "My reutrn value is : $?"
+abd=$?
+echo "My retun value is $abd"
+~
+
+
+
+Argument passing:-
+#!/bin/bash
+
+test()
+{
+echo "Hello $1"
+}
+test ALI
+test ABD
+~
+
+
+root@abdealidodia:~/bash/lect20# cat pass.sh
+#!/bin/bash
+add()
+{
+
+first=$1
+second=$2
+ans=$((first + second))
+echo "$first + $second is : $ans"
+}
+first=10
+second=20
+add $first $second
+
+
+abd=200
+ali=20
+add $abd $ali
+
+add 100 200
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+Lecture 21 :  Filter grep commands in bash script.
+
+
+Grep is use for filtering your contents
+
+
+Syntax:-
+
+file or message | grep <option>
+OR
+grep <option> file or message
+
+
+#cat abd.txt
+My name is Abdeali Dodiya
+I am from Bangalore , India
+I am working in Alnafi as Devops trainer
+
+# cat abd.txt | grep "Devops"
+I am working in Alnafi as Devops trainer
+
+OR
+
+# grep "Devops" abd.txt
+I am working in Alnafi as Devops trainer
+
+
+-i, --ignore-case:-
+Ignore case distinctions in patterns and input data, so that characters that differ only in case match each other.
+
+root@abdealidodia:~/bash/lect21# cat abd1.txt  | grep "abdeali"
+root@abdealidodia:~/bash/lect21# cat abd1.txt
+Abdeali here, We are learning bash script
+root@abdealidodia:~/bash/lect21# cat abd1.txt  | grep -i "abdeali"
+Abdeali here, We are learning bash script
+
+
+#cat /var/log/syslog | grep -i "error "
+#cat /var/log/syslog | grep -i "error" > error.txt
+# cat /proc/cpuinfo | grep -i "model"
+
+
+
+-w, --word-regexp:-
+Select only those lines containing matches that form whole words.  The test is that the  matching  substring  must  either  be  at  the
+beginning  of  the  line,  or  preceded  by  a  non-word constituent character.  Similarly, it must be either at the end of the line or
+followed by a non-word constituent character.
+
+
+# cat abd.txt
+My name is Abdeali Dodiya
+I am from Bangalore , India
+I am working in Alnafi as Devopsss trainer
+We are learning bash script , devopssss
+devops
+Devopsss
+
+
+We will learn some automation tools in devops course.
+We will cover real time example which you are using day by day in your job.
+Devops course very important for all
+
+# cat abd.txt | grep "Devops"
+I am working in Alnafi as Devopsss trainer
+Devopsss
+Devops course very important for all
+
+
+# cat abd.txt | grep -w "Devops"
+Devops course very important for all
+
+
+
+
+
+-v, --invert-match:-
+Invert the sense of matching, to select non-matching lines.
+# cat abd.txt | grep -v "Devops"
+
+# cat /etc/apache2/sites-available/default-ssl.conf  | grep -v "#"
+# cat /etc/apache2/sites-available/default-ssl.conf  | grep -v "#" > out.txt
+
+
+
+
+
+
+-o, --only-matching:-
+Print only the matched (non-empty) parts of a matching line, with each such part on a separate output line.
+
+
+root@abdealidodia:~/bash/lect21# cat abd.txt  | grep -o "Devops"
+Devops
+Devops
+Devops
+root@abdealidodia:~/bash/lect21# cat abd.txt  | grep -io "Devops"
+Devops
+devops
+devops
+Devops
+devops
+Devops
+
+-c is use for how many match repeated from whole lines
+
+# cat abd.txt | grep -c "Devops"
+3
+# ps -ef | grep -c $USER
+157
+
+
+-A NUM, --after-context=NUM:-
+Print NUM lines of trailing context after matching lines.  Places a line containing a group separator (--) between contiguous groups of
+matches.  With the -o or --only-matching option, this has no effect and a warning is given.
+
+-B NUM, --before-context=NUM:-
+Print NUM lines of leading context before matching lines.  Places a line containing a group separator (--) between contiguous groups of
+matches.  With the -o or --only-matching option, this has no effect and a warning is given.
+
+-C NUM, -NUM, --context=NUM:-
+Print  NUM lines of output context.  Places a line containing a group separator (--) between contiguous groups of matches.  With the -o
+or --only-matching option, this has no effect and a warning is given.
+
+
+
+# cat abd.txt | grep -A 1 "Alnafi"
+I am working in Alnafi as Devopsss trainer
+We are learning bash script , devopssss
+
+
+
+# cat abd.txt | grep -B 1 "Alnafi"
+I am from Bangalore , India
+I am working in Alnafi as Devopsss trainer
+
+
+# cat abd.txt | grep -C 1 "Alnafi"
+I am from Bangalore , India
+I am working in Alnafi as Devopsss trainer
+We are learning bash script , devopssss
+
+
+
+
+
+-r, --recursive:-
+Read  all files under each directory, recursively, following symbolic links only if they are on the command line.  Note that if no file
+operand is given, grep searches the working directory.  This is equivalent to the -d recurse option.
+
+
+root@abdealidodia:~/bash/lect21# grep -r "Devops"
+abd.txt:I am working in Alnafi as Devopsss trainer
+abd.txt:Devopsss
+abd.txt:Devops course very important for all
+test/abd.txt:I am working in Alnafi as Devopsss trainer
+test/abd.txt:Devopsss
+test/abd.txt:Devops course very important for all
+
+
+
+
+
+-l, --files-with-matches:-
+Suppress  normal  output;  instead  print the name of each input file from which output would normally have been printed.  The scanning
+will stop on the first match.
+
+
+# grep -l "Devops"
+
+root@abdealidodia:~/bash/lect21# grep -l "Devops" *
+abd.txt
+grep: test: Is a directory
+root@abdealidodia:~/bash/lect21# grep -l "Devops" abd.txt
+abd.txt
+root@abdealidodia:~/bash/lect21# grep -l "Devops" abd1.txt
+
+
+
+
+
+-h, --no-filename:-
+Suppress the prefixing of file names on output.  This is the default when there is only one file (or only standard input) to search.
+
+
+
+
+
+# grep -h "Devops" *
+I am working in Alnafi as Devopsss trainer
+Devopsss
+Devops course very important for all
+
+
+# cat abd.txt | grep -e "Devops" -e "trainer" -e "learning"
+I am working in Alnafi as Devopsss trainer
+We are learning bash script , devopssss
+Devopsss
+Devops course very important for all
+
+# cat abd.txt | grep -E "Devops|learning"
+I am working in Alnafi as Devopsss trainer
+We are learning bash script , devopssss
+Devopsss
+Devops course very important for all
+root@abdealidodia:~/bash/lect21# cat abd.txt | egrep  "Devops|learning"
+I am working in Alnafi as Devopsss trainer
+We are learning bash script , devopssss
+Devopsss
+Devops course very important for all
+
+
+# cat /etc/passwd | grep -Ew "root|alnafi"
+root:x:0:0:root:/root:/bin/bash
+alnafi:x:1006:1008::/home/alnafi:/bin/bash
+
+
+-f FILE, --file=FILE:-
+Obtain patterns from FILE, one per line.  If this option is used multiple times or is combined with the -e  (--regexp)  option,  search
+for all patterns given.  The empty file contains zero patterns, and therefore matches nothing.
+
+
+# cat user.txt
+root
+abdeali
+aadmin
+alnafi
+1# cat /etc/passwd | grep -wf user.txt
+root:x:0:0:root:/root:/bin/bash
+abdeali:x:1000:1000:Abdeali,,,:/home/abdeali:/bin/bash
+aadmin:x:1001:1001::/home/aadmin/:/bin/bash
+alnafi:x:1006:1008::/home/alnafi:/bin/bash
+
+
+
+
+
+
+^ is use for search word from begining of your lines
+# cat abd.txt  | grep -E "Devops"
+I am working in Alnafi as Devopsss trainer
+Devopsss
+Devops course very important for all
+root@abdealidodia:~/bash/lect21# cat abd.txt  | grep -E "^Devops"
+Devopsss
+Devops course very important for all
+
+# cat /etc/ssh/sshd_config | grep -v "^#"
+
+Wanted to find only directory in my current location
+# ls -ltrh  | grep -E "^d"
+drwxr-xr-x 2 root root 4.0K Jul  9 17:29 test
+
+
+Wanted to find only files in my current location
+# ls -ltrh | grep -E "^-"
+-rw-r--r-- 1 root root   42 Jul  9 17:05 abd1.txt
+-rw-r--r-- 1 root root  75K Jul  9 17:09 error.txt
+-rw-r--r-- 1 root root  323 Jul  9 17:15 abd.txt
+-rw-r--r-- 1 root root  538 Jul  9 17:19 out.txt
+-rw-r--r-- 1 root root   27 Jul  9 17:39 user.txt
+root@abdealidodia:~/bash/lect21# ls -ltrh | grep -cE "^-"
+5
+
+
+
+
+
+
+
+$  --> Matches the word which is end with contents
+# cat abd.txt | grep -E "all$"
+Devops course very important for all
+
+
+
+^$ --> it will display empty line from yuor contents
+root@abdealidodia:~/bash/lect21# cat abd.txt | grep -E "^$"
+
+
+root@abdealidodia:~/bash/lect21# cat abd.txt | grep -vE "^$"
+My name is Abdeali Dodiya
+I am from Bangalore , India
+I am working in Alnafi as Devopsss trainer
+We are learning bash script , devopssss
+devops
+Devopsss
+We will learn some automation tools in devops course.
+We will cover real time example which you are using day by day in your job.
+Devops course very important for all
+
+
+
+
+
+\ --> it will display special character
+# cat abd.txt
+My name is Abdeali Dodiya
+I am from Bangalore , India +
+I am working in $  Alnafi as Devopsss trainer
+We are learning bash script , devopssss
+devops
+Devopsss
+
+
+We will learn some automation +  tools # in devops course.
+We will cover real time example which you are using day by day in your job.
+Devops course very important for all
+
+
+# cat abd.txt  | grep "\."
+We will learn some automation +  tools # in devops course.
+We will cover real time example which you are using day by day in your job.
+
+
+# cat abd.txt  | grep "\+"
+I am from Bangalore , India +
+We will learn some automation +  tools # in devops course.
+
+
+. --> it will display any one character
+# cat abd.txt  | grep -E "\."
+We will learn some automation +  tools # in devops course.
+We will cover real time example which you are using day by day in your job.
+
+
+root@abdealidodia:~/bash/lect21# cat abd.txt  | grep -E "W."
+We are learning bash script , devopssss
+We will learn some automation +  tools # in devops course.
+We will cover real time example which you are using day by day in your job.
+
+
+root@abdealidodia:~/bash/lect21# cat abd.txt  | grep -E "i."
+My name is Abdeali Dodiya
+I am from Bangalore , India +
+I am working in $  Alnafi as Devopsss trainer
+We are learning bash script , devopssss
+We will learn some automation +  tools # in devops course.
+We will cover real time example which you are using day by day in your job.
+Devops course very important for all
+
+
+
+\b --> to display only mathc string
+# cat abd.txt  | grep -E "\bDevops\b"
+Devops course very important for all
+
+
+
+
+? --> It will be check option condition one or more
+# cat > test.txt
+india, innnnnn
+iaaaaaaaaaaaaa
+innnnnnnnnnnnnnnnnnnnnn
+in
+innnnnnnnnnnnnnnnnnn
+i
+innnnn
+
+root@abdealidodia:~/bash/lect21# cat test.txt | grep -E "in?"
+india, innnnnn
+iaaaaaaaaaaaaa
+innnnnnnnnnnnnnnnnnnnnn
+in
+innnnnnnnnnnnnnnnnnn
+i
+
+
+
+# cat test.txt | grep -E "in*"
+india, innnnnn
+iaaaaaaaaaaaaa
+innnnnnnnnnnnnnnnnnnnnn
+in
+innnnnnnnnnnnnnnnnnn
+i
+innnnn
+
+
+
+
+{N} N times will display wpord N times:-
+# cat test.txt | grep -E "in{5}"
+india, innnnnn
+innnnnnnnnnnnnnnnnnnnnn
+innnnnnnnnnnnnnnnnnn
+innnnn
+root@abdealidodia:~/bash/lect21# cat test.txt | grep -wE "in{5}"
+innnnn
+
+
+
+# cat test.txt | grep -wE "in{5,7}"
+india, innnnnn
+innnnn
+
+
+
+
+# cat myip.txt
+hello dear, my server details are as follow
+My jboss server ip address is 192.168.1.8
+My docker server ip address os 192.168.1.10
+my brodcat address is 255.255.255.0
+Invalid ip address 1234.1234.12.1
+We are checking only for grep example
+
+# cat myip.txt | grep -E "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"
+My jboss server ip address is 192.168.1.8
+My docker server ip address os 192.168.1.10
+my brodcat address is 255.255.255.0
+
+
+
+# cat myip.txt | grep -E "\b[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\b"
+My jboss server ip address is 192.168.1.8
+My docker server ip address os 192.168.1.10
+my brodcat address is 255.255.255.0
+
+
+
+TASK TIME :--
+
+#cat urls.txt
+We have some url example so please find below for your grep command.
+Please check and let me know if you are solving.
+
+http://google.com
+https://google.com
+ftp://mywebserver.net
+ftp://myweb.edu
+https://mywebsite.com
+
+I hope you enjoyed :p
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Lecture 22 : Filter cut commands in bash script.
+
+
+
+TASK Solution :-
+
+
+# cat url.txt
+We have some url example so please find below for your grep command.
+Please check and let me know if you are solving.
+
+http://google.com
+https://google.com
+ftp://mywebserver.net
+ftp://myweb.edu
+https://mywebsite.com
+
+I hope you enjoyed.
+
+
+
+# cat url.txt  | grep -E "^(http|https|ftp):[\/]{2}([a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,4})"
+http://google.com
+https://google.com
+ftp://mywebserver.net
+ftp://myweb.edu
+https://mywebsite.com
+
+
+Cut syntax:-
+file name | cut <option>
+OR
+cut <option> filename
+
+-b, --bytes=LIST
+select only these bytes
+
+-c, --characters=LIST
+select only these characters
+
+-d, --delimiter=DELIM
+use DELIM instead of TAB for field delimiter
+
+-f, --fields=LIST
+select only these fields;  also print any line that contains no delimiter character, unless the -s option is specified
+
+-n     (ignored)
+
+--complement
+complement the set of selected bytes, characters or fields
+
+
+root@abdealidodia:~/bash/lect22# cat abd.txt | cut -c 1-6
+My nam
+I am f
+I am w
+We are
+devops
+Devops
+
+
+We wil
+We wil
+Devops
+root@abdealidodia:~/bash/lect22# cat abd.txt | cut -b 1-6
+My nam
+I am f
+I am w
+We are
+devops
+Devops
+
+
+We wil
+We wil
+Devops
+
+
+# cat abd.txt | cut -c 1-
+# docker -v | cut -c 16-23
+20.10.14
+
+
+# mydocker=$(docker -v | cut -c 16-23)
+
+# echo "My docker version is : $mydocker"
+My docker version is : 20.10.14
+
+
+
+root@abdealidodia:~/bash/lect22# cat testing.txt
+my      name    is      abdeali dodiya
+I       am      from    bangalore
+I       am      working in      alnafi
+root@abdealidodia:~/bash/lect22# cat testing | cut -f 1
+cat: testing: No such file or directory
+root@abdealidodia:~/bash/lect22# cat testing.txt | cut -f 1
+my
+I
+I
+root@abdealidodia:~/bash/lect22# cat testing.txt | cut -f 2
+name
+am
+am
+root@abdealidodia:~/bash/lect22# cat testing.txt | cut -f 3
+is
+from
+working
+root@abdealidodia:~/bash/lect22# cat testing.txt | cut -f 4
+abdeali
+bangalore
+in
+
+root@abdealidodia:~/bash/lect22# cat testing.txt | cut -f 5
+dodiya
+
+alnafi
+
+
+
+
+Delimiter --> :  (passwd file)
+alnafi:x:1006:1008::/home/alnafi:/bin/bash
+
+
+# cat /etc/passwd | cut -d ":" -f 1
+# cat /etc/passwd | cut -d ":" -f 1-4 | grep "alnafi"
+alnafi:x:1006:1008
+root@abdealidodia:~/bash/lect22# cat /etc/passwd | cut -d ":" -f 1- | grep "alnafi"
+alnafi:x:1006:1008::/home/alnafi:/bin/bash
+
+
+
+--output-delimiter
+
+
+# cat /etc/passwd | cut -d ":" -f 1-10  --output-delimiter="-->" | grep alnafi
+alnafi-->x-->1006-->1008-->-->/home/alnafi-->/bin/bash
+
+
+
+# cat /etc/passwd | cut --complement -d ":" -f  1
+One type of invert string
+
+# docker -v  | cut -d "," -f 1 | cut -d " " -f 3
+
+# free -gt  | grep -E "Total:" | cut -d " " -f 13
+
+
+# df -h  | grep -E "/dev/mapper/vgubuntu-root" | cut -d " " -f 10
+
+
+
+TASK :-
+Cat Ips.csv
+apache,192.168.1.2
+sftp,192.168.1.3
+nginx,192.168.1.5
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------
+

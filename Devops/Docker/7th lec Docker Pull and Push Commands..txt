@@ -1,0 +1,20 @@
+Lecture 7: Docker notes 
+
+Pull VS Push
+
+docker pull hello-world --> hello-world download
+Docker push <image name> --> Upload
+
+Pull = Download
+Push = Upload
+
+#Docker push <image name>
+
+tag=rename
+
+#docker tag <OldimageID:tag> <DockerHUBuserID> /<New imageID:tag>
+#docker images
+aliimage                v2        37eb1fb17a1c   2 days ago     5.57MB
+
+#docker tag aliimage:v2 abdealidodia/abdealiimage:latest
+

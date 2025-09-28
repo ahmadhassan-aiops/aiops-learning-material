@@ -1,0 +1,98 @@
+Great question 👍 Let’s keep it **simple, beginner-friendly, and DevOps-focused**.
+
+---
+
+# 🚀 Introduction to Maven
+
+### 🔑 What is Maven?
+
+* **Maven** is a **build automation tool** used mainly for **Java projects**.
+* It helps developers **compile code, run tests, and package applications** (like `.jar` or `.war` files).
+* Think of Maven as a **kitchen recipe manager** → it knows:
+
+  * Ingredients (libraries/dependencies your project needs)
+  * Cooking steps (compile, test, package, deploy)
+
+---
+
+### ⚡ Why do we need Maven?
+
+Without Maven:
+
+* Developers manually download libraries (JAR files).
+* Hard to manage versions (conflicts).
+* Build process is inconsistent.
+
+With Maven:
+
+* Automatically downloads correct libraries from **Maven Central Repository**.
+* Ensures all developers use the same build process.
+* Standardizes project structure.
+
+---
+
+### 🏗️ How Maven Works
+
+1. You write a **POM file** (`pom.xml`) → Project Object Model.
+2. Inside `pom.xml`, you define:
+
+   * Project info (name, version, etc.)
+   * Dependencies (libraries needed)
+   * Build steps (plugins).
+3. Run commands like:
+
+   ```bash
+   mvn compile     # compile source code
+   mvn test        # run unit tests
+   mvn package     # build jar/war file
+   mvn install     # install package in local repo
+   ```
+
+---
+
+### 📦 Example `pom.xml`
+
+```xml
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.myapp</groupId>
+    <artifactId>hello-world</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <dependencies>
+        <!-- Example: JUnit testing library -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+```
+
+---
+
+### 🌍 Maven Repositories
+
+* **Local Repository** → Stored on your computer (`~/.m2/repository`).
+* **Central Repository** → Public repo with thousands of Java libraries.
+* **Remote Repository** → Company/private repo for internal use.
+
+---
+
+### ✅ Quick Example (Plain Words)
+
+You want to build a Java project:
+
+1. Write code in `HelloWorld.java`.
+2. Add dependencies in `pom.xml` (like JUnit).
+3. Run:
+
+   ```bash
+   mvn package
+   ```
+4. Maven compiles, tests, and creates `hello-world-1.0-SNAPSHOT.jar`.
+
+---
+

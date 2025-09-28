@@ -1,0 +1,49 @@
+https://minikube.sigs.k8s.io/docs/start/?arch=%2Fwindows%2Fx86-64%2Fstable%2F.exe+download
+
+
+------------------------------------------------------
+
+
+minikube was not starting so i have to increase the docker memory limit!!
+
+
+
+[root@client1 ahmad]# sudo nano /etc/default/grub
+[root@client1 ahmad]# cat /etc/default/grub
+GRUB_TIMEOUT=5
+GRUB_DISTRIBUTOR="$(sed 's, release .*$,,g' /etc/system-release)"
+GRUB_DEFAULT=saved
+GRUB_DISABLE_SUBMENU=true
+GRUB_TERMINAL_OUTPUT="console"
+GRUB_CMDLINE_LINUX="crashkernel=1G-4G:192M,4G-64G:256M,64G-:512M resume=/dev/mapper/cs-swap rd.lvm.lv=cs/root rd.lvm.lv=cs/swap rhgb quiet cgroup_enable=memory swapaccount=1"
+GRUB_DISABLE_RECOVERY="true"
+GRUB_ENABLE_BLSCFG=true
+-----------------------------------------
+
+docker context use default (i had to use this first as docker desktop was running)
+
+
+minikube start
+minikube status
+minikube dashboard
+minikube delete -all
+-----------------------------------------
+
+[ahmad@client1 ~]$ minikube profile list
+|----------|-----------|---------|----|------|---------|---------|-------|----------------|--------------------|
+| Profile  | VM Driver | Runtime | IP | Port | Version | Status  | Nodes | Active Profile | Active Kubecontext |
+|----------|-----------|---------|----|------|---------|---------|-------|----------------|--------------------|
+| minikube | docker    | docker  |    | 8443 | v1.32.0 | Stopped |     1 | *              |                    |
+|----------|-----------|---------|----|------|---------|---------|-------|----------------|--------------------|
+
+
+-----------------------------------------
+
+
+minikube start --driver virtualbox
+
+-----------------------------------
+
+
+
+

@@ -1,0 +1,321 @@
+
+limitation of node selectors:
+
+The limitation of node selectors in Kubernetes is that they only allow for exact matching of key-value pairs between the pod and node labels, 
+which makes them rigid. They don’t support more advanced conditions like preference or the ability to express rules based on node characteristics 
+such as "prefer this node but don’t require it." For more flexible scheduling, including handling multiple conditions or prioritizing certain nodes, 
+node affinity is needed. Node affinity allows for more complex expressions like "soft" (preferred) and "hard" (required) rules, 
+making it a better choice for scenarios that need finer control over pod placement.
+
+
+### 1. What Is Node Affinity and How It Differs from Node Selector
+
+**Node affinity** is an advanced form of scheduling in Kubernetes that allows pods to be placed on nodes based on more expressive rules than 
+simple key-value matching. Unlike the basic `nodeSelector`, which only allows **exact label matches**, node affinity supports complex expressions 
+using operators like `In`, `NotIn`, `Exists`, etc. It’s defined under the `affinity` field in the pod spec and allows users to specify 
+both **required** and **preferred** conditions for node selection, giving greater flexibility in how pods are scheduled.
+
+---
+
+### A. RequiredDuringSchedulingIgnoredDuringExecution
+
+This is the **hard requirement** version of node affinity. If the conditions defined under this rule are not met, the pod **will not be scheduled**. 
+However, once the pod is running, these conditions are **ignored** during execution—even if the node's labels change. 
+It ensures that the pod only starts on a node that meets the criteria.
+
+Example:
+
+```yaml
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: type
+              operator: In
+              values:
+                - high-memory
+
+
+---
+
+### B. PreferredDuringSchedulingIgnoredDuringExecution
+
+This defines a **soft preference** for scheduling. Kubernetes will try to place the pod on nodes that match the specified affinity rules, 
+but if none are available, the pod can still be scheduled elsewhere. It’s useful when you want to suggest an ideal node but still allow flexibility 
+in scheduling.
+
+Example:
+
+```yaml
+affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+            - key: zone
+              operator: In
+              values:
+                - us-central1-a
+
+
+---
+
+### C. RequiredDuringSchedulingRequiredDuringExecution *(Planned)*
+
+This is a **planned but not yet implemented** type of node affinity. It would enforce node affinity both **at scheduling time** and **throughout the pod’s 
+lifetime**. This means if the node’s labels change and no longer match, Kubernetes might evict or reschedule the pod, providing even stricter control 
+over node placement.
+
+
+
+-----------------------------------------------------------------------------------------------------------------
+
+kubectl create deploy my-deploy --image nginx --replicas 6 --dry-run=client
+deployment.apps/my-deploy created (dry run)
+[root@client1 ahmad]# kubectl create deploy my-deploy --image nginx --replicas 6 --dry-run=client -o yaml > my-deploy.yaml
+[root@client1 ahmad]# cat my-deploy.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: my-deploy
+  name: my-deploy
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      app: my-deploy
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: my-deploy
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        resources: {}
+status: {}
+
+
+
+
+ kubectl apply -f my-deploy.yaml
+deployment.apps/my-deploy created
+[root@client1 ahmad]# kubectl get deploy
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE
+my-deploy   0/6     6            0           8s
+ 
+
+kubectl get rs
+NAME                   DESIRED   CURRENT   READY   AGE
+my-deploy-74b6755685   6         6         6       81s
+
+
+
+ kubectl get po
+NAME                         READY   STATUS    RESTARTS   AGE
+my-deploy-74b6755685-4frdw   1/1     Running   0          114s
+my-deploy-74b6755685-gtwjv   1/1     Running   0          114s
+my-deploy-74b6755685-jv55x   1/1     Running   0          114s
+my-deploy-74b6755685-lck4w   1/1     Running   0          114s
+my-deploy-74b6755685-mzs9s   1/1     Running   0          114s
+my-deploy-74b6755685-zr29p   1/1     Running   0          114s
+
+
+kubectl get po -o wide
+NAME                         READY   STATUS    RESTARTS   AGE     IP           NODE           NOMINATED NODE   READINESS GATES
+my-deploy-74b6755685-4frdw   1/1     Running   0          2m10s   10.244.2.3   kind-worker2   <none>           <none>
+my-deploy-74b6755685-gtwjv   1/1     Running   0          2m10s   10.244.2.4   kind-worker2   <none>           <none>
+my-deploy-74b6755685-jv55x   1/1     Running   0          2m10s   10.244.2.2   kind-worker2   <none>           <none>
+my-deploy-74b6755685-lck4w   1/1     Running   0          2m10s   10.244.1.2   kind-worker    <none>           <none>
+my-deploy-74b6755685-mzs9s   1/1     Running   0          2m10s   10.244.1.4   kind-worker    <none>           <none>
+my-deploy-74b6755685-zr29p   1/1     Running   0          2m10s   10.244.1.3   kind-worker    <none>           <none>
+
+
+(Half-half nodes are running on each working node)
+
+
+kubectl delete deploy my-deploy
+deployment.apps "my-deploy" deleted
+
+
+-----------------------------------------------
+
+
+ cat my-deploy.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: my-deploy
+  name: my-deploy
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      app: my-deploy
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: my-deploy
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        resources: {}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: platform
+                operator: In
+                values:
+                - alnafi
+status: {}
+
+
+
+-----------------------------------------------
+
+
+ kubectl describe node | grep Labels -3
+Name:               kind-control-plane
+Roles:              control-plane
+Labels:             beta.kubernetes.io/arch=amd64
+                    beta.kubernetes.io/os=linux
+                    kubernetes.io/arch=amd64
+                    kubernetes.io/hostname=kind-control-plane
+--
+
+Name:               kind-worker
+Roles:              <none>
+Labels:             beta.kubernetes.io/arch=amd64
+                    beta.kubernetes.io/os=linux
+                    kubernetes.io/arch=amd64
+                    kubernetes.io/hostname=kind-worker
+--
+
+Name:               kind-worker2
+Roles:              <none>
+Labels:             beta.kubernetes.io/arch=amd64
+                    beta.kubernetes.io/os=linux
+                    cpu=large
+                    kubernetes.io/arch=amd64
+
+
+
+kubectl apply -f my-deploy.yaml
+deployment.apps/my-deploy created
+[root@client1 ahmad]# kubectl get po
+NAME                         READY   STATUS    RESTARTS   AGE
+my-deploy-56d887b546-9pqrm   0/1     Pending   0          4s
+my-deploy-56d887b546-hdr2b   0/1     Pending   0          4s
+my-deploy-56d887b546-hkcjd   0/1     Pending   0          4s
+my-deploy-56d887b546-ktb8r   0/1     Pending   0          4s
+my-deploy-56d887b546-npfg8   0/1     Pending   0          4s
+my-deploy-56d887b546-qf2cw   0/1     Pending   0          4s
+
+
+(Because there is not a single node where labels are matched with pods--platform=alnafi)
+
+
+
+-----------------------------------------------
+
+kubectl label node kind-worker2 platform=alnafi
+node/kind-worker2 labeled
+
+
+
+ kubectl describe node kind-worker2 | grep Labels -6
+Name:               kind-worker2
+Roles:              <none>
+Labels:             beta.kubernetes.io/arch=amd64
+                    beta.kubernetes.io/os=linux
+                    cpu=large
+                    kubernetes.io/arch=amd64
+                    kubernetes.io/hostname=kind-worker2
+                    kubernetes.io/os=linux
+                    platform=alnafi
+
+
+
+kubectl get po -o wide
+NAME                         READY   STATUS    RESTARTS   AGE     IP            NODE           NOMINATED NODE   READINESS GATES
+my-deploy-56d887b546-9pqrm   1/1     Running   0          4m33s   10.244.2.9    kind-worker2   <none>           <none>
+my-deploy-56d887b546-hdr2b   1/1     Running   0          4m33s   10.244.2.5    kind-worker2   <none>           <none>
+my-deploy-56d887b546-hkcjd   1/1     Running   0          4m33s   10.244.2.10   kind-worker2   <none>           <none>
+my-deploy-56d887b546-ktb8r   1/1     Running   0          4m33s   10.244.2.7    kind-worker2   <none>           <none>
+my-deploy-56d887b546-npfg8   1/1     Running   0          4m33s   10.244.2.6    kind-worker2   <none>           <none>
+my-deploy-56d887b546-qf2cw   1/1     Running   0          4m33s   10.244.2.8    kind-worker2   <none>           <none>
+
+
+(All are scheduled on kind-worker2 beacsue the labels are matched)
+
+-----------------------------------------------
+
+
+( We can try changing operator value to 'NotIn' and 'Exists' as well!
+-----------------------------------------------
+
+
+
+-----------------------------------------------
+
+
+
+-----------------------------------------------
+
+
+
+
+-----------------------------------------------
+
+
+The limitation of node selectors in Kubernetes is that they only allow for exact matching of key-value pairs between the pod and node labels, 
+which makes them rigid. They don’t support more advanced conditions like preference or the ability to express rules based on node characteristics 
+such as "prefer this node but don’t require it." For more flexible scheduling, including handling multiple conditions or prioritizing certain nodes, 
+node affinity is needed. Node affinity allows for more complex expressions like "soft" (preferred) and "hard" (required) rules, 
+making it a better choice for scenarios that need finer control over pod placement.
+
+
+
+
+-----------------------------------------------
+
+Sometimes we can use this concept with taints and tolerations!
+
+-----------------------------------------------
+
+
+
+-----------------------------------------------
+
+
+
+-----------------------------------------------
+
+
+
+-----------------------------------------------
+
+
+
+-----------------------------------------------
+
+
+
+-----------------------------------------------
+
+
+
+-----------------------------------------------

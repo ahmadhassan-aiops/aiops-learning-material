@@ -1,0 +1,129 @@
+
+
+Lecture 24 :
+
+
+Practical session 1:-
+
+Task 1 :-
+lass_of_water=12.ML
+
+
+solution:-
+glass_of_water="12.ML"
+print(glass_of_water)
+
+
+Task 2 :-
+num1 = eval(input("Enter the number1"))
+num2 = eval(input("Enter the number2"))
+sum = num1 + num2
+print('The sum of {0} and {1} is {2}'.format(num1, num2, sum))
+
+O/p:-
+Enter the number110
+Enter the number220
+The sum of 10 and 20 is 30
+
+
+
+
+
+Task 3 :-
+num = eval(input("Enter a number: "))
+if num > 0:
+    print("Positive number")
+elif num == 0:
+    print("Zero")
+else:
+    print("Negative number")
+
+O/p:-
+Enter a number: -12
+Negative number
+
+
+Task 4 :-
+ch = input("Please Enter Your Own Character : ")
+if( ch == 'a' or ch == 'e' or ch == 'i' or ch == 'o' or ch == 'u' or ch == 'A' or ch == 'E' or ch == 'I' or ch == 'O' or ch == 'U'):
+    print("The Given Character ", ch, "is a Vowel")
+else:
+    print("The Given Character ", ch, "is not Vowel")
+
+O/p
+Please Enter Your Own Character : o
+The Given Character  o is a Vowel
+
+
+Task5:-
+
+str = 'Abdeali Dodia Bangalore'
+print(str.split(" "))
+print("-".join(str.split()))
+
+
+o/p:-
+['Abdeali', 'Dodia', 'Bangalore']
+Abdeali-Dodia-Bangalore
+
+
+task 6:-
+abd = [6, 5, 4, 7, 4, 5]
+abd.reverse()
+print("Using reverse() ", abd)
+
+O/p:-
+Using reverse()  [5, 4, 7, 4, 5, 6]
+
+
+Task 7:-
+my_word = " Abdeali "
+print(my_word.strip())
+
+O/p:-
+Abdeali
+
+
+
+Task 8:-
+import os
+file_name = os.path.basename('/root/abd.csv')
+print(os.path.splitext(file_name)[0])
+#print(file_name)
+
+
+O/p:-
+abd
+
+
+Task 9:-
+import os
+print(os.path.dirname(os.getcwd()))
+print(os.path.abspath(os.getcwd()))
+
+O/p:-
+
+C:\Users\AbdealiDodiya\Desktop\DevOps\Python
+C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 24
+
+
+task 10:-
+
+num = [3,4,1,9,6,2,8]
+print(num)
+x = int(input("Enter the number to be inserted: "))
+y = int(input("Enter the position: "))
+num.insert(y,x)
+print(num)
+
+[3, 4, 1, 9, 6, 2, 8]
+Enter the number to be inserted: 20
+Enter the position: 2
+[3, 4, 20, 1, 9, 6, 2, 8]
+
+
+
+
+
+
+

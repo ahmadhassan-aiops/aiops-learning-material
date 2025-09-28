@@ -1,0 +1,23 @@
+ 
+TASK 1 :- Project = IIP and created >= 2022-11-01 AND created <= 2022-11-30 and priority = highest order by created DESC 
+
+TASK 2 :- status !="To Do" and description is empty 
+
+TASK 3:- assignee is empty and created < -1d 
+
+
+TASK 5 : import paramiko 
+
+hostname="192.168.1.6" 
+username="aadmin" 
+password="123@abd" 
+client = paramiko.SSHClient() 
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy()) 
+client.connect(hostname=hostname,username=username,password=password) 
+cmd= "free -g" 
+stdin , stdout, stderr = client.exec_command(cmd) 
+cmdout = stdout.readlines() 
+available_mem= cmdout[1].split()[6] 
+if int(available_mem) <= 1:    
+	print("Memory is not good") else:    
+	print("Memory is good ") 

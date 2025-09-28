@@ -1,0 +1,64 @@
+Now we will add the demo.html file in templates dir as well and rename it to trainer_form.html. It will be a replacement of trainer_details page.
+
+When earlier we were getting home page of alnafi there were so many tabs present so we we redirect one of them to trainer details. We will select 
+trainer tsheet tab. To do that we have to change index.html page again accordingly.
+
+128	<li><a href="{{url_for('index')}}"><b>Home</b></a></li>
+129	<li><a href="{{url_for('trainer_create')}}">Alnafi Tsheet</a></li>
+
+This is called as linking!
+
+
+139     <li><a href="{{url_for('trainer_data')}}">Trainer Report</a> </li>
+
+(Now when we go to report section of home page and click trainer reports then trainer data will appear)
+
+
+200   	<h1 style = "font-family:georgia,garamond,serif;font-size:25px;"><b>Trainer details</b></h1> 
+201    	<form id="reused_form" method="post" action="{{ url_for('trainer_create') }}" >
+
+We also had to make changes in app.py file. In the trainer_create function we change the output page to trainer_form.html
+One more change I made is that I had to remove the footer code from index.html file from lines 240 to 245!
+
+
+
+
+Now we just make changes in demo names to appropraite names in trainer_form.html file:
+
+
+
+<p>
+    <label for="fname">First Name</label>
+    <input type="text" id="fname" name="fname" required class="form-control" placeholder="Enter the first name">
+</p>
+
+<p>
+    <label for="lname">Last Name</label>
+    <input type="text" id="lname" name="lname" required class="form-control" placeholder="Enter the last name">
+</p>
+
+<p>
+    <label for="design">Designation Name</label>
+    <input type="text" id="design" name="design" required class="form-control" placeholder="Enter the designation name">
+</p>
+
+<p>
+    <label for="course">Course Name</label>
+    <input type="text" id="course" name="course" required class="form-control" placeholder="Enter the course name">
+</p>
+
+
+Now we can add the details from trainer_form template page and the data will be enter and will eventually refleted in trainer_data page!
+
+
+------------------------------------------------
+
+Now similarly we can make trainer_data looks better as well. For that we can copy the demo again and rename it to trainer_reports for displaying 
+trainer_details in a better way.
+
+We just copied our desplay_trainer code in the trainer_report.html file in the end and change the app.py trainer_data function return statement to
+trainer_report.html as well. In this way our trainer details page become better as well! 
+
+
+
+

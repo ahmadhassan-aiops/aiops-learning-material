@@ -1,0 +1,87 @@
+[ahmad@client1 ~]$ cat config.yml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: al-nafi-cluster
+nodes:
+  - role: control-plane
+  - role: worker
+  - role: worker
+
+
+-----------------------------------------------
+
+
+[ahmad@client1 ~]$ kind create cluster --config config.yml
+Creating cluster "al-nafi-cluster" ...
+ ✓ Ensuring node image (kindest/node:v1.32.2) 🖼
+ ✓ Preparing nodes 📦 📦 📦
+ ✓ Writing configuration 📜
+ ✓ Starting control-plane 🕹️
+ ✓ Installing CNI 🔌
+ ✓ Installing StorageClass 💾
+ ✓ Joining worker nodes 🚜
+Set kubectl context to "kind-al-nafi-cluster"
+You can now use your cluster with:
+
+kubectl cluster-info --context kind-al-nafi-cluster
+
+Thanks for using kind! 😊
+
+-----------------------------------------------
+[ahmad@client1 ~]$ kubectl get pods
+No resources found in default namespace.
+[ahmad@client1 ~]$
+[ahmad@client1 ~]$
+[ahmad@client1 ~]$ kubectl get ns
+NAME                 STATUS   AGE
+default              Active   2m21s
+kube-node-lease      Active   2m21s
+kube-public          Active   2m21s
+kube-system          Active   2m22s
+local-path-storage   Active   2m17s
+
+-----------------------------------------------
+
+[ahmad@client1 ~]$ cat config-pod.yml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: al-nafi-pod
+  labels:
+    app: frontend
+    version: development
+spec:
+  containers:
+    - name: alpha
+      image: nginx
+-----------------------------------------------
+
+kubectl apply -f config-pod.yml
+pod/al-nafi-pod created
+[ahmad@client1 ~]$ kubectl get pods
+NAME          READY   STATUS              RESTARTS   AGE
+al-nafi-pod   0/1     ContainerCreating   0          9s
+
+
+[ahmad@client1 ~]$ kubectl get pods
+NAME          READY   STATUS    RESTARTS   AGE
+al-nafi-pod   1/1     Running   0          3m37s
+
+-----------------------------------------------
+
+
+[ahmad@client1 ~]$ kubectl get pods -o wide
+NAME          READY   STATUS    RESTARTS   AGE    IP           NODE                     NOMINATED NODE   READINESS GATES
+al-nafi-pod   1/1     Running   0          4m4s   10.244.2.2   al-nafi-cluster-worker   <none>           <none>
+[ahmad@client1 ~]$
+
+-----------------------------------------------
+
+kubectl describe pod al-nafi-pod
+kubectl get pods --watch
+
+-----------------------------------------------
+
+
+
+

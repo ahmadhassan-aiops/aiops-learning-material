@@ -1,0 +1,121 @@
+
+
+
+https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
+
+https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
+
+
+
+
+================================================================================
+
+
+
+
+# 🚀 Maven Life-cycle
+
+### 🔑 What is a Maven Life-cycle?
+
+* A **life-cycle** is a **series of phases (steps)** that Maven goes through to build and manage a project.
+* Each **phase** represents a stage in the build process (like compile, test, package, deploy).
+* When you run one phase, Maven will also run all the previous phases automatically.
+
+👉 Think of it like **steps in cooking**: buy ingredients → wash → cut → cook → serve.
+You can’t serve before cooking 😅
+
+---
+
+### 📌 Maven has 3 Built-in Life-cycles
+
+1. **default** → Handles project build (most common).
+2. **clean** → Cleans temporary files.
+3. **site** → Generates project documentation.
+
+---
+
+## 1️⃣ **Default Life-cycle (most important)**
+
+Phases (in order):
+
+1. **validate** → Check project structure (is `pom.xml` valid?).
+2. **compile** → Compile source code (`.java` → `.class`).
+3. **test** → Run unit tests (using JUnit/TestNG).
+4. **package** → Package compiled code into `.jar` or `.war`.
+5. **verify** → Run extra checks (integration tests, quality checks).
+6. **install** → Copy `.jar/.war` to local repo (`~/.m2/repository`) so other projects can use it.
+7. **deploy** → Push final build to remote repo (like Nexus/Artifactory).
+
+👉 Example commands:
+
+```bash
+mvn compile     # compiles only
+mvn test        # runs validate, compile, test
+mvn package     # runs all up to package
+mvn install     # runs all up to install
+mvn deploy      # full cycle
+```
+
+---
+
+## 2️⃣ **Clean Life-cycle**
+
+* Removes files created by previous builds (inside `target/`).
+
+```bash
+mvn clean
+```
+
+---
+
+## 3️⃣ **Site Life-cycle**
+
+* Generates documentation for the project.
+
+```bash
+mvn site
+```
+
+---
+
+### ✅ Example in Plain Words
+
+If you run:
+
+```bash
+mvn package
+```
+
+Maven will:
+
+* Validate → Compile → Test → Package → ✅ produce `.jar/.war`.
+
+If you run:
+
+```bash
+mvn install
+```
+
+Maven will:
+
+* Do all above steps **+ copy the package into your local Maven repo**.
+
+---
+
+📌 **In DevOps/Jenkins**:
+
+* Usually Jenkins Pipelines use:
+
+  ```bash
+  mvn clean install
+  ```
+
+  This ensures:
+
+  * Old files are cleaned
+  * Code is compiled
+  * Tests run
+  * Package created and installed
+
+---
+

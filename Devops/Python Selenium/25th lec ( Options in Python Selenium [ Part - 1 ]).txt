@@ -1,0 +1,132 @@
+
+
+Lecture 25 :-
+
+Options :-
+
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get('https://alnafi.com/')
+driver.maximize_window()
+driver.implicitly_wait(10)
+print(driver.title)
+
+time.sleep(5)
+driver.quit()
+
+
+
+####
+Headless mode :-
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+firefox_options = webdriver.FirefoxOptions()
+firefox_options.headless = True
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install(),options=firefox_options)
+
+driver.get('https://alnafi.com/')
+driver.maximize_window()
+driver.implicitly_wait(10)
+print(driver.title)
+
+time.sleep(5)
+driver.quit()
+
+############
+If you dont want to assigned webdriver variable then you need to use import module 
+
+from selenium.webdriver.firefox.options import Options
+
+firefox_options= Options()
+
+firefox_options.headless = True
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install(),options=firefox_options)
+FINAL Script :-
+import time
+from selenium import webdriver
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.options import Options
+from webdriver_manager.firefox import GeckoDriverManager
+
+firefox_options= Options()
+
+firefox_options.headless = True
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install(),options=firefox_options)
+
+driver.get('https://alnafi.com/')
+driver.maximize_window()
+driver.implicitly_wait(10)
+print(driver.title)
+
+time.sleep(5)
+driver.quit()
+
+
+
+#################
+CHROME :-
+
+import time
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.chrome import  ChromeDriverManager
+
+chrome_options= Options()
+
+chrome_options.add_argument('--headless')
+#driver = webdriver.Firefox(executable_path=ChromeDriverManager().install(),options=chrome_options)
+driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(),options=chrome_options)
+
+
+driver.get('https://alnafi.com/')
+driver.maximize_window()
+driver.implicitly_wait(10)
+print(driver.title)
+
+time.sleep(5)
+driver.quit()
+
+
+
+####
+
+import time
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.chrome import  ChromeDriverManager
+
+chrome_options= Options()
+
+#chrome_options.add_argument('--headless')
+chrome_options.headless = True
+#driver = webdriver.Firefox(executable_path=ChromeDriverManager().install(),options=chrome_options)
+driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(),options=chrome_options)
+
+
+driver.get('https://alnafi.com/')
+driver.maximize_window()
+driver.implicitly_wait(10)
+print(driver.title)
+
+time.sleep(5)
+driver.quit()
+

@@ -1,0 +1,218 @@
+
+
+Lecture 12 :-
+
+
+###Google chrome :-
+
+from selenium import webdriver
+from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+import time
+
+#Firefox
+#driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+#Google
+driver = webdriver.Chrome(executable_path=ChromeDriverManager().install())
+driver.implicitly_wait(10)
+driver.get('https://www.google.com/intl/en-GB/gmail/about/')
+driver.maximize_window()
+
+driver.find_element(By.PARTIAL_LINK_TEXT,'Sign in').click()
+driver.find_element(By.ID,'identifierId').send_keys("testautomation52786@gmail.com")
+
+#Next button for verifying your email address
+driver.find_element(By.XPATH,'/html/body/div[1]/div[1]/div[2]/div/c-wiz/div/div[2]/div/div[2]/div/div[1]/div/div/button/span').click()
+
+#Password typing
+driver.find_element(By.NAME,'Passwd').send_keys('Test@123')
+
+time.sleep(0.5)
+#Nest to login
+driver.find_element(By.XPATH,'/html/body/div[1]/div[1]/div[2]/div/c-wiz/div/div[2]/div/div[2]/div/div[1]/div/div/button/span').click()
+print("Login success")
+
+time.sleep(10)
+
+
+###################
+FIREFOX :-
+With Error :-
+
+
+from selenium import webdriver
+from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+import time
+
+#Firefox
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+#Google
+#driver = webdriver.Chrome(executable_path=ChromeDriverManager().install())
+driver.implicitly_wait(10)
+driver.get('https://www.google.com/intl/en-GB/gmail/about/')
+driver.maximize_window()
+
+driver.find_element(By.PARTIAL_LINK_TEXT,'Sign in').click()
+driver.find_element(By.ID,'identifierId').send_keys("testautomation52786@gmail.com")
+
+#Next button for verifying your email address
+driver.find_element(By.XPATH,'/html/body/div[1]/div[1]/div[2]/div/c-wiz/div/div[2]/div/div[2]/div/div[1]/div/div/button/span').click()
+
+#Password typing
+driver.find_element(By.NAME,'Passwd').send_keys('Test@123')
+
+
+#Nest to login
+driver.find_element(By.XPATH,'/html/body/div[1]/div[1]/div[2]/div/c-wiz/div/div[2]/div/div[2]/div/div[1]/div/div/button/span').click()
+print("Login success")
+
+time.sleep(10)
+
+
+####################
+
+
+Explicit wait ()
+
+
+
+WebDriverWait()			#declaration 
+
+
+You need import module in your scripts 
+
+
+from selenium.webdriver.support.wait import WebDriverWait
+
+WebDriverWait(driver,20).until()
+
+
+20 sec timeout 
+
+until is condition check 
+whether is true or false 
+
+https://www.selenium.dev/downloads/
+
+https://www.selenium.dev/selenium/docs/api/py/api.html
+
+https://www.selenium.dev/selenium/docs/api/py/webdriver_support/selenium.webdriver.support.expected_conditions.html#module-selenium.webdriver.support.expected_conditions
+
+
+
+
+
+from selenium.webdriver.support import expected_conditions
+
+This is import required while you putting condition 
+
+##FIREFOX :-
+
+ERROR :-
+from selenium import webdriver
+from selenium.webdriver.support.wait import WebDriverWait
+from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support import expected_conditions
+
+from selenium.webdriver.common.by import By
+import time
+
+# Firefox
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+# Google
+# driver = webdriver.Chrome(executable_path=ChromeDriverManager().install())
+
+
+# Declaration
+wait = WebDriverWait(driver, 20)  # Declaration
+
+driver.get('https://www.google.com/intl/en-GB/gmail/about/')
+driver.maximize_window()
+
+driver.find_element(By.PARTIAL_LINK_TEXT, 'Sign in').click()
+driver.find_element(By.ID, 'identifierId').send_keys("testautomation52786@gmail.com")
+
+# Next button for verifying your email address
+driver.find_element(By.XPATH,
+                    '/html/body/div[1]/div[1]/div[2]/div/c-wiz/div/div[2]/div/div[2]/div/div[1]/div/div/button/span').click()
+
+action = wait.until(expected_conditions.element_to_be_clickable(By.NAME, 'Passwd'))
+action.click()
+
+# Password typing
+driver.find_element(By.NAME, 'Passwd').send_keys('Test@123')
+
+# Nest to login
+driver.find_element(By.XPATH,
+                    '/html/body/div[1]/div[1]/div[2]/div/c-wiz/div/div[2]/div/div[2]/div/div[1]/div/div/button/span').click()
+print("Login success")
+
+time.sleep(10)
+
+
+o/p:-
+TypeError: element_to_be_clickable() takes 1 positional argument but 2 were given
+
+
+
+######
+
+Resolved your code :-
+action = wait.until(expected_conditions.element_to_be_clickable((By.NAME, 'Passwd')))
+
+##############
+Final Firefox code :-
+
+from selenium import webdriver
+from selenium.webdriver.support.wait import WebDriverWait
+from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support import expected_conditions
+
+from selenium.webdriver.common.by import By
+import time
+
+# Firefox
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+# Google
+# driver = webdriver.Chrome(executable_path=ChromeDriverManager().install())
+
+
+# Declaration
+wait = WebDriverWait(driver, 20)  # Declaration
+
+driver.get('https://www.google.com/intl/en-GB/gmail/about/')
+driver.maximize_window()
+
+driver.find_element(By.PARTIAL_LINK_TEXT, 'Sign in').click()
+driver.find_element(By.ID, 'identifierId').send_keys("testautomation52786@gmail.com")
+
+# Next button for verifying your email address
+driver.find_element(By.XPATH,
+                    '/html/body/div[1]/div[1]/div[2]/div/c-wiz/div/div[2]/div/div[2]/div/div[1]/div/div/button/span').click()
+
+action = wait.until(expected_conditions.element_to_be_clickable((By.NAME, 'Passwd')))
+action.click()
+
+# Password typing
+driver.find_element(By.NAME, 'Passwd').send_keys('Test@123')
+
+# Nest to login
+driver.find_element(By.XPATH,
+                    '/html/body/div[1]/div[1]/div[2]/div/c-wiz/div/div[2]/div/div[2]/div/div[1]/div/div/button/span').click()
+print("Login success")
+
+time.sleep(10)
+
+
+
+
+

@@ -1,0 +1,217 @@
+Lecture 43 :-
+
+
+
+import re
+myword="Abdeali Dodiya from bangalore , We are learning python and in this course we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="python[' '23]"
+print(re.findall(pattern,myword))
+
+
+
+\w -->
+it will include a-z A-Z 0-9
+
+
+import re
+myword="Abdeali Dodiya from bangalore , We are learning python and in this course we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="\w"
+print(re.findall(pattern,myword))
+
+O/p:-
+['A', 'b', 'd', 'e', 'a', 'l', 'i', 'D', 'o', 'd', 'i', 'y', 'a', 'f', 'r', 'o', 'm', 'b', 'a', 'n', 'g', 'a', 'l', 'o', 'r', 'e', 'W', 'e', 'a', 'r', 'e', 'l', 'e', 'a', 'r', 'n', 'i', 'n', 'g', 'p', 'y', 't', 'h', 'o', 'n', 'a', 'n', 'd', 'i', 'n', 't', 'h', 'i', 's', 'c', 'o', 'u', 'r', 's', 'e', 'w', 'e', 'w', 'i', 'l', 'l', 'l', 'e', 'a', 'r', 'n', 't', 'w', 'o', 'v', 'e', 'r', 's', 'i', 'o', 'n', 's', 'u', 'c', 'h', 'p', 'y', 't', 'h', 'o', 'n', '2', 'a', 'n', 'd', 'p', 'y', 't', 'h', 'o', 'n', '3', 'W', 'e', 'w', 'i', 'l', 'l', 'l', 'e', 'a', 'r', 'n', 'P', 'y', 't', 'h', 'o', 'n', 's', 'e', 'l', 'e', 'n', 'i', 'u', 'm', 'i', 'n', 't', 'h', 'i', 's', 'c', 'o', 'u', 'r', 's', 'e']
+
+
+
+import re
+myword="Abdeali Dodiya from bangalore , We are learning python and in this course we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="\w\w\w\w\w\w\w"
+print(re.findall(pattern,myword))
+
+
+
+
+\W -->> Opposite of \w 
+import re
+myword="Abdeali Dodiya from bangalore ,abdealipython@gmail.com We are learning python and in this course we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="\W"
+print(re.findall(pattern,myword))
+
+
+[' ', ' ', ' ', ' ', ',', '@', '.', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ',', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+
+
+
+\S -->Same as like \w 
+
+
+import re
+myword="Abdeali Dodiya from bangalore ,abdealipython@gmail.com We are learning python and in this course we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="\S"
+print(re.findall(pattern,myword))
+
+['A', 'b', 'd', 'e', 'a', 'l', 'i', 'D', 'o', 'd', 'i', 'y', 'a', 'f', 'r', 'o', 'm', 'b', 'a', 'n', 'g', 'a', 'l', 'o', 'r', 'e', ',', 'a', 'b', 'd', 'e', 'a', 'l', 'i', 'p', 'y', 't', 'h', 'o', 'n', '@', 'g', 'm', 'a', 'i', 'l', '.', 'c', 'o', 'm', 'W', 'e', 'a', 'r', 'e', 'l', 'e', 'a', 'r', 'n', 'i', 'n', 'g', 'p', 'y', 't', 'h', 'o', 'n', 'a', 'n', 'd', 'i', 'n', 't', 'h', 'i', 's', 'c', 'o', 'u', 'r', 's', 'e', 'w', 'e', 'w', 'i', 'l', 'l', 'l', 'e', 'a', 'r', 'n', 't', 'w', 'o', 'v', 'e', 'r', 's', 'i', 'o', 'n', 's', 'u', 'c', 'h', 'p', 'y', 't', 'h', 'o', 'n', '2', 'a', 'n', 'd', 'p', 'y', 't', 'h', 'o', 'n', '3', ',', 'W', 'e', 'w', 'i', 'l', 'l', 'l', 'e', 'a', 'r', 'n', 'P', 'y', 't', 'h', 'o', 'n', 's', 'e', 'l', 'e', 'n', 'i', 'u', 'm', 'i', 'n', 't', 'h', 'i', 's', 'c', 'o', 'u', 'r', 's', 'e']
+
+
+
+
+\d --> Digit --> 0-9
+import re
+myword="Abdeali Dodiya from bangalore ,abdealipython@gmail.com We are learning python and in this course we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="\d"
+print(re.findall(pattern,myword))
+
+O/p:-
+['2', '3']
+
+
+. --> any single character 
+
+import re
+myword="Abd$%*eal2@1i Dodiya from bangalore ,abdealipython@gmail.com We are learning python and in this course we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="."
+print(re.findall(pattern,myword))
+
+O/p:-
+
+['A', 'b', 'd', '$', '%', '*', 'e', 'a', 'l', '2', '@', '1', 'i', ' ', 'D', 'o', 'd', 'i', 'y', 'a', ' ', 'f', 'r', 'o', 'm', ' ', 'b', 'a', 'n', 'g', 'a', 'l', 'o', 'r', 'e', ' ', ',', 'a', 'b', 'd', 'e', 'a', 'l', 'i', 'p', 'y', 't', 'h', 'o', 'n', '@', 'g', 'm', 'a', 'i', 'l', '.', 'c', 'o', 'm', ' ', 'W', 'e', ' ', 'a', 'r', 'e', ' ', 'l', 'e', 'a', 'r', 'n', 'i', 'n', 'g', ' ', 'p', 'y', 't', 'h', 'o', 'n', ' ', 'a', 'n', 'd', ' ', 'i', 'n', ' ', 't', 'h', 'i', 's', ' ', 'c', 'o', 'u', 'r', 's', 'e', ' ', 'w', 'e', ' ', 'w', 'i', 'l', 'l', ' ', 'l', 'e', 'a', 'r', 'n', ' ', 't', 'w', 'o', ' ', 'v', 'e', 'r', 's', 'i', 'o', 'n', ' ', 's', 'u', 'c', 'h', ' ', 'p', 'y', 't', 'h', 'o', 'n', '2', ' ', 'a', 'n', 'd', ' ', 'p', 'y', 't', 'h', 'o', 'n', '3', ',', ' ', 'W', 'e', ' ', 'w', 'i', 'l', 'l', ' ', 'l', 'e', 'a', 'r', 'n', ' ', 'P', 'y', 't', 'h', 'o', 'n', ' ', 's', 'e', 'l', 'e', 'n', 'i', 'u', 'm', ' ', 'i', 'n', ' ', 't', 'h', 'i', 's', ' ', 'c', 'o', 'u', 'r', 's', 'e']
+
+
+import re
+myword="Abd$%*eal2@1i Dodiya from bangalore ,abdealipython@gmail.com We are learning python and in this course we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="......."
+print(re.findall(pattern,myword))
+
+
+
+
+\. --> find only dot in your strings
+
+
+import re
+myword="Abd$%*eal2@1i Dodiya from bangalore ,abdealipython@gmail.com We are learning python and in this course we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="\.\w\w\w"
+print(re.findall(pattern,myword))
+
+
+O/p:-
+['.com']
+
+
+
+import re
+myword="Abd$%*eal2@1i Dodiya from bangalore ,abdealipython@gmail.com We are learning python and in this course we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="\@\w\w\w\w\w\\.\w\w\w"
+print(re.findall(pattern,myword))
+
+['@gmail.com']
+
+
+
+
+? --> starting pattern 
+
+import re
+myword="Abd$%*eal2@1i Dodiya from bangalore ,abdealipython@gmail.com We are learning python and in this course we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="python[' '23]"
+print(re.findall(pattern,myword))
+
+
+import re
+myword="Abd$%*eal2@1i Dodiya from bangalore ,abdealipython@gmail.com We are learning python and in this course we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="python?"
+print(re.findall(pattern,myword))
+
+
+
+$ --> Find pattern at end of string 
+import re
+myword="Abd$%*eal2@1i Dodiya from bangalore , Python is very good language abdealipython@gmail.com We are learning python and in this course we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="course"
+print(re.findall(pattern,myword))
+
+
+['course', 'course']
+
+
+import re
+myword="Abd$%*eal2@1i Dodiya from bangalore , Python is very good language abdealipython@gmail.com We are learning python and in this course we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="course$"
+print(re.findall(pattern,myword))
+
+
+
+\b --> at begin and end of string will find
+
+import re
+myword="Abd$%*eal2@1i Dodiya from bangalore , Python is very good language abdealipython@gmail.com We are learning python and in this course we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="\\bcourse"
+print(re.findall(pattern,myword))
+
+['course', 'course']
+
+import re
+myword="Abd$%*eal2@1i Dodiya from bangalore , Python is very good language abdealipython@gmail.com We are learning python and in thiscourse we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="\\bcourse"
+print(re.findall(pattern,myword))
+
+['course']
+
+
+import re
+myword="Abd$%*eal2@1i Dodiya from bangalore , Python is very good language abdealipython@gmail.com We are learning python and in thiscourse we will learn two version such python2 and python3, We will learn Python selenium in this courses"
+pattern="\\bcourse\\b"
+print(re.findall(pattern,myword))
+
+
+
+import re
+myword="Abd$%*eal2@1i Dodiya from bangalore , Python is very good language abdealipython@gmail.com We are learning python and in this course we will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="\\bcourse\\b"
+print(re.findall(pattern,myword))
+
+
+
+
+\B -->
+import re
+myword="Abd$%*eal2@1i Dodiya from bangalore , Python is very good language abdealipython@gmail.com We are learning python and in thiscoursewe will learn two version such python2 and python3, We will learn Python selenium in this course"
+pattern="\\Bcourse\\B"
+print(re.findall(pattern,myword))
+
+['course']
+
+
+
+\t --> tab key
+
+
+
+myword="We will learn two version	python2		and 	Python3,,We will learn 	Python		Sle"
+
+import re
+myword="We will learn two version	python2		and 	Python3,,We will learn 	Python		Sle"
+pattern="\\t"
+print(re.findall(pattern,myword))
+
+
+['\t', '\t', '\t', '\t', '\t', '\t', '\t']
+
+
+
+\n --> New line 
+
+
+import re
+myword="We will learn two version	\npython2		and 	Python3,,\nWe will learn 	Python		Sle"
+pattern="\\n"
+print(myword)
+print(re.findall(pattern,myword))
+
+
+
+
+
+
+
+

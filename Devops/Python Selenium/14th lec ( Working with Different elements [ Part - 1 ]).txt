@@ -1,0 +1,225 @@
+
+https://www.saucedemo.com/
+
+
+https://www.saucedemo.com/inventory.html
+
+
+Accepted usernames are:
+standard_user
+locked_out_user
+problem_user
+performance_glitch_user
+
+Password for all users:
+secret_sauce
+
+Firefox CODE :-
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get("https://www.saucedemo.com/")
+driver.maximize_window()
+
+driver.find_element(By.ID,"user-name").send_keys("standard_user")
+
+driver.find_element(By.ID,"password").send_keys("secret_sauce")
+
+
+driver.find_element(By.ID,"login-button").click()
+
+
+driver.quit()
+##################
+Dropdown elements :-
+<select class="product_sort_container" data-test="product_sort_container">
+<option value="az">Name (A to Z)</option>
+<option value="za">Name (Z to A)</option>
+<option value="lohi">Price (low to high)</option>
+<option value="hilo">Price (high to low)</option>
+</select>
+
+
+
+
+class --> product_sort_container
+
+enter --> Price (low to high)
+
+Method 1 :-
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+# Initialize Chrome WebDriver with Service
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+# Navigate to the website
+driver.get("https://www.saucedemo.com/")
+driver.maximize_window()
+
+# Perform actions on the webpage
+driver.find_element(By.ID, "user-name").send_keys("standard_user")
+driver.find_element(By.ID, "password").send_keys("secret_sauce")
+driver.find_element(By.ID, "login-button").click()
+
+# Wait for the page to load
+time.sleep(10)
+
+# Interact with the dropdown
+my_select = driver.find_element(By.CLASS_NAME, "product_sort_container")
+my_select.send_keys("Price (low to high)")
+
+# Wait for the interaction
+time.sleep(10)
+
+# Quit the browser
+driver.quit()
+
+
+
+
+
+##########################
+1 method :-
+
+Another website :-
+
+https://www.wikipedia.org/
+ID --> searchLanguage
+value -->Afrikaans
+
+import time
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get("https://www.wikipedia.org/")
+driver.maximize_window()
+
+driver.find_element(By.ID,"searchLanguage").send_keys("Afrikaans")
+
+time.sleep(10)
+driver.quit()
+
+
+#######################
+Method 2 :-
+
+--> Latina
+
+You need to import for selection drop down values in your website :-
+from selenium.webdriver.support.select import Select
+
+
+import time
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get("https://www.wikipedia.org/")
+driver.maximize_window()
+
+my_select = driver.find_element(By.ID,"searchLanguage")
+sel = Select(my_select)
+sel.select_by_visible_text('Latina')
+time.sleep(10)
+driver.quit()
+
+
+
+
+
+#########################
+
+Su8rce demo website 
+import time
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+from selenium.webdriver.support.select import Select
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get("https://www.saucedemo.com/")
+driver.maximize_window()
+
+driver.find_element(By.ID,"user-name").send_keys("standard_user")
+
+driver.find_element(By.ID,"password").send_keys("secret_sauce")
+
+
+driver.find_element(By.ID,"login-button").click()
+time.sleep(10)
+
+my_select = driver.find_element(By.CLASS_NAME,"product_sort_container")
+sel = Select(my_select)
+sel.select_by_visible_text('Price (low to high)')
+
+time.sleep(10)
+driver.quit()
+
+
+
+####
+Final CODE 
+
+import time
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get("https://www.wikipedia.org/")
+driver.maximize_window()
+
+my_select = driver.find_element(By.ID,"searchLanguage")
+sel = Select(my_select)
+sel.select_by_value('ja')
+
+
+time.sleep(10)
+driver.quit()
+
+
+
+
+#####################
+TASK 1 for Dropdown
+
+I want to check how many language available in this select tag. 
+https://www.wikipedia.org/
+
+
+Output : Total number of option elements is : XX
+
+
+
+TASK 2 for Anchor tag :-
+
+Please count the total how many link available in below page.
+Link :- https://dev.alnafi.com/
+
+

@@ -1,0 +1,146 @@
+Lecture 16 : OS module in python [ Part - 1 ]
+
+
+
+Os module :-
+The function os module provide allows us to operate on underlying OS task, Irrespective of it being a windows platform or Mac or Linux or Unix
+
+
+Windows :-
+>dir
+>ipconfig
+
+Linux :-
+#ls
+#ifconfig
+
+import os
+>>> os.system("ipconfig")
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+NameError: name 'os' is not defined
+>>> dir(os)
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+NameError: name 'os' is not defined
+
+#WINDOWS
+import os
+
+print("my path is :" + os.getcwd())
+
+
+
+
+#LINUX
+root@abdealidodia:~/lect16# cat os_module.py
+import os
+print("My path is :"+ os.getcwd())
+root@abdealidodia:~/lect16# python3 os_module.py
+My path is :/root/lect16
+
+
+
+
+#getcwd and chdir()
+#Windows
+
+import os
+print("My old path is :"+ os.getcwd())
+my_path="c:\\users"
+os.chdir(my_path)
+print("My new path is : "+ os.getcwd())
+
+
+
+#Linux
+import os
+print("My old path is :"+ os.getcwd())
+my_path="/home/"
+os.chdir(my_path)
+print("My new path is : "+ os.getcwd())
+
+
+
+#LISTDIR()
+import os
+print("My old path is :"+ os.getcwd())
+print("My old path file contents are as below \n")
+myfiles_dir=os.listdir()
+print(myfiles_dir)
+
+
+
+my_path="c:\\users"
+os.chdir(my_path)
+print("My new path is : "+ os.getcwd())
+myfiles_dir=os.listdir()
+print(myfiles_dir)
+
+
+
+#os.sep
+import os
+print("My old path is :"+ os.getcwd())
+print(f"My Windows saparator {os.sep}")
+
+
+
+#os.mkdir()
+import os
+print("My old path is :"+ os.getcwd())
+os.mkdir("ABD")
+print(os.listdir())
+
+
+
+#os.rmdir()
+import os
+print("My old path is :"+ os.getcwd())
+
+
+os.rmdir("C:\\Users\\AbdealiDodiya\\Desktop\\DevOps\\Python\\Lecture 16\\abd")
+print(os.listdir())
+
+
+#os.remove()
+#os.rename()
+import os
+print("My old path is :"+ os.getcwd())
+os.rename("ABD","abd")
+
+
+print(os.listdir())
+
+
+
+
+
+t@abdealidodia:~/lect16# python3 os_module.py
+My old path is :/root/lect16
+My Windows separator /
+
+
+#process ID and userID and Group ID
+root@abdealidodia:~/lect16# python3 os_module.py
+My old path is :/root/lect16
+My current user ID0
+My current user group ID0
+My current process ID3736
+root@abdealidodia:~/lect16# cat os_module.py
+import os
+print("My old path is :"+ str(os.getcwd()))
+print("My current user ID" + str(os.getuid()))
+print("My current user group ID"+ str(os.getgid()))
+print("My current process ID" + str(os.getpid()))
+
+import os
+print("My old path is :"+ str(os.getcwd()))
+#print("My current user ID" + str(os.getuid()))
+#print("My current user group ID"+ str(os.getgid()))
+print(os.getpid())
+
+
+
+#TASK time
+I want to show only .txt file in your current directory (Windows or Linux)

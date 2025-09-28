@@ -1,0 +1,116 @@
+
+Lecture 39
+
+
+
+SMTP :-
+
+gmail : smtp.gmail.com
+hotmail : smtp.live.com
+outlook : outlook.office365.com	or smtp.xyz.office365.com
+yahoo : smtp.mail.yahoo.com
+
+While you sending email then smtp address is required 
+
+
+email=automation52786@gmail.com
+App password :
+
+
+
+mymail.py
+import smtplib
+my_mail="automation52786@gmail.com"
+password="nrjxoxmahyxzybvm"
+connection=smtplib.SMTP('smtp.gmail.com')
+connection.starttls()       #TLS transport layer security
+connection.login(user=my_mail,password=password)
+connection.sendmail(from_addr=my_mail,to_addrs="automation52786@gmail.com",msg="Test mail 2")
+connection.close()
+print("Mail has been sent")
+
+
+
+################
+mymail.py
+#with subject line 
+import smtplib
+my_mail="automation52786@gmail.com"
+password="nrjxoxmahyxzybvm"
+connection=smtplib.SMTP('smtp.gmail.com')
+connection.starttls()       #TLS transport layer security
+
+
+SUBJECT="Alnafi"
+TEXT="HI team, This testing email via smtp server"
+
+abd='Subject: {}\n\n{}'.format(SUBJECT,TEXT)
+connection.login(user=my_mail,password=password)
+connection.sendmail(from_addr=my_mail,to_addrs="automation52786@gmail.com",msg=abd)
+connection.close()
+print("Mail has been sent")
+
+
+
+
+#######################
+We will use new module 
+
+import smtplib
+from email.message import EmailMessage
+
+my_mail="automation52786@gmail.com"
+password="nrjxoxmahyxzybvm"
+connection=smtplib.SMTP('smtp.gmail.com')
+connection.starttls()       #TLS transport layer security
+
+msg=EmailMessage()
+msg['Subject']= "This is testing "
+msg['From']= my_mail
+msg['To'] = my_mail
+
+msg.set_content("Hi team we are testing smtp server via python")
+
+connection.login(user=my_mail,password=password)
+connection.send_message(msg)
+connection.close()
+print("Mail has been sent")
+
+
+########################
+
+We will se the attachment 
+
+
+import smtplib
+from email.message import EmailMessage
+
+my_mail="automation52786@gmail.com"
+password="nrjxoxmahyxzybvm"
+connection=smtplib.SMTP('smtp.gmail.com')
+connection.starttls()       #TLS transport layer security
+
+msg=EmailMessage()
+msg['Subject']= "This is testing 2"
+msg['From']= my_mail
+msg['To'] = my_mail
+msg['Cc'] = "abdealipython@gmail.com"
+
+msg.set_content("Hi team we are testing smtp server via python")
+
+#This is attachemnt section
+with open('myfile.csv','rb') as file:
+    attach=file.read()
+    file_name=file.name
+
+msg.add_attachment(attach,maintype='application',subtype='octet-stream',filename=file_name)
+
+
+connection.login(user=my_mail,password=password)
+connection.send_message(msg)
+connection.close()
+print("Mail has been sent")
+
+
+
+

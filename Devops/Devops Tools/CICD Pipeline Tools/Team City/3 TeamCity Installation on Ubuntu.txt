@@ -1,0 +1,170 @@
+
+
+Before starting, make sure:
+
+You have RHEL/CentOS 9 with sudo/root access. --(I have)
+Java 11 or 17 (OpenJDK) is installed (TeamCity needs Java). 
+Ports 8111 (server) and 9090+ (agents) are open in firewall if needed.
+A supported database (PostgreSQL/MySQL) for production use, or you can start with the built-in HSQLDB.
+
+
+===================================================
+(The password i used is famous one)
+mysql -u mysql_user -p
+
+
+
+mysql> create database teamcity;
+Query OK, 1 row affected (0.01 sec)
+
+
+
+mysql>  create user 'teamcity'@'localhost' identified by '*******';  ---> I used my new one here!!
+Query OK, 0 rows affected (0.02 sec)
+
+
+
+
+mysql> GRANT ALL PRIVILEGES ON teamcity.* TO 'teamcity'@'127.0.0.1';
+Query OK, 0 rows affected (0.01 sec)
+
+
+===================================================
+
+
+[root@master-ansible ahmad]# export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-21.0.8.0.9-1.el9.x86_64/
+[root@master-ansible ahmad]# echo $JAVA_HOME
+/usr/lib/jvm/java-21-openjdk-21.0.8.0.9-1.el9.x86_64/
+
+
+
+[root@master-ansible ahmad]# java --version
+openjdk 17.0.16 2025-07-15 LTS
+OpenJDK Runtime Environment (Red_Hat-17.0.16.0.8-1) (build 17.0.16+8-LTS)
+OpenJDK 64-Bit Server VM (Red_Hat-17.0.16.0.8-1) (build 17.0.16+8-LTS, mixed mode, sharing)
+
+
+
+[root@master-ansible ahmad]# sudo alternatives --config java
+
+There are 2 programs which provide 'java'.
+
+  Selection    Command
+-----------------------------------------------
+   1           java-21-openjdk.x86_64 (/usr/lib/jvm/java-21-openjdk-21.0.8.0.9-1.el9.x86_64/bin/java)
+*+ 2           java-17-openjdk.x86_64 (/usr/lib/jvm/java-17-openjdk-17.0.16.0.8-2.el9.x86_64/bin/java)
+
+Enter to keep the current selection[+], or type selection number: ^C
+[root@master-ansible ahmad]# sudo alternatives --config java
+
+There are 2 programs which provide 'java'.
+
+  Selection    Command
+-----------------------------------------------
+   1           java-21-openjdk.x86_64 (/usr/lib/jvm/java-21-openjdk-21.0.8.0.9-1.el9.x86_64/bin/java)
+*+ 2           java-17-openjdk.x86_64 (/usr/lib/jvm/java-17-openjdk-17.0.16.0.8-2.el9.x86_64/bin/java)
+
+Enter to keep the current selection[+], or type selection number: 1
+
+
+[root@master-ansible ahmad]# java --version
+openjdk 21.0.8 2025-07-15 LTS
+OpenJDK Runtime Environment (Red_Hat-21.0.8.0.9-1) (build 21.0.8+9-LTS)
+OpenJDK 64-Bit Server VM (Red_Hat-21.0.8.0.9-1) (build 21.0.8+9-LTS, mixed mode, sharing)
+
+
+
+
+===================================================
+
+cd /opt
+sudo wget https://download.jetbrains.com/teamcity/TeamCity-2024.03.tar.gz
+sudo tar -xvzf TeamCity-2024.03.tar.gz
+sudo mv TeamCity teamcity
+sudo useradd -r -m -U -d /opt/teamcity -s /bin/bash teamcity
+sudo chown -R teamcity:teamcity /opt/teamcity
+
+
+(in cong dir of Team city we will find server.xml file which is the config file of team city)
+(in bin dir we have rnuAll.sh and rnuAll.bat which is used for linux and windows respectively)
+(teamcity-server.sh file is used to run teamcity server)
+
+
+# download MySQL Connector/J
+wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-j-8.4.0.tar.gz
+tar -xvzf mysql-connector-j-8.4.0.tar.gz
+sudo mkdir -p /opt/teamcity/lib/jdbc
+sudo cp mysql-connector-j-8.4.0/mysql-connector-j-8.4.0.jar /opt/teamcity/lib/
+ls -lh /opt/teamcity/lib/jdbc/
+sudo chown teamcity:teamcity /opt/teamcity/lib/jdbc/mysql-connector-j-8.4.0.jar
+sudo chmod 644 /opt/teamcity/lib/jdbc/mysql-connector-j-8.4.0.jar
+
+
+sudo su - teamcity
+cd /opt/teamcity/bin
+./runAll.sh start
+
+
+
+sudo vim /etc/systemd/system/teamcity.service
+
+[Unit]
+Description=TeamCity Server
+After=network.target
+
+[Service]
+Type=forking
+User=teamcity
+ExecStart=/opt/teamcity/bin/runAll.sh start
+ExecStop=/opt/teamcity/bin/runAll.sh stop
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+
+# make teamcity own everything inside /opt/teamcity
+sudo chown -R teamcity:teamcity /opt/teamcity
+
+# make sure it can write
+sudo chmod -R 755 /opt/teamcity
+
+
+
+
+sudo systemctl daemon-reload
+sudo systemctl enable teamcity
+sudo systemctl start teamcity
+sudo systemctl status teamcity
+
+
+
+
+http://<your-server-ip>:8111 OR
+http://localhost:8111
+
+
+
+
+
+
+=========================================================
+
+To create a super user we need to have a token that can be accessed from logs in teamcity dir as file name teamcity-server.log. Search superuser and copy token!
+
+
+command to use:
+cat teamcity-server.log | grep -i super
+
+
+
+
+======================================
+
+i did port forwarding on my vm network setting
+just set 8111 port on host and guest
+
+
+

@@ -1,0 +1,3 @@
+
+Create aws linux instance. For its sg we have to open following ports:
+22, 80, 443, 8000, 554, 9997, 8089

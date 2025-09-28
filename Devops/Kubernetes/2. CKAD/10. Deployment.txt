@@ -1,0 +1,466 @@
+
+Deployments => Replicaset => (pods-management) based on config file!
+----------------------------------------
+
+[root@client1 ahmad]# cat simple-deploy.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+
+
+----------------------------------------
+
+
+[root@client1 ahmad]# kubectl apply -f simple-deploy.yaml
+deployment.apps/simple-deployment created
+[root@client1 ahmad]# kubectl get deploy
+NAME                READY   UP-TO-DATE   AVAILABLE   AGE
+simple-deployment   0/3     3            0           12s
+[root@client1 ahmad]# kubectl get deployment
+NAME                READY   UP-TO-DATE   AVAILABLE   AGE
+simple-deployment   0/3     3            0           15s
+
+
+----------------------------------------
+
+
+[root@client1 ahmad]# kubectl get pods
+NAME                                READY   STATUS              RESTARTS   AGE
+simple-deployment-c44bff498-dqfn6   0/1     ContainerCreating   0          50s
+simple-deployment-c44bff498-kc7hg   0/1     ContainerCreating   0          50s
+simple-deployment-c44bff498-pf2vc   0/1     ContainerCreating   0          50s
+
+
+----------------------------------------
+
+
+[root@client1 ahmad]# kubectl get pods
+NAME                                READY   STATUS    RESTARTS   AGE
+simple-deployment-c44bff498-dqfn6   1/1     Running   0          2m52s
+simple-deployment-c44bff498-kc7hg   1/1     Running   0          2m52s
+simple-deployment-c44bff498-pf2vc   1/1     Running   0          2m52s
+[root@client1 ahmad]# kubectl get deployment
+NAME                READY   UP-TO-DATE   AVAILABLE   AGE
+simple-deployment   3/3     3            3           3m4s
+
+
+----------------------------------------
+[root@client1 ahmad]# kubectl describe deploy simple-deployment
+
+
+Name:                   simple-deployment
+Namespace:              default
+CreationTimestamp:      Thu, 01 May 2025 05:33:36 +0500
+Labels:                 <none>
+Annotations:            deployment.kubernetes.io/revision: 1
+Selector:               app=frontend
+Replicas:               3 desired | 3 updated | 3 total | 3 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Labels:  app=frontend
+  Containers:
+   nginx:
+    Image:         nginx:1.14.2
+    Port:          80/TCP
+    Host Port:     0/TCP
+    Environment:   <none>
+    Mounts:        <none>
+  Volumes:         <none>
+  Node-Selectors:  <none>
+  Tolerations:     <none>
+Conditions:
+  Type           Status  Reason
+  ----           ------  ------
+  Available      True    MinimumReplicasAvailable
+  Progressing    True    NewReplicaSetAvailable
+OldReplicaSets:  <none>
+NewReplicaSet:   simple-deployment-c44bff498 (3/3 replicas created)
+Events:
+  Type    Reason             Age    From                   Message
+  ----    ------             ----   ----                   -------
+  Normal  ScalingReplicaSet  3m26s  deployment-controller  Scaled up replica set simple-deployment-c44bff498 from 0 to 3
+
+----------------------------------------
+
+
+[root@client1 ahmad]# kubectl delete po simple-deployment-c44bff498-dqfn6
+pod "simple-deployment-c44bff498-dqfn6" deleted
+[root@client1 ahmad]# kubectl get pods
+NAME                                READY   STATUS    RESTARTS   AGE
+simple-deployment-c44bff498-5mgln   1/1     Running   0          5s
+simple-deployment-c44bff498-kc7hg   1/1     Running   0          6m23s
+simple-deployment-c44bff498-pf2vc   1/1     Running   0          6m23s
+
+
+
+----------------------------------------
+
+kubectl describe rs simple-deployment-c44bff498
+Name:           simple-deployment-c44bff498
+Namespace:      default
+Selector:       app=frontend,pod-template-hash=c44bff498
+Labels:         app=frontend
+                pod-template-hash=c44bff498
+Annotations:    deployment.kubernetes.io/desired-replicas: 3
+                deployment.kubernetes.io/max-replicas: 4
+                deployment.kubernetes.io/revision: 1
+Controlled By:  Deployment/simple-deployment
+Replicas:       3 current / 3 desired
+Pods Status:    3 Running / 0 Waiting / 0 Succeeded / 0 Failed
+Pod Template:
+  Labels:  app=frontend
+           pod-template-hash=c44bff498
+  Containers:
+   nginx:
+    Image:         nginx:1.14.2
+    Port:          80/TCP
+    Host Port:     0/TCP
+    Environment:   <none>
+    Mounts:        <none>
+  Volumes:         <none>
+  Node-Selectors:  <none>
+  Tolerations:     <none>
+Events:
+  Type    Reason            Age    From                   Message
+  ----    ------            ----   ----                   -------
+  Normal  SuccessfulCreate  8m12s  replicaset-controller  Created pod: simple-deployment-c44bff498-pf2vc
+  Normal  SuccessfulCreate  8m12s  replicaset-controller  Created pod: simple-deployment-c44bff498-kc7hg
+  Normal  SuccessfulCreate  8m12s  replicaset-controller  Created pod: simple-deployment-c44bff498-dqfn6
+  Normal  SuccessfulCreate  114s   replicaset-controller  Created pod: simple-deployment-c44bff498-5mgln
+
+
+----------------------------------------
+
+
+[root@client1 ahmad]# kubectl delete rs simple-deployment-c44bff498
+replicaset.apps "simple-deployment-c44bff498" deleted
+[root@client1 ahmad]# kubectl get rs
+NAME                          DESIRED   CURRENT   READY   AGE
+simple-deployment-c44bff498   3         3         3       5s
+
+----------------------------------------
+
+
+[root@client1 ahmad]# kubectl describe deploy simple-deployment
+Name:                   simple-deployment
+Namespace:              default
+CreationTimestamp:      Thu, 01 May 2025 05:33:36 +0500
+Labels:                 <none>
+Annotations:            deployment.kubernetes.io/revision: 1
+Selector:               app=frontend
+Replicas:               3 desired | 3 updated | 3 total | 3 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Labels:  app=frontend
+  Containers:
+   nginx:
+    Image:         nginx:1.14.2
+    Port:          80/TCP
+    Host Port:     0/TCP
+    Environment:   <none>
+    Mounts:        <none>
+  Volumes:         <none>
+  Node-Selectors:  <none>
+  Tolerations:     <none>
+Conditions:
+  Type           Status  Reason
+  ----           ------  ------
+  Available      True    MinimumReplicasAvailable
+  Progressing    True    NewReplicaSetAvailable
+OldReplicaSets:  <none>
+NewReplicaSet:   simple-deployment-c44bff498 (3/3 replicas created)
+Events:
+  Type    Reason             Age                From                   Message
+  ----    ------             ----               ----                   -------
+  Normal  ScalingReplicaSet  76s (x2 over 11m)  deployment-controller  Scaled up replica set simple-deployment-c44bff498 from 0 to 3
+
+----------------------------------------
+
+kubectl get po,rs,deploy
+NAME                                    READY   STATUS    RESTARTS   AGE
+pod/simple-deployment-c44bff498-b4rnz   1/1     Running   0          2m56s
+pod/simple-deployment-c44bff498-pdbm2   1/1     Running   0          2m56s
+pod/simple-deployment-c44bff498-zghs8   1/1     Running   0          2m56s
+
+NAME                                          DESIRED   CURRENT   READY   AGE
+replicaset.apps/simple-deployment-c44bff498   3         3         3       2m56s
+
+NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/simple-deployment   3/3     3            3           13m
+
+----------------------------------------
+
+kubectl scale deploy simple-deployment --replicas 6
+deployment.apps/simple-deployment scaled
+[root@client1 ahmad]# kubectl get po,rs,deploy
+NAME                                    READY   STATUS    RESTARTS   AGE
+pod/simple-deployment-c44bff498-b4rnz   1/1     Running   0          4m4s
+pod/simple-deployment-c44bff498-bv8rq   1/1     Running   0          7s
+pod/simple-deployment-c44bff498-llmwr   1/1     Running   0          7s
+pod/simple-deployment-c44bff498-nbkbv   1/1     Running   0          7s
+pod/simple-deployment-c44bff498-pdbm2   1/1     Running   0          4m4s
+pod/simple-deployment-c44bff498-zghs8   1/1     Running   0          4m4s
+
+NAME                                          DESIRED   CURRENT   READY   AGE
+replicaset.apps/simple-deployment-c44bff498   6         6         6       4m4s
+
+NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/simple-deployment   6/6     6            6           14m
+
+----------------------------------------
+
+
+[root@client1 ahmad]# kubectl scale deploy simple-deployment --replicas 2
+deployment.apps/simple-deployment scaled
+[root@client1 ahmad]# kubectl get po,rs,deploy
+NAME                                    READY   STATUS    RESTARTS   AGE
+pod/simple-deployment-c44bff498-b4rnz   1/1     Running   0          5m7s
+pod/simple-deployment-c44bff498-pdbm2   1/1     Running   0          5m7s
+
+NAME                                          DESIRED   CURRENT   READY   AGE
+replicaset.apps/simple-deployment-c44bff498   2         2         2       5m7s
+
+NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/simple-deployment   2/2     2            2           15m
+
+
+----------------------------------------
+
+command line changes donot reflect in config file so it is always a better way to chnage the replicas number in config file instead.
+
+Another way is to change config file from CLI
+
+ kubectl edit deploy simple-deployment
+deployment.apps/simple-deployment edited
+
+change replicas from 2 to 5!
+
+----------------------------------------
+
+
+kubectl get po,rs,deploy
+NAME                                    READY   STATUS    RESTARTS   AGE
+pod/simple-deployment-c44bff498-57srr   1/1     Running   0          41s
+pod/simple-deployment-c44bff498-7vrdh   1/1     Running   0          41s
+pod/simple-deployment-c44bff498-b4rnz   1/1     Running   0          8m54s
+pod/simple-deployment-c44bff498-m4sjg   1/1     Running   0          41s
+pod/simple-deployment-c44bff498-pdbm2   1/1     Running   0          8m54s
+
+NAME                                          DESIRED   CURRENT   READY   AGE
+replicaset.apps/simple-deployment-c44bff498   5         5         5       8m54s
+
+NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/simple-deployment   5/5     5            5           19m
+
+----------------------------------------
+
+[root@client1 ahmad]# kubectl delete deploy simple-deployment
+deployment.apps "simple-deployment" deleted
+[root@client1 ahmad]# kubectl get deploy
+No resources found in default namespace.
+[root@client1 ahmad]# kubectl get po,rs,deploy
+No resources found in default namespace.
+
+----------------------------------------
+
+ vim one-pod.yaml
+[root@client1 ahmad]# cat one-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: al-nafi
+  labels:
+    app: frontend
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.14.2
+    ports:
+    - containerPort: 80
+
+
+
+
+kubectl apply -f one-pod.yaml
+pod/al-nafi created
+[root@client1 ahmad]# kubectl get pods
+NAME      READY   STATUS    RESTARTS   AGE
+al-nafi   1/1     Running   0          7s
+
+
+
+
+
+vim simple-deploy.yaml
+[root@client1 ahmad]# cat simple-deploy.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+
+
+
+
+kubectl apply -f simple-deploy.yaml
+deployment.apps/simple-deployment created
+[root@client1 ahmad]# kubectl get po,rs,deploy
+NAME                                    READY   STATUS    RESTARTS   AGE
+pod/al-nafi                             1/1     Running   0          91s
+pod/simple-deployment-c44bff498-c9x65   1/1     Running   0          2s
+pod/simple-deployment-c44bff498-qxt4v   1/1     Running   0          2s
+
+NAME                                          DESIRED   CURRENT   READY   AGE
+replicaset.apps/simple-deployment-c44bff498   2         2         2       2s
+
+NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/simple-deployment   2/2     2            2           2s
+
+
+
+Kubernetes controllers (like Deployments or ReplicaSets) do not take control of manually created pods, even if labels match. 
+They only manage what they create or explicitly adopt (if unowned and matching exactly)
+Here when i see the labels of rs it was diff from the pod that was already created!!
+
+
+
+						
+
+
+
+
+
+								REASON :  (Look for the labels)
+
+
+
+
+ kubectl describe rs simple-deployment-c44bff498
+Name:           simple-deployment-c44bff498
+Namespace:      default
+Selector:       app=frontend,pod-template-hash=c44bff498
+Labels:         app=frontend
+                pod-template-hash=c44bff498
+Annotations:    deployment.kubernetes.io/desired-replicas: 2
+                deployment.kubernetes.io/max-replicas: 3
+                deployment.kubernetes.io/revision: 1
+Controlled By:  Deployment/simple-deployment
+Replicas:       2 current / 2 desired
+Pods Status:    2 Running / 0 Waiting / 0 Succeeded / 0 Failed
+Pod Template:
+  Labels:  app=frontend
+           pod-template-hash=c44bff498
+  Containers:
+   nginx:
+    Image:         nginx:1.14.2
+    Port:          80/TCP
+    Host Port:     0/TCP
+    Environment:   <none>
+    Mounts:        <none>
+  Volumes:         <none>
+  Node-Selectors:  <none>
+  Tolerations:     <none>
+Events:
+  Type    Reason            Age   From                   Message
+  ----    ------            ----  ----                   -------
+  Normal  SuccessfulCreate  8m1s  replicaset-controller  Created pod: simple-deployment-c44bff498-qxt4v
+  Normal  SuccessfulCreate  8m1s  replicaset-controller  Created pod: simple-deployment-c44bff498-c9x65
+
+
+
+
+
+
+ 								kubectl describe po al-nafi
+
+
+
+
+Name:             al-nafi
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             my-cluster-worker/172.25.0.3
+Start Time:       Thu, 01 May 2025 05:57:04 +0500
+Labels:           app=frontend
+Annotations:      <none>
+Status:           Running
+IP:               10.244.1.27
+IPs:
+  IP:  10.244.1.27
+Containers:
+  nginx:
+    Container ID:   containerd://57f0f7c3d8a504dbd5893bcb0ecfc9c71907f22e755ced998523918fa5d1cbdc
+    Image:          nginx:1.14.2
+    Image ID:       docker.io/library/nginx@sha256:f7988fb6c02e0ce69257d9bd9cf37ae20a60f1df7563c3a2a6abe24160306b8d
+    Port:           80/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Thu, 01 May 2025 05:57:05 +0500
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-9x4kr (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True
+  Initialized                 True
+  Ready                       True
+  ContainersReady             True
+  PodScheduled                True
+Volumes:
+  kube-api-access-9x4kr:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  10m   default-scheduler  Successfully assigned default/al-nafi to my-cluster-worker
+  Normal  Pulled     10m   kubelet            Container image "nginx:1.14.2" already present on machine
+  Normal  Created    10m   kubelet            Created container: nginx
+  Normal  Started    10m   kubelet            Started container nginx
+[root@client1 ahmad]#
+
+

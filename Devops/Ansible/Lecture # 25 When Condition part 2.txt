@@ -1,0 +1,54 @@
+In this lecture we studied how to install or remove packages with respect to different os flavors
+
+
+# yml file content
+
+vim package_instl.yml
+
+---
+- name: this file is for installation of packages
+  hosts: all
+  become: yes
+  tasks:
+  - name: installation of package
+    yum:
+      name: httpd
+      state: present
+    when: ansible_os_family in ["RedHat"]
+
+  - name: instllation of apache in ubuntu
+    apt:
+      name: apache2
+      state: present
+    when: ansible_os_familiy in ["Debian"]
+
+
+======================================================
+
+if file is giving error that you need root then use -K to ask for pasword while running
+
+when you use -K the password you need to enter is of root user.
+
+
+======================================================
+
+
+[jhon@master-ansible ansible]$ ansible-playbook package_instl.yml
+
+PLAY [this file is for installation of packages] *****************************************************************************
+
+TASK [Gathering Facts] *******************************************************************************************************
+ok: [54.166.4.83]
+
+TASK [installation of package] ***********************************************************************************************
+skipping: [54.166.4.83]
+
+TASK [instllation of apache in ubuntu] ***************************************************************************************
+changed: [54.166.4.83]
+
+PLAY RECAP *******************************************************************************************************************
+54.166.4.83                : ok=2    changed=1    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0
+
+
+
+

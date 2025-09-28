@@ -1,0 +1,188 @@
+Task 1 Solution :
+root@abdealidodia:~/lect6# cat swap_values.py
+ali=input("Ali")
+kazim=input("Kazim")
+
+temp=ali
+ali=kazim
+kazim=temp
+
+print("Ali" +  ali)
+print("kazim" + kazim)
+
+
+Task 2 Solution :-
+x=eval(input("enter the x number"))
+y=eval(input("Enter the y number"))
+
+
+OR
+
+x=int(input("enter the x number"))
+y=int(input("Enter the y number"))
+
+
+print(type(x))
+print(type(y))
+print("Addition : x + y = ", x+y)
+
+Method 2 :-
+x=eval(input("enter the x number"))
+y=eval(input("Enter the y number"))
+
+
+OR
+
+x=input("enter the x number")
+y=input("Enter the y number")
+
+x=int(x)
+y=int(y)
+print(type(x))
+print(type(y))
+
+result=x+y
+
+print("Addition : x + y = ", result)
+
+
+escape sequences are sequences of character which have special meaning.
+
+
+Example :-
+
+1. \n --> New line
+root@abdealidodia:~/lect6# cat esc_character.py
+print("\nAbdeali")
+print("\n Dodia")
+
+root@abdealidodia:~/lect6# python3 esc_character.py
+
+Abdeali
+
+Dodia
+
+
+
+2. \ (Slash)
+root@abdealidodia:~/lect6# cat esc_character.py
+print("\nAbdeali")
+print("\n Dodia")
+
+print("c:\\Users\\newfil")
+path="C:\\Users\\AbdealiDodiya\\Desktop\\DevOps\\Python\\Lecture 6"
+print(path)
+
+
+
+root@abdealidodia:~/lect6# python3 esc_character.py
+
+Abdeali
+
+Dodia
+c:\Users\newfil
+C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 6
+
+
+
+3. \b --> Backspace
+root@abdealidodia:~/lect6# cat esc_character.py
+print("\nAbdeali")
+print("\n Dodia")
+
+print("c:\\Users\\newfil")
+path="C:\\Users\\AbdealiDodiya\\Desktop\\DevOps\\Python\\Lecture \b6"
+print(path)
+
+root@abdealidodia:~/lect6# python3 esc_character.py
+
+Abdeali
+
+Dodia
+c:\Users\newfil
+C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture6
+
+
+
+
+4. \t --> Horizontal tab
+root@abdealidodia:~/lect6# cat esc_character.py
+print("\n\t\tAbdeali")
+print("\n\tDodia")
+
+print("c:\\Users\\newfil")
+path="C:\\Users\\AbdealiDodiya\\Desktop\\DevOps\\Python\\Lecture \b6"
+print(path)
+
+
+root@abdealidodia:~/lect6# python3 esc_character.py
+
+Abdeali
+
+Dodia
+c:\Users\newfil
+C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture6
+
+
+
+string="My name is \"Abdeali\" Dodia" #Allow
+print(path)
+print(string)
+
+string="""My name is "Abdeali" Dodia"""#Allow
+string="My name is 'Abdeali' Dodia"#Allow
+string='My name is 'Abdeali' Dodia'#Error
+string='My name is "Abdeali" Dodia'#Allow
+
+
+
+
+#Comments :-
+Code comments are important when writing a program.
+
+
+print("ABD")
+#print("ABD")
+
+
+There are two types of comments
+1. Single Line comments :-
+root@abdealidodia:~/lect6# cat esc_character.py
+#print("\n\t\tAbdeali")
+
+#print("\n\tDodia")
+
+print("c:\\Users\\newfil")
+#path="C:\\Users\\AbdealiDodiya\\Desktop\\DevOps\\Python\\Lecture \b6"
+
+#string="My name is \"Abdeali\" Dodia"
+#print(path)
+#print(string)
+
+
+
+
+Output:-
+root@abdealidodia:~/lect6# python3 esc_character.py
+c:\Users\newfil
+
+
+
+print("ABD")
+#print("ABD")
+
+2. Multi line comments :-
+path="C:\\Users\\AbdealiDodiya\\Desktop\\DevOps\\Python\\Lecture \b6"
+
+string="My name is \"Abdeali\" Dodia"
+print(path)
+print(string)
+
+
+my name is abdeali dodia
+
+"""
+
+
+root@abdealidodia:~/lect6# python3 esc_character.py
+c:\Users\newfil

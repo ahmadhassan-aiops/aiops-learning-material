@@ -1,0 +1,15 @@
+
+
+KUBE_BENCH_VERSION=0.10.1
+
+curl -L https://github.com/aquasecurity/kube-bench/releases/download/v${KUBE_BENCH_VERSION}/kube-bench_${KUBE_BENCH_VERSION}_linux_amd64.rpm -o kube-bench_${KUBE_BENCH_VERSION}_linux_amd64.rpm
+
+sudo yum install kube-bench_${KUBE_BENCH_VERSION}_linux_amd64.rpm -y
+
+
+------------------------------------------------------
+
+kube-bench
+
+(it will generate the report!)
+It will automatically check all the cis security criterias!

@@ -1,0 +1,84 @@
+We just had a one written statement on our home page and we have to put the / for navigating through diff pages. That is not good way. 
+We will modify the home page so that we can move around diff pages from navigating through home page.
+
+
+To actually make our home page look better we have to make some changes in app.py file
+
+# Home Page Route
+@app.route("/")
+def index():
+    return render_template('index.html')
+
+But all changes will not reflect on home page so to make that possible we have to provide correct path of files in index.html file as below
+
+
+src="{{url_for('static', filename = 'abd4.png')}}"      (start)
+src="{{url_for('static', filename = 'alnafi.jpg')}}"    (120th line)
+href="{{url_for('static', filename = 'style.css')}}"    (176th line)
+
+
+----------------------------------------
+
+app.py
+
+from flask import Flask, render_template, request, url_for
+from flask_mysqldb import MySQL
+from datetime import date
+
+app = Flask(__name__)
+
+# Database Configuration
+app.config['MYSQL_HOST'] = '192.168.0.105'
+app.config['MYSQL_USER'] = 'mysql_user'
+app.config['MYSQL_PASSWORD'] = 'Ahmad:06331913012'
+app.config['MYSQL_DB'] = 'alnafi'
+
+mysql = MySQL(app)
+
+# Home Page Route
+@app.route("/")
+def index():
+    return render_template('index.html')
+
+# Trainer Page Route
+@app.route("/trainer")
+def trainer():
+    return render_template('trainer_details.html')
+
+# Trainer Create Route
+@app.route("/trainer_create", methods=['POST', 'GET'])
+def trainer_create():
+    if request.method == 'GET':
+        return render_template('trainer_details.html')  # Ensure a response for GET requests
+
+    if request.method == 'POST':
+        fname_data = request.form['fname']
+        lname_data = request.form['lname']
+        design_data = request.form['design']
+        course_data = request.form['course']
+        cdate = date.today()
+
+        sql = 'INSERT INTO trainer_details (fname, lname, design, course, datetime) VALUES (%s, %s, %s, %s, %s)'
+        val = (fname_data, lname_data, design_data, course_data, cdate)
+
+        try:
+            cursor = mysql.connection.cursor()
+            cursor.execute(sql, val)
+            mysql.connection.commit()
+            cursor.close()
+            return render_template('trainer_details.html')
+        except Exception as e:
+            return f"Error: {e}"
+
+@app.route("/trainer_data", methods=['POST', 'GET'])
+def trainer_data():
+
+    cursor = mysql.connection.cursor()
+    sql = "select * from trainer_details"
+    cursor.execute(sql)
+    row = cursor.fetchall()
+    cursor.close()
+    return render_template('display_trainer.html', output_data = row)
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0")

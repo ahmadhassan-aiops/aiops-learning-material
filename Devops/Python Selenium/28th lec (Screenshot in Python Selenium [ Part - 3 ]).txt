@@ -1,0 +1,232 @@
+
+
+<html>
+<body>
+
+Enter the Name : <input type='text' style='background: yellow; border:2px solid red;'>
+</body>
+
+<html>
+
+
+
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get('https://alnafi.com/auth/signin')
+driver.maximize_window()
+driver.implicitly_wait(10)
+time.sleep(0.4)
+my_email = driver.find_element(By.ID,'Username/ Email')
+my_pass = driver.find_element(By.ID,'Password')
+
+driver.execute_script("arguments[0].setAttribute('style','background: yellow; border:2px solid red;');",my_email)
+driver.execute_script("arguments[0].setAttribute('style','background: yellow; border:2px solid red;');",my_pass)
+driver.save_screenshot('Login.png')
+time.sleep(.5)
+driver.quit()
+
+
+
+###################
+I want to create uniq time stamp :-
+
+import time
+from selenium import webdriver
+from selenium.webdriver import ActionChains
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
+import time as t
+from datetime import *
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+day = date.today()
+date_time=datetime.now()
+date_format=day.strftime("%B_%d_%Y")
+time_format=date_time.strftime("%I_%M_%p")
+myfile = "Screenshot__"+date_format+"_"+time_format+".png"
+
+driver.get('https://alnafi.com/auth/sign-in')
+driver.maximize_window()
+driver.implicitly_wait(10)
+t.sleep(0.4)
+my_email = driver.find_element(By.XPATH,'//*[@id="__nuxt"]/div/div[2]/div[1]/div/form/div[1]/div/div/input')
+my_pass = driver.find_element(By.XPATH,'//*[@id="__nuxt"]/div/div[2]/div[1]/div/form/div[2]/div/div/input')
+
+driver.execute_script("arguments[0].setAttribute('style','background: yellow; border:2px solid red;');",my_email)
+driver.execute_script("arguments[0].setAttribute('style','background: yellow; border:2px solid red;');",my_pass)
+driver.save_screenshot(myfile)
+t.sleep(.5)
+driver.quit()
+
+
+
+
+###################
+
+Absolate path :-
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+import time as t
+from datetime import *
+
+
+
+day = date.today()
+date_time=datetime.now()
+date_format=day.strftime("%B_%d_%Y")
+
+time_format=date_time.strftime("%I_%M_%p")
+myfile = "Screenshot__"+date_format+"_"+time_format+".png"
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+driver.get('https://alnafi.com/auth/signin')
+driver.maximize_window()
+driver.implicitly_wait(10)
+t.sleep(0.4)
+my_email = driver.find_element(By.ID,'Username/ Email')
+my_pass = driver.find_element(By.ID,'Password')
+
+driver.execute_script("arguments[0].setAttribute('style','background: yellow; border:2px solid red;');",my_email)
+driver.execute_script("arguments[0].setAttribute('style','background: yellow; border:2px solid red;');",my_pass)
+driver.save_screenshot(r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python Selenium\Lecture 28\screenshot\\"+myfile)
+t.sleep(.5)
+driver.quit()
+
+######################
+
+
+Now we will create own time file function in selenium 
+
+import time
+from selenium import webdriver
+from selenium.webdriver import ActionChains
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
+import time as t
+from datetime import *
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+def my_file_sc(driver):
+    file_name = t.asctime().replace(":","_")+".png"
+    driver.save_screenshot(file_name)
+
+driver.get('https://alnafi.com/auth/sign-in')
+driver.maximize_window()
+driver.implicitly_wait(10)
+t.sleep(0.4)
+my_email = driver.find_element(By.XPATH,'//*[@id="__nuxt"]/div/div[2]/div[1]/div/form/div[1]/div/div/input')
+my_pass = driver.find_element(By.XPATH,'//*[@id="__nuxt"]/div/div[2]/div[1]/div/form/div[2]/div/div/input')
+
+driver.execute_script("arguments[0].setAttribute('style','background: yellow; border:2px solid red;');",my_email)
+driver.execute_script("arguments[0].setAttribute('style','background: yellow; border:2px solid red;');",my_pass)
+my_file_sc(driver)
+t.sleep(.5)
+driver.quit()
+
+
+
+######
+
+import os
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+import time as t
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+def my_file_sc(driver):
+    my_path = os.getcwd() + "\\"
+    file_name = my_path+ t.asctime().replace(":","_")+".png"
+    driver.save_screenshot(file_name)
+
+driver.get('https://alnafi.com/auth/signin')
+driver.maximize_window()
+driver.implicitly_wait(10)
+t.sleep(0.4)
+my_email = driver.find_element(By.ID,'Username/ Email')
+my_pass = driver.find_element(By.ID,'Password')
+
+driver.execute_script("arguments[0].setAttribute('style','background: yellow; border:2px solid red;');",my_email)
+driver.execute_script("arguments[0].setAttribute('style','background: yellow; border:2px solid red;');",my_pass)
+
+my_file_sc(driver)
+t.sleep(.5)
+driver.quit()
+
+
+#######################
+Now i want to take full screenshot 
+
+
+
+import time
+import os
+from selenium import webdriver
+from selenium.webdriver import ActionChains
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
+import time as t
+from datetime import *
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+def my_file_sc(driver):
+    my_path = os.getcwd() + "\\"
+    file_name = my_path+ t.asctime().replace(":","_")+".png"
+    driver.save_screenshot(file_name)
+
+driver.get("https://alnafi.com")
+driver.maximize_window()
+driver.implicitly_wait(10)
+t.sleep(0.4)
+total_width = driver.execute_script("return document.body.offsetWidth")
+total_height = driver.execute_script("return document.body.offsetHeight")
+print(total_height)
+print(total_width)
+
+driver.set_window_size(total_width,total_height)
+t.sleep(.5)
+my_file_sc(driver)
+my_file_sc(driver)
+
+driver.quit()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

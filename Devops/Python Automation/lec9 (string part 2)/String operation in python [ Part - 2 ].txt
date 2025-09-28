@@ -1,0 +1,206 @@
+Lecture 9 :  String operation in python [ Part - 2 ]
+
+
+(NOTE : Sorry for video cut bottom of the page, Please put discussion note if any doubt on this video)
+
+#Alignment
+>>> print(abd.center(5))
+ABD
+>>> print(abd.center(10))
+ABD
+>>> print(abd.center(20))
+ABD
+>>> print(abd.zfill(10))
+0000000ABD
+>>> print(abd.zfill(20))
+00000000000000000ABD
+
+
+#Strip
+>>> abd="Abdeali"
+>>> print(abd)
+Abdeali
+>>> abd="*Abdeali*"
+>>> print(abd)
+*Abdeali*
+>>> print(abd.strip())
+*Abdeali*
+>>> print(abd.strip('*'))
+Abdeali
+
+
+>>> abd=" Abdeali "
+>>> print(abd)
+Abdeali
+>>> print(abd.strip())
+Abdeali
+
+
+>>> abd="Abdeali"
+>>> print(abd)
+Abdeali
+>>> print(abd.strip('A'))
+bdeali
+>>> print(abd.strip('i'))
+Abdeal
+
+
+>>> abd="Abdeali Dodia Bangalore"
+>>> print(abd.strip('bangalore'))
+Abdeali Dodia B
+>>> print(abd.strip('Bangalore'))
+Abdeali Dodia
+>>> print(abd)
+Abdeali Dodia Bangalore
+>>> print(abd.strip('Dodia'))
+Abdeali Dodia Bangalore
+>>> print(abd.strip('Abdeali'))
+Dodia Bangalor
+>>> print(abd.strip('Abdeali'))
+
+
+>>> name="Abdeali Dodia Abdeali"
+>>> print(name)
+Abdeali Dodia Abdeali
+>>> print(abd.strip('Abdeali'))
+Dodia Bangalor
+>>> print(name.strip('Abdeali'))
+Dodia
+>>> print(name)
+Abdeali Dodia Abdeali
+>>> print(name.strip('Abdeali'))
+Dodia
+
+
+>>> print(name.rstrip('Abdeali'))
+Abdeali Dodia
+>>> print(name.lstrip('Abdeali'))
+Dodia Abdeali
+
+
+
+
+#SPLIT
+>>> name="Abdeali Dodia Abdeali"
+>>> print(abd)
+Abdeali Dodia Bangalore
+>>> print(name)
+Abdeali Dodia Abdeali
+>>> print(name.split())
+['Abdeali', 'Dodia', 'Abdeali']
+
+
+>>> name="Abdeali Dodia Abdeali Bangalore Dodia India"
+>>> print(name.split('Dodia'))
+['Abdeali ', ' Abdeali Bangalore ', ' India']
+
+
+
+>>> path="/root/aadmin/abd.txt"
+>>> print(path)
+/root/aadmin/abd.txt
+>>> path1=path.split('.txt')
+>>> print(path1)
+['/root/aadmin/abd', '']
+>>> print(path1[0])
+/root/aadmin/abd
+
+
+
+#JOIN
+>>> name="My name is Abdeali Dodia"
+>>> print(name.split())
+['My', 'name', 'is', 'Abdeali', 'Dodia']
+>>> mysplit=name.split()
+>>> print(mysplit)
+['My', 'name', 'is', 'Abdeali', 'Dodia']
+>>> myjoint=' '.join(mysplit)
+>>> print(myjoint)
+My name is Abdeali Dodia
+
+
+>>> abd='Abdeali'
+>>> print("#".join(abd))
+A#b#d#e#a#l#i
+
+
+>>> print("\t".join(abd))
+A       b       d       e       a       l       i
+
+
+>>> print(" ".join(abd))
+A b d e a l i
+>>> print("\n".join(abd))
+A
+b
+d
+e
+a
+l
+i
+
+
+#REVERSED string
+>>> name="Abdeali"
+>>> print(name)
+Abdeali
+>>> print(name[:-1])
+Abdeal
+>>> print(name[::1])
+Abdeali
+>>> name="Abdeali Dodia"
+>>> print(name[::1])
+Abdeali Dodia
+>>> print(name[::2])
+AdaiDda
+>>> name="Abdeali"
+>>> print(name[::-1])
+ilaedbA
+
+
+>>> string="".join(reversed(name))
+>>> print(string)
+ilaedbA
+>>> string="*".join(reversed(name))
+>>> print(string)
+i*l*a*e*d*b*A
+
+
+
+
+#REPLACE
+>>> abd="$Abdeali Dodia$ with$ newlines"
+>>> print(abd.replace("$",""))
+Abdeali Dodia with newlines
+
+Interview question :-
+Abdeali
+Dodia
+Bangalore
+India
+
+>>> abd="\nAbdeali\nDodia\nBangalore\nIndia"
+>>> print(abd)
+
+Abdeali
+Dodia
+Bangalore
+India
+>>> print(abd.replace("\n"," "))
+Abdeali Dodia Bangalore India
+
+
+
+#SORTED
+>>> print(abd)
+Abdeali
+>>> print(sorted(abd))
+['A', 'a', 'b', 'd', 'e', 'i', 'l']
+
+
+
+
+
+########################TASK TIME ##############################
+Input : abdealiabdabdealiabdealialiabd
+Output: ['abdeali','abdeali','abdeali']

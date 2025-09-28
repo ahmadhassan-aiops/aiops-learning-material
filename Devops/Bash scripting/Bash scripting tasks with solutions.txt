@@ -1,0 +1,109 @@
+ 
+Task-1:
+ #!/bin/bash
+ echo -n "Enter some text > "  
+red text
+ echo "You entered: $text"
+
+
+ Task-2:
+ #!/bin/bash
+ read -p "Enter some text > " text  
+echo "You entered: $txt"
+
+
+ Task-3:
+ #!/bin/bash
+ echo -n "Hurry up and type something! > "  
+if read -t 3 response; then
+ echo "Great, you made it in time!"  
+else
+ echo "Sorry, you are too slow!"
+ fi
+
+
+Task-4
+ #!/bin/bash
+ first_num=0  
+second_num=0
+ read -p "Enter the first number --> " first_num
+ read -p "Enter the second number -> " second_num
+ echo "first number + second number = $((first_num + second_num))"  
+echo "first number - second number = $((first_num - second_num))"  
+echo "first number * second number = $((first_num * second_num))"  
+echo "first number / second number = $((first_num / second_num))"  
+echo "first number % second number = $((first_num % second_num))"  
+echo "first number raised to the"
+ echo "power of the second number = $((firstnum ** second_num))"
+
+
+
+Task-5:
+ #!/bin/bash  
+number=0
+ read -p "Enter a number > " number
+ echo "Number is $number"
+ if [$((number % 2)) -eq 0 ]; then  
+echo "Number is even"
+ else
+ echo "Number is odd"
+ fi
+
+
+Task-6
+ $ read
+ baeldung is a cool tech site # what we type
+ $ echo $REPLY
+ baeldung is a cool tech site
+ 
+
+Task-7:
+ $ read input1 input2 input3 
+baeldung is a cool tech site # what we type
+ $ echo [$input1] [$input2][$input3]"
+
+
+
+
+Task-8:
+ $ read input1 input2 input3
+ hello \
+ i
+ s a cool \
+ are scripter
+ #
+ $ echo "[$input1] [$input2] [$input3]" [hello] [is] [a cool are scripter]
+
+
+
+
+Task-9
+ #!/bin/bash
+ i=1
+ for day in Mon Tue Wed Thu Fri
+ do
+ echo "Weekday $((i++)) : $day"
+ done
+
+T
+
+
+
+Task-10
+
+ #!/usr/bin/bash
+ read -p "Enter any number: " num
+ case $num in
+ [0-9])
+ echo "you entered single number"
+ ;;
+ [a-z])
+ echo "you entered lower case alpha"
+ ;; 
+[A-Z])
+ echo "you entered upper case alpha"
+ ;;
+ *)
+ echo "Unable to identify your input"
+ ;;
+esac

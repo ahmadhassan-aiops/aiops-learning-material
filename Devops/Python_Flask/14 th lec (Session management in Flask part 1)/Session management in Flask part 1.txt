@@ -1,0 +1,21 @@
+CREATE TABLE users (
+    id INT(10) NOT NULL AUTO_INCREMENT,
+    username VARCHAR(255) DEFAULT NULL,
+    password VARCHAR(255) DEFAULT NULL,
+    email VARCHAR(255) DEFAULT NULL,
+    PRIMARY KEY (id)
+);
+
+
+INSERT INTO users (username, password, email) 
+VALUES 
+('john_doe', 'password123', 'john.doe@example.com'),
+('alice_smith', 'alice@secure', 'alice.smith@example.com'),
+('bob_jones', 'bob_password', 'bob.jones@example.com');
+
+
+
+----------------------------------------------
+
+When we accessing the url then without any login req the user is able to see everything. What we want to do is that first login page should popo us and
+if the credentials are provided correctly only then actual access should be provided to authentic users!!

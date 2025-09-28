@@ -1,0 +1,367 @@
+
+
+
+#STRFTIME 
+
+It ise to create your own datetime format.
+Create string represenation of datetime object.
+
+date object to string 
+
+from datetime import datetime
+current=datetime.now()
+print(current)
+print(type(current))
+
+year=current.strftime('%Y')
+print("My year is ",year)
+print(type(year))
+
+
+month=current.strftime('%m')
+print("My month is ",month)
+print(type(month))
+
+day=current.strftime('%d')
+print("My day is ",day)
+print(type(day))
+
+
+time=current.strftime('%H:%M:%S')
+print("My time is ",time)
+print(type(time))
+
+date_time=current.strftime('%d/%m/%Y')
+print(date_time)
+
+date_time=current.strftime('%d-%m-%Y')
+print(date_time)
+
+date_time=current.strftime('%d/%m/%Y %H:%M:%S')
+print(date_time)
+print(type(date_time))
+
+
+
+O/p:-
+2022-09-10 16:08:21.354263
+<class 'datetime.datetime'>
+My year is  2022
+<class 'str'>
+My month is  09
+<class 'str'>
+My day is  10
+<class 'str'>
+My time is  16:08:21
+<class 'str'>
+10/09/2022
+10-09-2022
+10/09/2022 16:08:21
+<class 'str'>
+
+
+
+
+
+
+from datetime import datetime as dt
+current=dt.now()
+print(current)
+
+
+
+from datetime import datetime as dt
+current=dt.now()
+#print(current)
+
+
+current=current.strftime('%A %m %y')
+print(current)
+
+O/p:-
+Saturday 09 22
+
+
+
+
+from datetime import datetime
+current=datetime.now()
+print(current)
+print(type(current))
+custom_date=datetime.strftime(current,"%Y/%m/%d")
+print(custom_date)
+print(type(custom_date))
+
+custom_datetime=datetime.strftime(current,"%d/%m/%Y %H:%M:%S %p")
+print(custom_datetime)
+
+
+O/p:-
+2022-09-10 16:21:54.345233
+<class 'datetime.datetime'>
+2022/09/10
+<class 'str'>
+10/09/2022 16:21:54 PM
+
+
+
+
+from datetime import datetime
+current=datetime.now()
+print(current)
+print(type(current))
+custom_date=datetime.strftime(current,"%Y/%m/%d")
+print(custom_date)
+print(type(custom_date))
+
+custom_datetime=datetime.strftime(current,"%d/%m/%Y %I:%M:%S %p")
+print(custom_datetime)
+
+O/p:-
+2022-09-10 16:24:15.760467
+<class 'datetime.datetime'>
+2022/09/10
+<class 'str'>
+10/09/2022 04:24:15 PM
+
+
+#####STRPTIME#######
+
+You need to convert string to date object 
+
+
+STRFTIME VS STRPTIME 
+STRFTIME --> date to string 
+STRPTIME --> String to date
+
+from datetime import datetime
+
+mydate='2022/09/05 13:20:52'
+print(type(mydate))
+myptime= (datetime.strptime(mydate,"%Y/%m/%d %H:%M:%S"))
+print(myptime)
+print(type(myptime))
+
+
+O/P:-
+<class 'str'>
+2022-09-05 13:20:52
+<class 'datetime.datetime'>
+
+
+####################TIME Module#######
+
+import time
+seconds=time.time()
+print(seconds)
+
+O/p:-
+
+1662807652.0930204
+
+
+
+import time
+import datetime
+seconds=time.time()
+print(seconds)
+
+#1st method
+print(datetime.datetime.fromtimestamp(seconds))
+O/p:-
+1662807751.4103093
+2022-09-10 16:32:31.410309
+
+
+#2nd method :-
+import time
+
+seconds=time.time()
+print(seconds)
+
+local_time=time.ctime(seconds)
+print(local_time)
+print(type(local_time))
+
+
+
+
+import time
+
+seconds=time.time()
+print(seconds)
+
+local_time=time.ctime(seconds)
+print(local_time)
+print(type(local_time))
+
+mygmt=time.gmtime()
+print(mygmt)
+print(type(mygmt))
+
+tuple1=time.localtime()
+print(tuple1)
+print(type(tuple1))
+
+time_str=time.strftime("%m/%d/%Y, %H:%M:%S")
+print(time_str)
+
+
+time_str=time.strftime("%m/%d/%Y, %H:%M:%S",tuple1)
+print(time_str)
+
+O/p:-
+1662808119.173913
+Sat Sep 10 16:38:39 2022
+<class 'str'>
+time.struct_time(tm_year=2022, tm_mon=9, tm_mday=10, tm_hour=11, tm_min=8, tm_sec=39, tm_wday=5, tm_yday=253, tm_isdst=0)
+<class 'time.struct_time'>
+time.struct_time(tm_year=2022, tm_mon=9, tm_mday=10, tm_hour=16, tm_min=38, tm_sec=39, tm_wday=5, tm_yday=253, tm_isdst=0)
+<class 'time.struct_time'>
+09/10/2022, 16:38:39
+09/10/2022, 16:38:39
+
+
+
+
+import time
+print("This is sample time example")
+time.sleep(2)
+print("This is sample time example1")
+time.sleep(4.3)
+print("This is sample time example2")
+
+O/p:-
+This is sample time example
+This is sample time example1
+This is sample time example2
+
+
+
+
+
+script.py
+import os
+import datetime
+
+myfile=os.path.getctime("/root/lect25/abd.csv")
+print(myfile)
+O/p:-
+
+1662808386.5290666
+
+
+
+
+import os
+import datetime
+
+myfile=os.path.getctime("/root/lect25/abc.csv")
+print(myfile)
+print(datetime.datetime.fromtimestamp(myfile))
+
+o/p:-
+1662206289.6532047
+2022-09-03 17:28:09.653205
+
+
+
+
+
+
+root@abdealidodia:~/lect25# cat search_file_time.py
+import os
+import datetime
+
+find_file=input("Enter the search:")
+
+for roots,dirs,files in os.walk("/root/lect25/"):
+    for i in files:
+        if i==find_file:
+            print("Yes we have files as per your find request",i)
+
+
+
+Enter the search:abd.csv
+Yes we have files as per your find request abd.csv
+
+
+
+
+root@abdealidodia:~/lect25# cat search_file_time.py
+import os
+import datetime
+
+find_file=input("Enter the search:")
+
+for roots,dirs,files in os.walk("/root/lect25/"):
+    for i in files:
+        if i==find_file:
+            #mypath=(os.path.join(root,i))
+            print("Yes we have files as per your find request",os.path.join(roots,i))
+
+
+
+
+root@abdealidodia:~/lect25# python3 search_file_time.py
+Enter the search:abd.csv
+Yes we have files as per your find request /root/lect25/abd.csv
+
+
+
+
+
+
+
+import os
+import datetime
+
+find_file=input("Enter the search:")
+
+for roots,dirs,files in os.walk("/root/lect25/"):
+    for i in files:
+        if i==find_file:
+            mypath=(os.path.join(roots,i))
+            #print("Yes we have files as per your find request",os.path.join(roots,i))
+            print(datetime.datetime.fromtimestamp(os.path.getctime(mypath)))
+
+
+
+Myfinal script:-
+
+root@abdealidodia:~/lect25# cat search_file_time.py
+import os
+import datetime
+
+find_file=input("Enter the search:")
+
+for roots,dirs,files in os.walk("/root/lect25/"):
+    for i in files:
+        if i==find_file:
+            mypath=(os.path.join(roots,i))
+            #print("Yes we have files as per your find request",os.path.join(roots,i))
+            print(f"We found the file {mypath} and {mypath} time is : {datetime.datetime.fromtimestamp(os.path.getctime(mypath))}")
+
+
+
+Output:-
+root@abdealidodia:~/lect25# python3 search_file_time.py
+Enter the search:abd.csv
+We found the file /root/lect25/abd.csv and /root/lect25/abd.csv time is : 2022-09-10 16:43:06.529067
+
+
+
+
+TASK TIME --->
+Search the file from your path and find time as per below format :-
+Date is : September 10 2022 Time is : 10:12:35 PM 
+
+
+
+
+
+
+
+
+
+

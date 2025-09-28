@@ -1,0 +1,48 @@
+Lecture 3 : Python basic commands and installation Pycharm.
+
+
+
+
+#cat simple.py
+print("Abdeali dodia")
+
+#python3 simple.py
+Abdeali dodia
+
+
+# which python3
+/usr/local/bin/python3
+
+# python3 simple.py
+Abdeali Dodia
+
+
+
+root@abdealidodia:~/lecture3# cat simple.py
+#!/usr/local/bin/python3
+print("Abdeali Dodia")
+
+
+
+root@abdealidodia:~/lecture3# python3
+Python 3.10.6 (main, Aug 14 2022, 13:42:40) [GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> print("Abdeali dodia")
+Abdeali dodia
+>>>
+md
+
+
+root@abdealidodia:~/lecture3# ./simple.py
+Abdeali Dodia
+
+
+IDE
+
+#IDLE
+#VIM
+#Notepad
+#Notepad++
+#Pycharm
+
+Pycharm installation link : https://www.jetbrains.com/pycharm/download/#section=windows

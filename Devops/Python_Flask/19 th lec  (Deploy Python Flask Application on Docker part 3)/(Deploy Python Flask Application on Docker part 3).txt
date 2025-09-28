@@ -1,0 +1,82 @@
+# Now we have to deploy DB server into the docker as well along with falsk server which we did already!
+
+# to take backup
+mysqldump -u root --databases alnafi mysql > alnafi.sql -p
+
+# I created another dir and store the following files
+(tree)
+
+
+[root@client1 lec19]# tree
+.
+├── app
+│   ├── app.py
+│   ├── static
+│   │   ├── abd4.png
+│   │   ├── alnafi.jpg
+│   │   └── style.css
+│   └── templates
+│       ├── demo.html
+│       ├── display_trainer.html
+│       ├── index.html
+│       ├── jira_page.html
+│       ├── login_page.html
+│       ├── register.html
+│       ├── sample.html
+│       ├── trainer_details.html
+│       ├── trainer_form.html
+│       └── trainer_report.html
+├── db
+│   └── alnafi.sql
+├── docker-compose_mysql_flask.yml
+├── dockerfile
+└── requirements.txt
+
+
+- dockerfile and requirements are same!
+----------------------------------------------------------------------------
+docker-compose_mysql_flask.yml
+
+
+version: "3.8"
+services:
+  app:
+    build: ./app
+    links:
+      - db
+    ports:
+      - "5000:5000"
+
+  db:
+    image: mysql:5.7
+    ports:
+      - "32000:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: Ahmad:06331913012
+    volumes:
+      - ./db/docker-entrypoint-initdb.d:ro
+
+---------------------------------------------------------
+
+In app.py file present in app dir we have to chnage host to db as well
+
+# Database Configuration
+app.config['MYSQL_HOST'] = 'db' .................................this one
+app.config['MYSQL_USER'] = 'mysql_user'
+app.config['MYSQL_PASSWORD'] = 'Ahmad:06331913012'
+app.config['MYSQL_DB'] = 'alnafi'
+app.secret_key = 'mysecretkey123'
+
+------------------------------------------------
+
+docker compose -f docker-compose_mysql_flask.yml up
+docker exec -it docker-container-id sh
+
+---------------------------------------------------------
+
+My machine storage was limited so we can extend it to setup the mysql database!!
+
+
+
+
+

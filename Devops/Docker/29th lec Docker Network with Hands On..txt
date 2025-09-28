@@ -1,0 +1,112 @@
+
+### Docker Networking Simplified
+
+#### Setting Up Containers
+1. **Start containers** in detached mode with a terminal:
+   ```bash
+   docker run -dit --name alpine1 alpine ash
+   docker run -dit --name alpine2 alpine ash
+   ```
+   - These containers are automatically assigned IPs in the default network:
+     - `alpine1`: 172.17.0.2
+     - `alpine2`: 172.17.0.3
+
+2. **Check running containers:**
+   ```bash
+   docker ps
+   ```
+
+3. **Inspect container details:**
+   ```bash
+   docker inspect alpine1
+   docker inspect alpine2
+   ```
+
+4. **Access a container's shell:**
+   ```bash
+   docker exec -it alpine1 ash
+   ```
+
+---
+
+#### Creating a Custom Network
+1. **Create a custom bridge network:**
+   ```bash
+   docker network create --driver bridge myabd
+   ```
+
+2. **Run containers in the custom network:**
+   ```bash
+   docker run -dit --name alpine1 --network myabd alpine ash
+   docker run -dit --name alpine2 --network myabd alpine ash
+   docker run -dit --name alpine3 --network myabd alpine ash
+   ```
+   - Example IPs in the `myabd` network:
+     - `alpine1`: 172.21.0.2
+     - `alpine2`: 172.21.0.3
+     - `alpine3`: 172.21.0.4
+
+3. **Verify networking using `ping`:**
+   - From `alpine1`, check connectivity to `alpine2`:
+     ```bash
+     docker exec -it alpine1 ash
+     ping 172.21.0.3
+     ```
+   - Successful pings confirm that the containers can communicate within the `myabd` network.
+
+---
+
+#### Connecting a Container to Multiple Networks
+1. **Run a container in the default network:**
+   ```bash
+   docker run -dit --name alpine4 alpine ash
+   ```
+   - `alpine4` gets IP `172.17.0.2`.
+
+2. **Connect `alpine4` to the custom network:**
+   ```bash
+   docker network connect myabd alpine4
+   ```
+   - `alpine4` now has IPs in both networks:
+     - Default: 172.17.0.2
+     - `myabd`: 172.21.0.5
+
+3. **Verify connectivity:**
+   - From `alpine4`, ping another container in the `myabd` network (e.g., `alpine1`):
+     ```bash
+     docker exec -it alpine4 ash
+     ping 172.21.0.2
+     ```
+
+---
+
+#### Using Host Network Mode
+1. **Run a container with host networking:**
+   ```bash
+   docker run -dit --name alpine5 --network host alpine ash
+   ```
+   - This shares the host’s network stack, so no separate container IP.
+
+---
+
+#### Disconnecting a Container from a Network
+1. **Disconnect a container from a network:**
+   ```bash
+   docker network disconnect myabd alpine4
+   ```
+   - After this, `alpine4` will no longer have an IP in the `myabd` network.
+
+---
+
+#### Summary of IP Assignments
+| Container  | Network       | IP Address   | Notes                              |
+|------------|---------------|--------------|------------------------------------|
+| `alpine1`  | Default       | 172.17.0.2   | Default bridge network             |
+| `alpine2`  | Default       | 172.17.0.3   | Default bridge network             |
+| `alpine1`  | `myabd`       | 172.21.0.2   | Custom bridge network              |
+| `alpine2`  | `myabd`       | 172.21.0.3   | Custom bridge network              |
+| `alpine3`  | `myabd`       | 172.21.0.4   | Custom bridge network              |
+| `alpine4`  | Default       | 172.17.0.2   | Initially in default network       |
+| `alpine4`  | `myabd`       | 172.21.0.5   | Connected to both networks         |
+| `alpine5`  | Host network  | Host IP      | Shares host network stack          |
+

@@ -1,0 +1,81 @@
+# 🔹 Mapping **TeamCity** with **Jenkins** – Final Lecture
+
+### 1. **Core Concept**
+
+* **Jenkins** → Open-source automation server, community-driven, highly extensible with plugins.
+* **TeamCity** → JetBrains’ commercial CI/CD tool, comes with many features out-of-the-box, polished UI, and enterprise focus.
+
+---
+
+### 2. **Installation & Setup**
+
+* **Jenkins** → Requires manual setup (plugins, jobs, agents). Can be lightweight but needs tuning.
+* **TeamCity** → Ships with built-in build runners (Gradle, Maven, Docker, etc.), easier out-of-the-box experience.
+
+---
+
+### 3. **Build Agents**
+
+* **Jenkins** → Agents (slaves) are configured manually (SSH, JNLP, Docker, Kubernetes).
+* **TeamCity** → Build Agents are a first-class concept, auto-register with server, plugins preloaded (Docker, Maven, Gradle).
+
+---
+
+### 4. **Configuration Style**
+
+* **Jenkins** → Traditionally GUI-driven jobs (Freestyle), modern approach is **Jenkinsfile** (Pipeline-as-Code, Groovy).
+* **TeamCity** → GUI-first, but supports **Kotlin DSL** for pipelines (Infrastructure-as-Code approach).
+
+---
+
+### 5. **Plugin Ecosystem**
+
+* **Jenkins** → 1,800+ community plugins, very flexible, but can cause instability if mismatched.
+* **TeamCity** → Curated JetBrains plugins, stable and integrated, but fewer options vs Jenkins.
+
+---
+
+### 6. **Scalability**
+
+* **Jenkins** → Scales with multiple controllers & agents, but needs manual tuning.
+* **TeamCity** → Scales easily with distributed build agents, built-in cloud integration (AWS, Azure, Kubernetes).
+
+---
+
+### 7. **User Interface & Usability**
+
+* **Jenkins** → Basic UI, not very intuitive, but very customizable.
+* **TeamCity** → Polished, modern UI with built-in test history, build chains, and code coverage reports.
+
+---
+
+### 8. **Security**
+
+* **Jenkins** → Requires hardening (matrix auth, plugins, secrets mgmt).
+* **TeamCity** → Secure defaults, integrates with enterprise SSO, RBAC, LDAP out-of-the-box.
+
+---
+
+### 9. **Learning Curve**
+
+* **Jenkins** → Steeper, especially with Groovy pipelines & plugin management.
+* **TeamCity** → Easier for beginners (intuitive UI + ready-to-use build runners).
+
+---
+
+### 10. **Licensing**
+
+* **Jenkins** → 100% Free & Open Source.
+* **TeamCity** → Free for small teams (100 build configurations, 3 agents), **commercial license** needed for scaling.
+
+---
+
+### 🎯 **Summary Mapping**
+
+* If you want **free, flexible, and community-driven** → choose **Jenkins**.
+* If you want **enterprise-ready, stable, easy setup, with official support** → choose **TeamCity**.
+
+---
+
+That’s the **Final Lecture**: Jenkins = flexibility + plugins, TeamCity = polish + productivity.
+Both can achieve the same CI/CD goals — the choice depends on **budget, team size, and control vs convenience**.

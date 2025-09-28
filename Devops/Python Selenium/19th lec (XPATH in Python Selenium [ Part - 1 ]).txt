@@ -1,0 +1,118 @@
+XPATH :-
+XML PATH :-
+XPATH is selenium is a XML path used for navigation though the HTML elements of the page. 
+it is syntax or language for finding any elemts on web page using XPATH. 
+
+
+XPATH always start from //
+
+
+XPATH syntax:-
+
+//tagname[@attribute="value"]
+
+INPUT Elements :-
+
+<input type="text" required="" placeholder="Enter Your Username or Email" id="Username/ Email" class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-Bluish" data-v-788ca2d9="">
+
+XPATH :-
+
+//input[@id='Username/ Email']
+
+//form[@class='w-full h-full']
+
+//input[@type="text"]
+
+//input --> this is tagname 
+
+//*  --> it will find every html elemtrs from DOM 
+
+XPATH :-
+Two types XPATH :-
+
+1. Relative xpath 
+2. Absolate path :-
+
+1. Relative xpath :-
+relative xpath is always short 
+//input[@id='Username/ Email']
+
+
+COPY paste :-
+//*[@id="Username/ Email"]
+
+
+Gmail.com
+
+//*[@id="identifierId"]
+
+//input[@class='whsOnd zHQkBf']
+
+OR 
+
+Join XPATH :-
+1. Method :-
+//input[@class='whsOnd zHQkBf'][@id="identifierId"]
+
+OR 
+
+2. Method :-
+//input[@class='whsOnd zHQkBf' and @id="identifierId"]
+
+
+CSS Selector dynamic id^='user'
+
+XPATH Dynamic :-
+//input[@id="identifierId"]
+
+//input[@id="mysubmit1234"]
+
+//input[starts-with(@id,"mysubmit")]		--> starts with 
+
+//input[@id="12mysubmit34"]
+
+//input[contains(@id,"mysubmit")]
+
+
+//input[@id="1234mysubmit"]
+
+//input[ends-with(@id,"mysubmit")]
+
+
+best use for text :-
+//*[contains(text(),'Create account')]
+
+
+
+
+dev.alnafi.com
+<div class="flex h-screen relative" data-v-788ca2d9=""><div class="signIn-background" data-v-788ca2d9=""></div><div class="flex items-center justify-center absolute h-full w-full" data-v-788ca2d9=""><div class="flex flex-col md:h-fit h-full items-center gap-5 px-12 py-24 bg-catskillWhite text-balticSea md:rounded-lg rounded-none lg:shadow-2xl lg:shadow-cyan-900 shadow-none" data-v-788ca2d9=""><a href="/" class="" data-v-788ca2d9=""><img src="/logo.png" width="130" alt="Al-Nafi" data-v-788ca2d9=""></a><h3 class="text-2xl font-bold whitespace-nowrap" data-v-788ca2d9="">Sign in to your account</h3><form class="w-full h-full" data-v-788ca2d9=""><div class="mt-4" data-v-788ca2d9=""><label class="block" for="Username/ Email" data-v-788ca2d9="">Username/ Email</label><input type="text" required="" placeholder="Enter Your Username or Email" id="Username/ Email" class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-Bluish" data-v-788ca2d9=""></div><div class="mt-4" data-v-788ca2d9=""><label class="block" for="Password" data-v-788ca2d9="">Password</label><input type="password" required="" placeholder="Password" id="Password" class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-Bluish" data-v-788ca2d9=""></div><div class="flex items-baseline justify-between" data-v-788ca2d9=""><button type="submit" class="px-6 py-2 mt-4 text-white bg-Bluish rounded-lg hover:bg-blue-900" data-v-788ca2d9=""> Login </button><a href="/forget-password" class="text-sm text-Bluish hover:underline" data-v-788ca2d9="">Forgot password?</a></div><p class="text-sm md:text-base mt-8 text-center" data-v-788ca2d9=""> Don’t have an account? <a href="/sign-up" class="text-2sm md:text-md text-[#f5f5f] font-medium" data-v-788ca2d9="">Sign Up</a></p></form></div></div></div>
+
+
+XPATH :-
+//div[@class="flex h-screen relative"]  --> parent
+
+//div[@class="flex h-screen relative"]/div[1]   --> Child 
+
+
+//div[@class="flex h-screen relative"]/div[2]  --> Subchild 
+
+Linux:-
+cd ../..
+
+
+//div[@class="flex h-screen relative"]/div[2]/..  --> parents 
+
+
+OR 
+
+//div[@class="flex h-screen relative"]/div[2]/parent::div   --> parents 
+
+
+
+
+
+
+
+
+

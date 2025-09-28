@@ -1,0 +1,885 @@
+
+Namepscae is used to diffirentiate between different environments like prod and testing!
+When we create kubernetes on machine it also create by default name-spaces (kubectl get namespaces)
+We can create our own as well and can also provide resource for each name-space like storage cpu and nodes!
+
+
+-----------------------------------------------
+
+[root@client1 ahmad]# kubectl get namespaces
+NAME                 STATUS   AGE
+default              Active   2d15h
+kube-node-lease      Active   2d15h
+kube-public          Active   2d15h
+kube-system          Active   2d15h
+local-path-storage   Active   2d15h
+
+
+
+
+[root@client1 ahmad]# kubectl get namespace
+NAME                 STATUS   AGE
+default              Active   2d15h
+kube-node-lease      Active   2d15h
+kube-public          Active   2d15h
+kube-system          Active   2d15h
+local-path-storage   Active   2d15h
+
+
+
+[root@client1 ahmad]# kubectl get ns
+NAME                 STATUS   AGE
+default              Active   2d15h
+kube-node-lease      Active   2d15h
+kube-public          Active   2d15h
+kube-system          Active   2d15h
+local-path-storage   Active   2d15h
+
+
+
+
+
+-----------------------------------------------
+ kubectl config --help
+Modify kubeconfig files using subcommands like "kubectl config set current-context my-context".
+
+ The loading order follows these rules:
+
+  1.  If the --kubeconfig flag is set, then only that file is loaded. The flag may only be set once and no merging takes
+place.
+  2.  If $KUBECONFIG environment variable is set, then it is used as a list of paths (normal path delimiting rules for
+your system). These paths are merged. When a value is modified, it is modified in the file that defines the stanza. When
+a value is created, it is created in the first file that exists. If no files in the chain exist, then it creates the
+last file in the list.
+  3.  Otherwise, ${HOME}/.kube/config is used and no merging takes place.
+
+Available Commands:
+  current-context   Display the current-context
+  delete-cluster    Delete the specified cluster from the kubeconfig
+  delete-context    Delete the specified context from the kubeconfig
+  delete-user       Delete the specified user from the kubeconfig
+  get-clusters      Display clusters defined in the kubeconfig
+  get-contexts      Describe one or many contexts
+  get-users         Display users defined in the kubeconfig
+  rename-context    Rename a context from the kubeconfig file
+  set               Set an individual value in a kubeconfig file
+  set-cluster       Set a cluster entry in kubeconfig
+  set-context       Set a context entry in kubeconfig
+  set-credentials   Set a user entry in kubeconfig
+  unset             Unset an individual value in a kubeconfig file
+  use-context       Set the current-context in a kubeconfig file
+  view              Display merged kubeconfig settings or a specified kubeconfig file
+
+Usage:
+  kubectl config SUBCOMMAND [options]
+
+Use "kubectl config <command> --help" for more information about a given command.
+Use "kubectl options" for a list of global command-line options (applies to all commands).
+
+
+
+-----------------------------------------------
+
+
+[root@client1 ahmad]# kubectl config current-context
+kind-my-cluster
+
+
+-----------------------------------------------
+[root@client1 ahmad]# kubectl get pods --namespace=default
+No resources found in default namespace.
+
+
+-----------------------------------------------
+
+[root@client1 ahmad]# kubectl create namespace alnafi
+namespace/alnafi created
+[root@client1 ahmad]# kubectl config set-context $(kubectl config current-context) --namespace=alnafi
+Context "kind-my-cluster" modified.
+[root@client1 ahmad]# kubectl config current-context
+kind-my-cluster
+[root@client1 ahmad]# kubectl get pods
+No resources found in alnafi namespace.
+
+
+-----------------------------------------------
+[root@client1 ahmad]# kubectl config set-context $(kubectl config current-context) --namespace=default
+Context "kind-my-cluster" modified.
+[root@client1 ahmad]# kubectl get pods
+No resources found in default namespace.
+
+
+
+-----------------------------------------------
+[root@client1 ahmad]# kubectl get ns
+NAME                 STATUS   AGE
+alnafi               Active   4m31s
+default              Active   2d15h
+kube-node-lease      Active   2d15h
+kube-public          Active   2d15h
+kube-system          Active   2d15h
+local-path-storage   Active   2d15h
+
+
+
+[root@client1 ahmad]# kubectl get all -n kube-node-lease
+No resources found in kube-node-lease namespace.
+
+
+[root@client1 ahmad]# kubectl get all -n kube-public
+No resources found in kube-public namespace.
+
+
+
+[root@client1 ahmad]# kubectl get all -n kube-system
+NAME                                                   READY   STATUS    RESTARTS      AGE
+pod/coredns-668d6bf9bc-6m5qt                           1/1     Running   4 (47m ago)   2d15h
+pod/coredns-668d6bf9bc-wqvdg                           1/1     Running   4 (47m ago)   2d15h
+pod/etcd-my-cluster-control-plane                      1/1     Running   0             47m
+pod/kindnet-9s7hb                                      1/1     Running   4 (47m ago)   2d15h
+pod/kindnet-clwlc                                      1/1     Running   4 (47m ago)   2d15h
+pod/kube-apiserver-my-cluster-control-plane            1/1     Running   0             47m
+pod/kube-controller-manager-my-cluster-control-plane   1/1     Running   5 (47m ago)   2d15h
+pod/kube-proxy-nzsth                                   1/1     Running   4 (47m ago)   2d15h
+pod/kube-proxy-zd2lj                                   1/1     Running   4 (47m ago)   2d15h
+pod/kube-scheduler-my-cluster-control-plane            1/1     Running   5 (47m ago)   2d15h
+
+NAME               TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)                  AGE
+service/kube-dns   ClusterIP   10.96.0.10   <none>        53/UDP,53/TCP,9153/TCP   2d15h
+
+NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
+daemonset.apps/kindnet      2         2         2       2            2           kubernetes.io/os=linux   2d15h
+daemonset.apps/kube-proxy   2         2         2       2            2           kubernetes.io/os=linux   2d15h
+
+NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/coredns   2/2     2            2           2d15h
+
+NAME                                 DESIRED   CURRENT   READY   AGE
+replicaset.apps/coredns-668d6bf9bc   2         2         2       2d15h
+
+
+
+
+ kubectl config set-context $(kubectl config current-context) --namespace=kube-system
+Context "kind-my-cluster" modified.
+[root@client1 ahmad]# kubectl get pods
+NAME                                               READY   STATUS    RESTARTS      AGE
+coredns-668d6bf9bc-6m5qt                           1/1     Running   4 (49m ago)   2d15h
+coredns-668d6bf9bc-wqvdg                           1/1     Running   4 (49m ago)   2d15h
+etcd-my-cluster-control-plane                      1/1     Running   0             49m
+kindnet-9s7hb                                      1/1     Running   4 (49m ago)   2d15h
+kindnet-clwlc                                      1/1     Running   4 (49m ago)   2d15h
+kube-apiserver-my-cluster-control-plane            1/1     Running   0             49m
+kube-controller-manager-my-cluster-control-plane   1/1     Running   5 (49m ago)   2d15h
+kube-proxy-nzsth                                   1/1     Running   4 (49m ago)   2d15h
+kube-proxy-zd2lj                                   1/1     Running   4 (49m ago)   2d15h
+kube-scheduler-my-cluster-control-plane            1/1     Running   5 (49m ago)   2d15h
+
+
+
+
+-----------------------------------------------
+
+
+[root@client1 ahmad]# kubectl -n default delete any-service
+error: the server doesn't have a resource type "any-service"
+
+(Thats how we can delete any object in a particular name space)
+
+
+-----------------------------------------------
+kubectl config get-clusters
+NAME
+kind-my-cluster
+[root@client1 ahmad]# kubectl config get-contexts
+CURRENT   NAME              CLUSTER           AUTHINFO          NAMESPACE
+*         kind-my-cluster   kind-my-cluster   kind-my-cluster   default
+
+
+
+[root@client1 ahmad]# kubectl config set-context $(kubectl config current-context) --namespace=kube-system
+Context "kind-my-cluster" modified.
+[root@client1 ahmad]# kubectl config get-contexts
+CURRENT   NAME              CLUSTER           AUTHINFO          NAMESPACE
+*         kind-my-cluster   kind-my-cluster   kind-my-cluster   kube-system
+
+-----------------------------------------------
+
+
+
+cat namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: Aplha-namespace
+
+ kubectl apply -f namespace.yaml
+namespace/aplha-namespace created
+[root@client1 ahmad]# kubectl get ns
+NAME                 STATUS   AGE
+alnafi               Active   38m
+aplha-namespace      Active   7s
+default              Active   2d15h
+kube-node-lease      Active   2d15h
+kube-public          Active   2d15h
+kube-system          Active   2d15h
+local-path-storage   Active   2d15h
+
+-----------------------------------------------
+
+ cat pod.yaml
+apiVersion: v1
+kind: pod
+metadata:
+  name: al-nafi-pod
+spec:
+  containers:
+    - name: nginx
+      image: nginx
+
+
+-----------------------------------------------
+
+[root@client1 ahmad]# kubectl apply -f pod.yaml -n default
+pod/al-nafi-pod created
+
+
+
+kubectl config set-context $(kubectl config current-context) --namespace=kube-system
+Context "kind-my-cluster" modified.
+[root@client1 ahmad]# kubectl get pods
+NAME                                               READY   STATUS    RESTARTS      AGE
+coredns-668d6bf9bc-6m5qt                           1/1     Running   4 (87m ago)   2d16h
+coredns-668d6bf9bc-wqvdg                           1/1     Running   4 (87m ago)   2d16h
+etcd-my-cluster-control-plane                      1/1     Running   0             87m
+kindnet-9s7hb                                      1/1     Running   4 (87m ago)   2d16h
+kindnet-clwlc                                      1/1     Running   4 (87m ago)   2d16h
+kube-apiserver-my-cluster-control-plane            1/1     Running   0             87m
+kube-controller-manager-my-cluster-control-plane   1/1     Running   5 (87m ago)   2d16h
+kube-proxy-nzsth                                   1/1     Running   4 (87m ago)   2d16h
+kube-proxy-zd2lj                                   1/1     Running   4 (87m ago)   2d16h
+kube-scheduler-my-cluster-control-plane            1/1     Running   5 (87m ago)   2d16h
+
+
+
+ kubectl get pods --namespace default
+NAME          READY   STATUS    RESTARTS   AGE
+al-nafi-pod   1/1     Running   0          69s
+
+
+-----------------------------------------------
+
+
+[root@client1 ahmad]# kubectl apply -f pod.yaml -n alnafi
+pod/al-nafi-pod created
+[root@client1 ahmad]# kubectl get pods --namespace alnafi
+NAME          READY   STATUS    RESTARTS   AGE
+al-nafi-pod   1/1     Running   0          8s
+
+
+
+
+[root@client1 ahmad]# kubectl get pods --all-namespaces --field-selector metadata.name=al-nafi-pod
+NAMESPACE   NAME          READY   STATUS    RESTARTS   AGE
+alnafi      al-nafi-pod   1/1     Running   0          104s
+default     al-nafi-pod   1/1     Running   0          4m11s
+
+
+
+-----------------------------------------------
+
+ kubectl get ns
+NAME                 STATUS   AGE
+alnafi               Active   52m
+aplha-namespace      Active   13m
+default              Active   2d16h
+kube-node-lease      Active   2d16h
+kube-public          Active   2d16h
+kube-system          Active   2d16h
+local-path-storage   Active   2d16h
+[root@client1 ahmad]# kubectl get pods -n aplha-namespace
+No resources found in aplha-namespace namespace.
+[root@client1 ahmad]# vim pod.yaml
+[root@client1 ahmad]# cat pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: al-nafi-pod
+  namespace: alpha-namespace
+spec:
+  containers:
+    - name: nginx
+      image: nginx
+[root@client1 ahmad]# kubectl apply -f pod.yaml
+Error from server (NotFound): error when creating "pod.yaml": namespaces "alpha-namespace" not found
+[root@client1 ahmad]# vim pod.yaml
+[root@client1 ahmad]# cat pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: al-nafi-pod
+  namespace: aplha-namespace
+spec:
+  containers:
+    - name: nginx
+      image: nginx
+[root@client1 ahmad]# kubectl apply -f pod.yaml
+pod/al-nafi-pod created
+[root@client1 ahmad]# kubectl get pods -n aplha-namespace
+NAME          READY   STATUS    RESTARTS   AGE
+al-nafi-pod   1/1     Running   0          9s
+
+
+-----------------------------------------------
+
+
+[root@client1 ahmad]# kubectl get pods --all-namespaces --field-selector metadata.name=al-nafi-pod
+NAMESPACE         NAME          READY   STATUS    RESTARTS   AGE
+alnafi            al-nafi-pod   1/1     Running   0          7m19s
+aplha-namespace   al-nafi-pod   1/1     Running   0          48s
+default           al-nafi-pod   1/1     Running   0          9m46s
+
+
+-----------------------------------------------
+
+
+[root@client1 ahmad]# vim resource-quota.yaml
+[root@client1 ahmad]# cat resource-quota.yaml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-quota
+  namespace: alnafi
+spec:
+  hard:
+    pods: "2"
+    requests.cpu: "2"
+    requests.memory: 2Gi
+    limits.cpu: "3"
+    limits.memory: 3Gi
+
+[root@client1 ahmad]# kubectl apply -f resource-quota.yaml
+resourcequota/compute-quota created
+[root@client1 ahmad]# kubectl describe ns alnafi
+Name:         alnafi
+Labels:       kubernetes.io/metadata.name=alnafi
+Annotations:  <none>
+Status:       Active
+
+Resource Quotas
+  Name:            compute-quota
+  Resource         Used  Hard
+  --------         ---   ---
+  limits.cpu       0     3
+  limits.memory    0     3Gi
+  pods             1     2
+  requests.cpu     0     2
+  requests.memory  0     2Gi
+
+No LimitRange resource.
+
+
+
+
+[root@client1 ahmad]# kubectl describe ns aplha-namespace
+Name:         aplha-namespace
+Labels:       kubernetes.io/metadata.name=aplha-namespace
+Annotations:  <none>
+Status:       Active
+
+No resource quota.
+
+No LimitRange resource.
+
+
+
+-----------------------------------------------
+
+[root@client1 ahmad]# vim pod.yaml
+[root@client1 ahmad]# cat pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: al-nafi-pod-2
+  namespace: alnafi
+spec:
+  containers:
+    - name: nginx
+      image: nginx
+[root@client1 ahmad]# kubectl apply -f pod.yaml
+Error from server (Forbidden): error when creating "pod.yaml": pods "al-nafi-pod-2" is forbidden: 
+failed quota: compute-quota: must specify limits.cpu for: nginx; limits.memory for: nginx; requests.cpu for: nginx; requests.memory for: nginx
+[root@client1 ahmad]#
+
+
+
+-----------------------------------------------
+
+vim pod.yaml
+[root@client1 ahmad]# cat pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: al-nafi-pod-2
+  namespace: alnafi
+spec:
+  containers:
+    - name: nginx
+      image: nginx
+      resources:
+        requests:
+          memory: "1Gi"
+          cpu: "1"
+        limits:
+          memory: "1.5Gi"
+          cpu: "2"
+[root@client1 ahmad]# kubectl apply -f pod.yaml
+pod/al-nafi-pod-2 created
+[root@client1 ahmad]# kubectl get po -n alnafi
+NAME            READY   STATUS    RESTARTS   AGE
+al-nafi-pod     1/1     Running   0          20m
+al-nafi-pod-2   1/1     Running   0          45s
+
+
+-----------------------------------------------
+
+ kubectl apply -f pod.yaml
+Error from server (Forbidden): error when creating "pod.yaml": pods "al-nafi-pod-3" is forbidden: exceeded quota: compute-quota, 
+requested: limits.cpu=2,pods=1, used: limits.cpu=2,pods=2, limited: limits.cpu=3,pods=2
+
+
+-----------------------------------------------
+
+[root@client1 ahmad]# vim test-pod.yaml
+[root@client1 ahmad]# cat test-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod
+  namespace: default
+  labels:
+    name: blue-55
+spec:
+  containers:
+  - name: internal
+    image: kodekloud/webapp-conntest
+    env:
+    - name: APP_NAME
+      value: "Blue - Marketing Application"
+    - name: BG_COLOR
+      value: blue
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+
+[root@client1 ahmad]# kubectl apply -f test-pod.yaml
+pod/test-pod created
+
+
+
+
+[root@client1 ahmad]# kubectl config set-context $(kubectl config current-context) --namespace=default
+Context "kind-my-cluster" modified.
+
+
+[root@client1 ahmad]# kubectl get po
+NAME          READY   STATUS              RESTARTS   AGE
+al-nafi-pod   1/1     Running             0          115m
+test-pod      0/1     ContainerCreating   0          39s
+[root@client1 ahmad]# kubectl get po
+NAME          READY   STATUS              RESTARTS   AGE
+al-nafi-pod   1/1     Running             0          115m
+test-pod      0/1     ContainerCreating   0          67s
+
+
+
+[root@client1 ahmad]# vim test-service.yaml
+[root@client1 ahmad]# cat test-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-service
+  namespace: default
+spec:
+  type: NodePort
+  selector:
+    name: blue-55
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+
+
+
+
+[root@client1 ahmad]# kubectl apply -f test-service.yaml
+service/test-service created
+[root@client1 ahmad]# kubectl get po,svc
+NAME              READY   STATUS    RESTARTS   AGE
+pod/al-nafi-pod   1/1     Running   0          122m
+pod/test-pod      1/1     Running   0          8m16s
+
+NAME                   TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)          AGE
+service/kubernetes     ClusterIP   10.96.0.1     <none>        443/TCP          40h
+service/test-service   NodePort    10.96.41.87   <none>        8080:32114/TCP   10s
+
+
+
+
+
+[root@client1 ahmad]# kubectl describe svc test-service
+Name:                     test-service
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 name=blue-55
+Type:                     NodePort
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.96.168.17
+IPs:                      10.96.168.17
+Port:                     <unset>  8080/TCP
+TargetPort:               8080/TCP
+NodePort:                 <unset>  30609/TCP
+Endpoints:                10.244.1.10:8080
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Internal Traffic Policy:  Cluster
+Events:                   <none>
+
+
+
+-----------------------------------------------
+kubectl get nodes
+NAME                       STATUS   ROLES           AGE     VERSION
+my-cluster-control-plane   Ready    control-plane   2d18h   v1.32.2
+my-cluster-worker          Ready    <none>          2d18h   v1.32.2
+
+
+
+[root@client1 ahmad]# docker exec -it my-cluster-worker bash
+
+root@my-cluster-worker:/# curl 10.244.1.10:8080
+
+
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" ng-app="myApp" class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Connectivity Test</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
+  <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link rel="stylesheet" href="css/blue.css">
+  <link rel="stylesheet" href="css/animation.css">
+  <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" crossorigin="anonymous">-->
+  <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" crossorigin="anonymous">-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" />
+
+  <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
+</head>
+<body>
+  <!--<ul class="menu">-->
+    <!--&lt;!&ndash;<li><a href="#!/view1">view1</a></li>-->
+    <!--<li><a href="#!/view2">view2</a></li>&ndash;&gt;-->
+  <!--</ul>-->
+
+<!--  <style>
+        body {
+            background-image: url(' ../images/under_water.png ');
+        }
+  </style>-->
+
+  <h3 style="text-align: center;
+    color: white;"> Blue - Marketing Application </h3>
+
+  <!--[if lt IE 7]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+  <![endif]-->
+
+  <div ng-view></div>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="bower_components/angular/angular.min.js"></script>
+  <script src="bower_components/angular-route/angular-route.min.js"></script>
+  <script src="app.js"></script>
+  <script src="view1/view1.js"></script>
+  <script src="components/version/version.js"></script>
+  <script src="components/version/version-directive.js"></script>
+  <script src="components/version/interpolate-filter.js"></script>
+
+</body>
+
+
+
+
+(we are able to access it from within the cluster only!!!)
+-----------------------------------------------
+
+
+[root@client1 ahmad]# kubectl get nodes -o wide
+NAME                       STATUS   ROLES           AGE     VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE                         KERNEL-VERSION          CONTAINER-RUNTIME
+my-cluster-control-plane   Ready    control-plane   2d18h   v1.32.2   172.25.0.3    <none>        Debian GNU/Linux 12 (bookworm)   5.14.0-542.el9.x86_64   containerd://2.0.2
+my-cluster-worker          Ready    <none>          2d18h   v1.32.2   172.25.0.2    <none>        Debian GNU/Linux 12 (bookworm)   5.14.0-542.el9.x86_64   containerd://2.0.2
+
+
+
+[root@client1 ahmad]# kubectl describe svc test-service
+Name:                     test-service
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 name=blue-55
+Type:                     NodePort
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.96.168.17
+IPs:                      10.96.168.17
+Port:                     <unset>  8080/TCP
+TargetPort:               8080/TCP
+NodePort:                 <unset>  30609/TCP
+Endpoints:                10.244.1.10:8080
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Internal Traffic Policy:  Cluster
+Events:                   <none>
+
+
+To access it externally we need two things "172.25.0.2" internal ip of node and Nodeport "30609/TCP"
+
+ 172.25.0.2:30609
+
+We need to access it from VM it self not from windows base machine
+
+When page open up then we just need to mention service name like test-service and port like 8080 as a result we will get success message!
+-----------------------------------------------
+
+ vim db-test-pod.yaml
+[root@client1 ahmad]# cat db-test-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db-pod
+  namespace: default
+  labels:
+    name: blue-55
+spec:
+  containers:
+  - name: redis
+    image: redis:alpine
+    env:
+    - name: REDIS_ROOT_PASSWORD
+      value: paswr
+    ports:
+    - containerPort: 6379
+      protocol: TCP
+
+[root@client1 ahmad]# kubectl apply -f db-test-pod.yaml
+pod/db-pod created
+[root@client1 ahmad]# kubectl get po
+NAME          READY   STATUS              RESTARTS   AGE
+al-nafi-pod   1/1     Running             0          156m
+db-pod        0/1     ContainerCreating   0          5s
+test-pod      1/1     Running             0          42m
+
+
+-----------------------------------------------
+
+
+[root@client1 ahmad]# cat db-test-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-service
+  namespace: default
+spec:
+  type: NodePort
+  selector:
+    name: blue-55
+  ports:
+  - protocol: TCP
+    port: 6379
+    targetPort: 6379
+
+
+
+
+kubectl apply -f db-test-svc.yaml
+service/db-service created
+[root@client1 ahmad]# kubectl get po
+NAME          READY   STATUS    RESTARTS   AGE
+al-nafi-pod   1/1     Running   0          159m
+db-pod        1/1     Running   0          2m30s
+test-pod      1/1     Running   0          44m
+[root@client1 ahmad]# kubectl get svc
+NAME           TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+db-service     NodePort    10.96.39.143   <none>        6379:31861/TCP   23s
+kubernetes     ClusterIP   10.96.0.1      <none>        443/TCP          41h
+test-service   NodePort    10.96.168.17   <none>        8080:30609/TCP   31m
+
+
+for db-service i am getting success at 172.25.0.2:30609
+
+
+-----------------------------------------------
+
+
+[root@client1 ahmad]# kubectl create ns dev
+namespace/dev created
+
+
+
+[root@client1 ahmad]# kubectl get pods -n dev
+No resources found in dev namespace.
+
+
+[root@client1 ahmad]# cat db-test-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db-pod
+  namespace: dev
+  labels:
+    name: blue-55
+spec:
+  containers:
+  - name: redis
+    image: redis:alpine
+    env:
+    - name: REDIS_ROOT_PASSWORD
+      value: paswr
+    ports:
+    - containerPort: 6379
+      protocol: TCP
+
+[root@client1 ahmad]# cat db-test-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-service
+  namespace: dev
+spec:
+  type: NodePort
+  selector:
+    name: blue-55
+  ports:
+  - protocol: TCP
+    port: 6379
+    targetPort: 6379
+
+
+
+ kubectl apply -f db-test-pod.yaml
+pod/db-pod created
+[root@client1 ahmad]# kubectl apply -f db-test-svc.yaml
+service/db-service created
+[root@client1 ahmad]# kubectl get pods -n dev
+NAME     READY   STATUS    RESTARTS   AGE
+db-pod   1/1     Running   0          10s
+[root@client1 ahmad]# kubectl get svc -n dev
+NAME         TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+db-service   NodePort   10.96.206.101   <none>        6379:30120/TCP   20s
+
+
+
+-----------------------------------------------
+
+kubectl get po,svc
+NAME              READY   STATUS    RESTARTS   AGE
+pod/al-nafi-pod   1/1     Running   0          175m
+pod/db-pod        1/1     Running   0          18m
+pod/test-pod      1/1     Running   0          60m
+
+NAME                   TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+service/db-service     NodePort    10.96.188.60   <none>        6379:32035/TCP   9m5s
+service/kubernetes     ClusterIP   10.96.0.1      <none>        443/TCP          41h
+service/test-service   NodePort    10.96.168.17   <none>        8080:30609/TCP   47m
+[root@client1 ahmad]# kubectl get po,svc -n dev
+NAME         READY   STATUS    RESTARTS   AGE
+pod/db-pod   1/1     Running   0          3m17s
+
+NAME                 TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+service/db-service   NodePort   10.96.206.101   <none>        6379:30120/TCP   3m14s
+[root@client1 ahmad]#
+[root@client1 ahmad]# kubectl delete po al-nafi-pod db-pod
+pod "al-nafi-pod" deleted
+pod "db-pod" deleted
+[root@client1 ahmad]# kubectl delete svc db-service
+service "db-service" deleted
+[root@client1 ahmad]# kubectl get po,svc
+NAME           READY   STATUS    RESTARTS   AGE
+pod/test-pod   1/1     Running   0          62m
+
+NAME                   TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+service/kubernetes     ClusterIP   10.96.0.1      <none>        443/TCP          41h
+service/test-service   NodePort    10.96.168.17   <none>        8080:30609/TCP   48m
+
+
+
+-----------------------------------------------
+
+ kubectl get po,svc -n dev
+NAME         READY   STATUS    RESTARTS   AGE
+pod/db-pod   1/1     Running   0          4m57s
+
+NAME                 TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+service/db-service   NodePort   10.96.206.101   <none>        6379:30120/TCP   4m54s
+
+
+
+
+ kubectl describe svc db-service -n dev
+Name:                     db-service
+Namespace:                dev
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 name=blue-55
+Type:                     NodePort
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.96.206.101
+IPs:                      10.96.206.101
+Port:                     <unset>  6379/TCP
+TargetPort:               6379/TCP
+NodePort:                 <unset>  30120/TCP
+Endpoints:                10.244.1.12:6379
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Internal Traffic Policy:  Cluster
+Events:                   <none>
+
+
+
+now from 172.25.0.2:30609 we cannot access it by simply writing db-service and 6379. Rather we have to provide complete name 
+
+db-service.dev.svc.cluster.local    6379 as port   (Now it will be success)
+
+
+
+You created a new Kubernetes namespace dev and deployed a Redis pod (db-pod) and a NodePort service (db-service) within it. 
+You ensured the service selector matched the pod label so traffic could route properly. 
+While the pod is running in the dev namespace, it's not directly accessible by just using db-service from outside its namespace. 
+Instead, you must use the full DNS name db-service.dev.svc.cluster.local with port 6379 to access it internally within the cluster. 
+This demonstrates proper multi-namespace resource isolation and fully qualified service discovery in Kubernetes.
+
+
+
+-----------------------------------------------
+
+
+
+
+
+
+

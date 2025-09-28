@@ -1,0 +1,136 @@
+
+We prefer container architecture over VM architecture because docker is lightweighted, secure and easy to use.
+
+Lecture 10 : Docker Notes
+
+
+app --> From scratch to dockerization --> Developed (Developer CODE ) --> Deploy
+
+Dockerfiles , Images  and containers
+A dockerfiles used to build docker image.
+It is plain text contains and its series of instruction telling docker what os what app source code will do.
+
+Docker images : docker image is static artifact that built from dockerfile and is tagged and publish to registry (DockerHUB).
+
+Docker container : it is running instances of docker images
+
+Conclusion:-
+Docker images combines source code with dependencies required to run application. Light weighted images , portable, developers we can shared
+
+DockerFile --> Docker image --> Docker container
+
+Docker file 
+
+Steps : 1 -- Take the code from developer then run the application at your machine as locally --> NODE JS installed , depe, , Yum install nodejs
+node 5 version
+--> Project
+
+
+package install --> np package install ,--> npm start --> port open
+
+Steps 2: Dockerfile , Docker image , docker container , application
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Detailed steps(local testing)
+
+jsonfile for helloworld
+
+{
+  "name": "Ahmad hassan",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "nodemon src/index.js",
+    "start:prod": "node src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}
+
+
+index.js file content
+
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 4000;
+
+app.get('/', (req, res) => {
+  res.send("Hello world");
+});
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`);
+});
+
+
+
+
+=> First create docker dir and then create package.json file
+=> Inside docker dir create another dir named src and create index.js file
+=> Now create another dir by the name of testing in  docker dir and installed all the dependencies to run the application locally before production.
+
+Node JS installation steps
+
+sudo dnf module enable nodejs:20 -y
+sudo dnf install nodejs -y
+sudo npm install -g nodemon
+npm install express
+npm start
+
+(Production steps)
+
+=> First create docker dir and then create package.json file
+=> Inside docker dir create another dir named src and create index.js file
+=> Now create vim dockerfile within docker named directory
+	
+FROM node:15
+
+# Define a build-time argument for the port
+ARG PORT=8000
+
+# Set an environment variable for the port
+ENV PORT=$PORT
+
+# Set the working directory
+WORKDIR /app
+
+# Copy application source code and dependencies
+COPY src /app/src
+COPY package.json /app
+
+# Install dependencies
+RUN npm install
+
+# Expose the specified port
+EXPOSE $PORT
+
+# Start the application
+CMD ["npm", "start"]
+
+
+=> Now build docker image from docker file
+docker build -t my_node_app
+
+=> Now create the docker conatiner from docker image
+docker run --name my_node_app1 -p 8000:8000 -d my_node_app:latest
+
+curl localhost:8000
+
+docker logs docker-image
+
+docker exec -it cont-id /bin/sh
+
+Exit but not stop container : ctrl + p + q
+
+If we wanted to chance the port number later on then we can still do by using envi variable concept
+my_port=5000
+docker run --name my_node_app2 -p 9000:$my_port  -d  -e  PORT=$my_port my_node_app:latest
+
+curl localhost:8000

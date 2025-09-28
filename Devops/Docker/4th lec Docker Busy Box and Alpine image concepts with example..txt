@@ -1,0 +1,62 @@
+Lecture 4 : Docker Notes
+
+
+
+Note: jab bhi aapko docker image ko remove karna he to rmi command use hoga and container ko remove karna he to rm commands use hoga
+docker rm  conatiner-id
+docker rmi  image-id/name
+
+Query Time:-
+#docker run --name mycontainer busybox
+Question : what is use of above command.
+Ans: This command will create container and execute with user define name like my container
+
+
+#docker run --rm --name mycon1 busybox
+Question : what is use of above command.
+ANS: Once the command will executed then busybox container will remove from docker ps -a command or stopped container list
+
+
+docker run -it --name  container-name  busybox  /bin/sh
+-it stand for : Interactive Terminal
+
+Now when we write docker -ps it will show the running docker container
+in sh we can run following command
+
+1. uname -a 
+2. echo $SHELL
+4. touch samplefile
+3. exit (to move out)
+
+When we move out to check the file it will not be present as it was created in docker file and not in our OS.
+
+To start the already present container without going into the shell we can run the following command
+#docker start conatinername
+#docker exec -it containername /bin/sh
+Now even if we exit the container will keeps on running
+
+List Concept :-
+1. Docker image --> Are read only ? Yes we can not edit image
+2. Image se container banta hain --> Process + we can go inside the container and edit the file if you want
+Reason :- When we create container it will be add one editable layer over the image
+
+Docker images are readable and executable
+
+
+
+----------------------------------------------------------------------
+
+
+
+
+Docker run --> Create container from images
+If image not exist in local then it will get from docker HUB
+-it--> T ogo to inside the container
+
+Docker exec --> It take the shell of container to go inside the terminal
+
+Docker run --> Container create + inside the container + if you exit inside the container then container will die
+Docker exec --> Running ke ander lekar jata hain, (take you inside the container)
+
+
+

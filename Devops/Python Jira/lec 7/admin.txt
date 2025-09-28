@@ -1,0 +1,8 @@
+ Lecture 8 :- 
+
+User managment :- 
+User manament --> product --> add product --> site name  
+SITE :- 
+https://alnafi.atlassian.net --> production site 
+https://devalnafi.atlassian.net --> Dev site  
+User manament --> Directory --> user --> suspended account  User manament --> product --> User account setting --> user invites

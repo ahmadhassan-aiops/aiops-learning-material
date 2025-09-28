@@ -1,0 +1,100 @@
+Lecture 19 : Practical Phase 3
+
+
+
+<?php
+echo "Welcome to Alnafi</br>"; echo
+"Running php with Apache on Docker";
+?>
+
+
+cat Dockerfile
+FROM php:7.4-apache
+COPY . /var/www/html
+
+docker build -t img-php-apache-example .
+docker run -it -d -p 8080:80 img-php-apache-example
+
+
+app2
+mkdir tutorial
+cat cli.php
+
+<?php
+echo "Welcome to alnafi \n";
+echo "Running php CLI script with docker \n";
+?>
+
+
+nano Dockerfile
+FROM php:7.4-cli
+COPY . /usr/src/myapp
+WORKDIR /usr/src/myapp
+CMD [ "php", "./cli.php" ]
+
+
+docker build -t img-php-cli-example .
+docker run -it --rm img-php-cli-example
+
+
+
+App3
+Vim script.sh
+print("Welcome to Alnafi");
+print("This is Python running in Docker");
+
+nano Dockerfile
+FROM python:3
+WORKDIR /usr/src/app
+COPY . .
+CMD [ "python", "./script.py" ]
+
+
+docker build -t mypython .
+docker run -it mypython
+
+
+
+app 4:-
+
+version: "3.9"
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:latest
+    volumes:
+      - wordpress_data:/var/www/html
+    ports:
+      - "8000:80"
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+
+volumes:
+  db_data: {}
+  wordpress_data: {}
+
+
+docker-compose up
+
+
+root@abdealidodia:~/docker/lect-19/app4# docker-compose ps
+Name                    Command               State                  Ports
+------------------------------------------------------------------------------------------------
+app4_db_1          docker-entrypoint.sh mysqld      Up      3306/tcp, 33060/tcp
+app4_wordpress_1   docker-entrypoint.sh apach ...   Up      0.0.0.0:8000->80/tcp,:::8000->80/tcp

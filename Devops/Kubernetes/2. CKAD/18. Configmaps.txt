@@ -1,0 +1,388 @@
+
+A ConfigMap in Kubernetes is an API object used to store non-confidential configuration data as key-value pairs, 
+which can then be injected into pods as environment variables, command-line arguments, or mounted as configuration files. 
+This allows you to decouple application configuration from the container image, 
+making it easier to manage and update settings without rebuilding or redeploying the image. 
+ConfigMaps are ideal for things like app settings, URLs, or feature flags, but not for sensitive data (which should be handled by Secrets).
+
+
+
+
+kubectl get cm
+NAME               DATA   AGE
+kube-root-ca.crt   1      5d19h
+
+
+[root@client1 ahmad]# kubectl describe cm kube-root-ca.crt
+Name:         kube-root-ca.crt
+Namespace:    default
+Labels:       <none>
+Annotations:  kubernetes.io/description:
+                Contains a CA bundle that can be used to verify the kube-apiserver when using internal endpoints such as the internal service IP or kubern...
+
+Data
+====
+ca.crt:
+----
+-----BEGIN CERTIFICATE-----
+MIIDBTCCAe2gAwIBAgIIINfeKlpDXs4wDQYJKoZIhvcNAQELBQAwFTETMBEGA1UE
+AxMKa3ViZXJuZXRlczAeFw0yNTA0MjkxNTM1MTZaFw0zNTA0MjcxNTQwMTZaMBUx
+EzARBgNVBAMTCmt1YmVybmV0ZXMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK
+AoIBAQDCh7ql/JKpYapmlUmWTdyMFQTsIrR2/DT5ddEF8/55TERzkF69P0pW4ls1
+FIvZsFMsnLWgzjZznuPSYQXaSpPJSroPEJTIcrHHtNM2gNk2zrw47oXqjgd1E4K5
+UaXeFvZsSG7WsQ1sDYVhOH+dTm9j+DC0KUZxJrrLmRpnVIRnI07P0G8sgacboORp
+na5A3rPuNK45iijbRSUdGtFBaBVh6YJ04CLL09U/UtVwHLmi7Qpbzlf3WZ1Z2BWa
+QKRtv7w4TsAsL7WgEXmeY/Ue5ic8x2rsr4mhjf/tVTyck0X9pPlCw1YvMG6ZVmgj
+nz5LXvxHakRGkVdLZW/bzLQVIceVAgMBAAGjWTBXMA4GA1UdDwEB/wQEAwICpDAP
+BgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBR2T9qWH7ejL/Wkw7Wl7fE2gCMvRDAV
+BgNVHREEDjAMggprdWJlcm5ldGVzMA0GCSqGSIb3DQEBCwUAA4IBAQBoZZsBVfmR
+JG4Z0mf9GOmHlrE1sib0TmYmbvC7XDhcHoc2MtZt+z6tm5bWBYK0aaKjc8K7dCkp
+PDNLhB8fLXVO+llpH333R/sMp3ozlxEpFuw4xGs2g+F9j8jSsg0O4YEYSsl7chgK
+8ZyrBEGoQspamEc5+PTeA6ymuSwCARZellNPvQ14+P7YRG2kMQwUv0FPPVDYeNxS
+cFTIdDCZjLLJgb+yvC41SOYHeI6mQi/K0JiYxvEwiOXPE6UZpSI0P3l28ooIiyOq
+6BW3RUthFGx+pTQvMarjuw4mS5bv9LMySbNbTDRROrKa25zZVxbJiKwZ+i4l+kb5
+75gueYgCCVqw
+-----END CERTIFICATE-----
+
+
+
+BinaryData
+====
+
+Events:  <none>
+
+-----------------------------------------------
+
+ vim env-pod.yaml
+[root@client1 ahmad]# cat env-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod
+  labels:
+     app: color
+  namespace: default
+spec:
+  containers:
+    - name: test-container
+      image: kodekloud/webapp-color
+      env:
+        - name: APP_COLOR
+          value: pink
+
+
+-----------------------------------------------
+
+kubectl apply -f env-pod.yaml
+pod/test-pod created
+[root@client1 ahmad]# kubectl get po
+NAME       READY   STATUS    RESTARTS   AGE
+test-pod   1/1     Running   0          6s
+
+
+-----------------------------------------------
+
+kubectl expose po test-pod --port 8080 --name test-svc --dry-run=client
+service/test-svc exposed (dry run)
+[root@client1 ahmad]# kubectl expose po test-pod --port 80 --name test-svc --dry-run=client -o yaml > env.svc.yaml
+[root@client1 ahmad]# cat env_svc2.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: color
+  name: test-svc
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: color
+status:
+  loadBalancer: {}
+
+
+-----------------------------------------------
+
+kubectl apply -f env_svc2.yaml
+Warning: resource services/test-svc is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by kubectl apply. kubectl apply should only be used on resources created declaratively by either kubectl create --save-config or kubectl apply. The missing annotation will be patched automatically.
+service/test-svc configured
+[root@client1 ahmad]# kubectl get svc
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP   4d18h
+test-svc     ClusterIP   10.96.154.189   <none>        80/TCP    2m22s
+
+
+-----------------------------------------------
+
+ kubectl describe svc test-svc
+Name:                     test-svc
+Namespace:                default
+Labels:                   app=color
+Annotations:              <none>
+Selector:                 app=color
+Type:                     ClusterIP
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.96.198.62
+IPs:                      10.96.198.62
+Port:                     <unset>  8080/TCP
+TargetPort:               8080/TCP
+Endpoints:                10.244.1.4:8080
+Session Affinity:         None
+Internal Traffic Policy:  Cluster
+Events:                   <none>
+
+
+-----------------------------------------------
+
+kubectl port-forward pod/test-pod 5555:8080
+Forwarding from 127.0.0.1:5555 -> 8080
+Forwarding from [::1]:5555 -> 8080
+Handling connection for 5555
+Handling connection for 5555
+
+
+(We can further change the color and rerun the pod)
+
+-----------------------------------------------
+
+
+kubectl create cm test-config --from-literal=APP_COLOR=green --from-literal=APP_TYPE=prod
+configmap/test-config created
+[root@client1 ahmad]# kubectl get cm
+NAME               DATA   AGE
+kube-root-ca.crt   1      5d20h
+test-config        2      7s
+[root@client1 ahmad]# kubectl describe cm test-config
+Name:         test-config
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Data
+====
+APP_TYPE:
+----
+prod
+
+APP_COLOR:
+----
+green
+
+
+BinaryData
+====
+
+Events:  <none>
+
+
+
+-----------------------------------------------
+
+
+vim test-config.yaml
+[root@client1 ahmad]# cat test-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-config-map
+data:
+  NAME: ahmad
+  ORG: EQUALS
+  COURSE: CKAD
+[root@client1 ahmad]# kubectl apply -f test-config.yaml
+configmap/test-config-map created
+[root@client1 ahmad]# kubectl get cm
+NAME               DATA   AGE
+kube-root-ca.crt   1      5d20h
+test-config        2      3m28s
+test-config-map    3      7s
+[root@client1 ahmad]# kubectl describe cm test-config-map
+Name:         test-config-map
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Data
+====
+ORG:
+----
+EQUALS
+
+COURSE:
+----
+CKAD
+
+NAME:
+----
+ahmad
+
+
+BinaryData
+====
+
+Events:  <none>
+
+
+-----------------------------------------------
+
+
+ vim web-config.yaml
+[root@client1 ahmad]# cat web-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: web-config-map
+data:
+  APP_COLOR: darkblue
+
+
+
+
+ kubectl apply -f web-config.yaml
+configmap/web-config-map created
+[root@client1 ahmad]# kubectl get cm
+NAME               DATA   AGE
+kube-root-ca.crt   1      5d20h
+test-config        2      7m21s
+test-config-map    3      4m
+web-config-map     1      5s
+
+-----------------------------------------------
+
+cp env-pod.yaml env-pod2.yaml
+[root@client1 ahmad]# vim env-pod2.yaml
+[root@client1 ahmad]# cat env-pod2.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-pod
+  labels:
+    web: color
+  namespace: default
+spec:
+  containers:
+    - name: test-container
+      image: kodekloud/webapp-color
+      envFrom:
+        - configMapRef:
+          name: web-config-map
+
+
+-----------------------------------------------
+
+kubectl apply -f env-pod2.yaml
+pod/web-pod created
+[root@client1 ahmad]# kubectl get po
+NAME       READY   STATUS    RESTARTS   AGE
+test-pod   1/1     Running   0          26m
+web-pod    1/1     Running   0          11s
+
+
+-----------------------------------------------
+
+kubectl describe po web-pod
+Name:             web-pod
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             my-cluster-worker/172.25.0.2
+Start Time:       Mon, 05 May 2025 17:08:18 +0500
+Labels:           app=color
+Annotations:      <none>
+Status:           Running
+IP:               10.244.1.5
+IPs:
+  IP:  10.244.1.5
+Containers:
+  test-container:
+    Container ID:   containerd://599ad6bef3393b08e62cbe6a79e93e02e31537ad71dd30ab83efb0e40dccb3d5
+    Image:          kodekloud/webapp-color
+    Image ID:       docker.io/kodekloud/webapp-color@sha256:99c3821ea49b89c7a22d3eebab5c2e1ec651452e7675af243485034a72eb1423
+    Port:           <none>
+    Host Port:      <none>
+    State:          Running
+      Started:      Mon, 05 May 2025 17:08:21 +0500
+    Ready:          True
+    Restart Count:  0
+    Environment Variables from:
+      web-config-map  ConfigMap  Optional: false
+    Environment:      <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-lqwzq (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True
+  Initialized                 True
+  Ready                       True
+  ContainersReady             True
+  PodScheduled                True
+Volumes:
+  kube-api-access-lqwzq:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  94s   default-scheduler  Successfully assigned default/web-pod to my-cluster-worker
+  Normal  Pulling    93s   kubelet            Pulling image "kodekloud/webapp-color"
+  Normal  Pulled     91s   kubelet            Successfully pulled image "kodekloud/webapp-color" in 2.201s (2.201s including waiting). Image size: 31777918 bytes.
+  Normal  Created    91s   kubelet            Created container: test-container
+  Normal  Started    91s   kubelet            Started container test-container
+
+
+
+-----------------------------------------------
+
+
+kubectl expose po web-pod --port 8080 --name web-svc
+service/web-svc exposed
+
+kubectl get svc
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP    4d19h
+test-svc     ClusterIP   10.96.198.62    <none>        8080/TCP   27m
+web-svc      ClusterIP   10.96.125.180   <none>        9090/TCP   57s
+
+
+kubectl describe svc web-svc
+Name:                     web-svc
+Namespace:                default
+Labels:                   web=color
+Annotations:              <none>
+Selector:                 web=color
+Type:                     ClusterIP
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.96.125.180
+IPs:                      10.96.125.180
+Port:                     <unset>  9090/TCP
+TargetPort:               9090/TCP
+Endpoints:                10.244.1.6:8080
+Session Affinity:         None
+Internal Traffic Policy:  Cluster
+Events:                   <none>
+
+kubectl port-forward pod/web-pod 2222:8080
+Forwarding from 127.0.0.1:2222 -> 8080
+Forwarding from [::1]:2222 -> 8080
+Handling connection for 2222
+
+
+
+127.0.0.1:2222  (Now its working) ---> But we had to delete previous test-svc!!
+
+-----------------------------------------------
+
+
+

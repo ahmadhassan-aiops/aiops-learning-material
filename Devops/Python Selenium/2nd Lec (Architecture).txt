@@ -1,0 +1,47 @@
+Lecture 2 :-
+
+
+Versioning :-
+Selenium 1.0  --> IDE + RC version 
+
+Selenium 2.0  --> Webdriver and RC 
+
+Selenium 3.0  --> Webdrive but its adding some features 
+
+
+Selenium 4.0(Latest) --> its announce at 2019 bangalore by simon stewart 
+
+
+Official website : https://www.selenium.dev/
+
+Python selenium script --> Browser works 
+
+What is webdriver ? 
+It is a web automation framwork , which allows us to exe cute test across various browsers.
+
+
+--> Webdriver ek type ka module hain 
+
+--> Webdrive also called API 
+API --> Application Programming interfaces 
+
+JIRA ticket tools 
+
+www.jira.com/createticket
+
+
+
+
+
+Selenium 3 will work with json wire protocol 
+
+Selenium 4 is work with W3c protocol.
+
+W3c --? World wide Web consortium 
+
+
+
+
+
+
+

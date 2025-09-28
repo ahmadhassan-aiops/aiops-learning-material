@@ -1,0 +1,253 @@
+This lecture focus on creating directories, files, removing directories/files, fetching files, installing packages on worker nodes.
+
+
+Ansible do communication with remote nodes through:
+1) Ad-hoc Command
+2) Playbook
+
+Ad-hoc:
+It is used for simple task or single task execution to remote machine
+
+
+Playbook:
+It can run multiple task at same time
+
+
+
+Adhoc command:
+How to run command from master machine into worker/node machines
+
+# command to run commands from master into worker
+ansible machine_name -m shell -a command_to_run
+
+# example let's check ubuntu ip which is my worker node from my master node which is ubuntu
+ansible ubuntu -m shell -a "ifconfig"
+
+#2nd example
+ansible ubuntu -m shell -a "free -g"
+
+
+[ubuntu@master-ansible ansible]$ ansible ubuntu -m shell -a "free -g"
+54.166.4.83 | CHANGED | rc=0 >>
+               total        used        free      shared  buff/cache   available
+Mem:               0           0           0           0           0           0
+Swap:              0           0           0
+
+
+ansible --> use ansible, ubuntu --> worker_machine_name, -m --> module to run which is shell, shell --> run shell in that machine, -a argument to pass in shell which is command, "ifconfig" argument
+
+
+#to see all commands
+ansible-doc -l
+[ubuntu@master-ansible ansible]$ ansible-doc -l | grep shell
+ansible.builtin.shell                                                                            Execute she...
+ansible.windows.win_powershell                                                                   ...
+ansible.windows.win_shell                                                                        Execute shell co...
+community.mongodb.mongodb_shell                                                                  Run commands...
+community.vmware.vmware_vm_shell                                                                 Run commands in a VMware ...
+fortinet.fortimanager.fmgr_sshfilter_profile_shellcommands                                       ...
+vmware.vmware_rest.appliance_access_shell                                                        Set enabled state of BASH, that is, access to BASH from wit...
+vmware.vmware_rest.appliance_access_shell_info                                                   Get enabled state of BASH, that is, access to BASH from wit...
+
+
+
+# using root user of worker node (here 1 thing we need to keep in mind is that when our worker node is aws es-2 ubuntu then we don't need ssh password)
+ansible ubuntu -m shell -a "df -h" --user=root --ask-pass
+
+it will ask password for root user of ubuntu machine. 
+
+warnings can be disabled by setting deprecation_warnings=False in ansible.cfg.
+192.168.1.14 | CHANGED | rc=0 >>
+alnafi:x:1006:1008::/home/alnafi:/bin/bash
+
+
+ansible ubuntu -m file -a "path=/home/ubuntu/test_ansible state=directory mode=0777"
+
+
+ubuntu@ip-172-31-26-215:~$ pwd
+/home/ubuntu
+
+ubuntu@ip-172-31-26-215:~$ ls
+test_ansible
+
+
+
+# in ansible we can also use command keyword in place of shell, but command don't work in pattern matching
+ansible ubuntu -m shell -a "df -h"
+
+# above same command using command keyword
+ansible ubuntu -m command -a "df -h"
+
+
+
+[ubuntu@master-ansible ansible]$ ansible ubuntu -m command -a "df -h"
+54.166.4.83 | CHANGED | rc=0 >>
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root       6.8G  2.6G  4.2G  38% /
+tmpfs           479M     0  479M   0% /dev/shm
+tmpfs           192M  972K  191M   1% /run
+tmpfs           5.0M     0  5.0M   0% /run/lock
+/dev/xvda16     881M  149M  671M  19% /boot
+/dev/xvda15     105M  6.2M   99M   6% /boot/efi
+tmpfs            96M   12K   96M   1% /run/user/1000
+
+
+
+
+ansible ubuntu -m command -a "cat /etc/*-release" --> will not work, use shell
+
+
+[ubuntu@master-ansible ansible]$ ansible ubuntu -m command -a "cat /etc/*-release"
+54.166.4.83 | FAILED | rc=1 >>
+cat: '/etc/*-release': No such file or directorynon-zero return code
+
+
+[ubuntu@master-ansible ansible]$ ansible ubuntu -m shell -a "cat /etc/*-release"
+54.166.4.83 | CHANGED | rc=0 >>
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=24.04
+DISTRIB_CODENAME=noble
+DISTRIB_DESCRIPTION="Ubuntu 24.04.2 LTS"
+PRETTY_NAME="Ubuntu 24.04.2 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.2 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+
+
+
+
+
+[ubuntu@master-ansible ansible]$ ansible all -m shell -a "ls /home/ubuntu > test.txt"
+54.166.4.83 | CHANGED | rc=0 >>
+
+
+
+[ubuntu@master-ansible ansible]$ ansible all -m command -a "ls /home/ubuntu > test.txt"
+54.166.4.83 | FAILED | rc=2 >>
+test.txt
+
+/home/ubuntu:
+test.txt
+test_ansiblels: cannot access '>': No such file or directorynon-zero return code
+
+
+-------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------
+
+
+WORKING WITH FILES THROUGH ANSIBLE:
+
+# following command will create a directory in remote machine (ubuntu) whose name is TestAnsible
+ansible all -m file -a "path=/home/ubuntu/TestAnsible state=directory"
+
+
+# now creating a text file in that path
+ansible all -m file -a "path=/home/ubuntu/TestAnsible/test.txt state=touch"
+
+
+# removing files
+ansible all -m file -a "path=/home/ubuntu/TestAnsible/test.txt state=absent"
+
+
+# giving or removing permissions from a file or directory, permissions are controlled by mode
+ansible all -m file -a "path=/home/ubuntu/TestAnsible/test.txt mode=0777"
+
+
+NOTE:
+I am working on a normal user on master machine and using a normal user on ubuntu.
+Suppose, I need to create some files or remove some files from /etc directory, normal users are not permitted to make changes in this directory
+So, what we can do?
+We can add ubuntu which is a normal user of ubuntu 8 in the sudoers file. Now, ubuntu has been entered in sudoers file with permissions
+
+#jhon is my ansible user on master centos9 machine
+jhon ALL=(ALL)  NOPASSWD:ALL
+
+now we can use -b argument with our commands.
+
+# command to make files or remove file
+ansible ubuntu -m file -a "path=/etc/testfile.txt state=touch mode=777" -b
+
+-b does the same thing if we are in ubuntu 8 and using jhon sudo touch /etc/testfile.txt
+
+Installation of packages on remote machines:
+# you can install package in two ways
+ansible ubuntu -m shell -a "apt-get update && apt-get install -y zip" -b      --> -b for sudo
+ansible ubuntu -m apt -a "name=zip state=present update_cache=yes" -b
+
+# for ubuntu
+
+ansible ubuntu -m apt -a "name=zip state=present" -b
+
+ansible ubuntu -m apt -a "name=zip state=absent" -b
+
+ansible ubuntu -m apt -a "name=zip state=latest" -b
+
+
+# other way
+ansible ubuntu -m yum -a "name=zip state=present" -b
+
+# uninstallation
+ansible ubuntu -m yum -a "name=zip state=absent" -b
+
+# updating
+# uninstallation
+ansible ubuntu -m yum -a "name=zip state=latest" -b
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+
+
+TRANSFERING FILES USING ADHOC COMMAND:
+
+
+copy --> when we copy file locallay (it is used as module in ansible)
+scp --> when we copy files from one system into another
+rsync --> remote copy 
+
+
+# command to transfer files from master into worker
+ansible ubuntu -m copy -a "src=/home/jhon/ansible/master.txt dest=/home/ubuntu" -b
+
+# copying content directly into  a file in worker node, it will overwrite
+ansible ubuntu -m copy -a "content='Hello this is ahmad' dest=/home/ubuntu/master.txt" -b
+
+# creating backup of old file and copying content directly into file in worker node, it will overwrite
+ansible ubuntu -m copy -a "content='Hello this is ahsan' dest=/home/ubuntu/master.txt backup=yes" -b
+
+
+# fetching files from worker node into master node, now source will be node and destination will be master machine
+ansible ubuntu -m fetch -a "src=/home/ubuntu/master.txt dest=/home/jhon/ansible" -b
+
+not only master.txt is copied, a new directory in master machine is created whose name is worker node ip address, and complete path and file is fetched like
+192.168.43.63 --> home --> ubuntu --> master.txt
+
+above is the format in which file is fetched
+
+but above way is not good, in which multiple directory structure is created.
+
+# command to fetch files without directorry structure
+ansible ubuntu -m fetch -a "src=/home/ubuntu/master.txt dest=/home/jhon/ansible/ flat=yes" -b
+
+# copying files with machine ip mentioned and our name of file
+ansible ubuntu -m fetch -a "src=/home/ubuntu/master.txt dest=/home/jhon/ansible/{{ inventory_hostname }}_master.txt flat=yes" -b
+
+inventory_hostname --> ip address of ubuntu machine
+
+
+

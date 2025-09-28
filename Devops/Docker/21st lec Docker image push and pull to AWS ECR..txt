@@ -1,0 +1,73 @@
+lecture 21 : Docker image push and pull to AWS ECR.
+
+AWS --> ECR
+---------------------
+Dockerhub --> Image --> Push and Pull via cmd line
+
+1. Public Cloud --> AWS , Google and Azure  --> Registry --> Container Registry --> Docker image stored
+
+AWS --> ECR --> Elastic Container Registry
+Google --> GCR --> Google Container Registry
+AZURE --> ACR --> Azure Container Registry
+
+
+2. Version Control / Source control / Code Repository
+
+Version Control :- Version control is nothing is one type of place which stored the code by developer team.
+
+
+GitHub -->> Last to last year sep 2020
+Gitlab  ->> 1$ pay , refunded
+HGmercurial
+SVN
+
+
+AWS Cli install required --> Push and Pull --> ECR
+2% Understand --> 200%
+
+LINUX
+=======================
+AWS CLI installation steps
+URL : https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+
+
+#curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+aws --version
+
+First you need to create own repository
+
+Docker hub push or pull
+docker push <DockurHUB-username>/imagename
+DockerHUB --> abdealidodia/ubuntu
+
+AWS default --> 483301552061.dkr.ecr.us-east-1.amazonaws.com/first_project
+
+image:v1
+
+
+Secret key visible at only at user creation time
+
+T^i1I1*8= (console password)
+https://106412461727.signin.aws.amazon.com/console (console sign in)
+
+export AWS_ACCESS_KEY_ID="AKIARRRVNJ2P2AM4CWUA"
+export AWS_SECRET_ACCESS_KEY="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"
+
+Dockerhub --> docker tag myinage:v1 abdealidodia/myimage:v1
+AWS --> docker tag first_project:latest 483301552061.dkr.ecr.us-east-1.amazonaws.com/first_project:latest
+
+
+Image name : 483301552061.dkr.ecr.us-east-1.amazonaws.com/first_project:latest
+
+docker pull 483301552061.dkr.ecr.us-east-1.amazonaws.com/first_project:latest
+
+Push commands :
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 106412461727.dkr.ecr.us-east-1.amazonaws.com
+
+#docker images
+
+docker tag first_project:latest 483301552061.dkr.ecr.us-east-1.amazonaws.com/first_project:latest
+
+docker push 483301552061.dkr.ecr.us-east-1.amazonaws.com/first_project:latest

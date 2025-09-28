@@ -1,0 +1,71 @@
+Lecture 26:
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+
+
+driver.get('https://mail.rediff.com/cgi-bin/login.cgi')
+driver.maximize_window()
+driver.implicitly_wait(10)
+driver.find_element(By.CLASS_NAME,'signinbtn').click()
+
+time.sleep(5)
+driver.quit()
+
+
+##############
+
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+
+
+driver.get('https://mail.rediff.com/cgi-bin/login.cgi')
+driver.maximize_window()
+driver.implicitly_wait(10)
+driver.execute_script('checkLogin()')
+
+time.sleep(5)
+driver.quit()
+
+
+
+
+#####################
+
+Screenshot :-
+
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+
+
+driver.get('https://alnafi.com/auth/signin')
+driver.maximize_window()
+driver.implicitly_wait(10)
+time.sleep(0.4)
+driver.save_screenshot('mylogin.png')
+
+time.sleep(.5)
+driver.quit()
+
+
+
+

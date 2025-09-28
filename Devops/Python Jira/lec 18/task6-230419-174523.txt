@@ -1,0 +1,61 @@
+from jira import JIRA
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email.mime.image import MIMEImage
+from email import  encoders
+from datetime import *
+import time as t
+
+user="ahmad.hds393@gmail.com"
+my_token= 'ATATT3xFfGF0sNKU9IS6a0pTWUCyYhAE4tN4Kz3bUP9Qy0qTy_u7L5H5t_yozce4gDF3sfvoITwMi9_kTzZHvXscgH8J4rKLCrrKoeoIzAVsAb8WWa7M23D3ocgW3GkZjzN8WFBMDcR8cifPW4NjVyEdwTgyfILuRmtbLvHrbRqwDI_CauE1SNM=E3B35198'
+server = "https://ahmadhds393.atlassian.net"
+jira = JIRA(server,basic_auth=(user,my_token))
+
+issue_in_project = jira.search_issues('project = MYP and issuetype = Task and created >= -3h AND assignee in (empty) and resolution = Unresolved')
+total= len(issue_in_project)
+
+tnumber=[]
+uname=[]
+eaddress=[]
+subdetails=[]
+
+for issues in issue_in_project:
+    ticket_number = str(issues.key)
+    tnumber.append(ticket_number)
+
+    username = str(issues.fields.reporter.displayName)  
+    uname.append(username)
+
+    # Safely retrieve the email address
+    emailadd = issues.fields.reporter.emailAddress if hasattr(issues.fields.reporter, 'emailAddress') else None
+    eaddress.append(emailadd)
+
+    sdetails = issues.key + ":" + issues.fields.summary
+    subdetails.append(sdetails)
+
+
+if total==0:
+    print("JIRA not foun dfrom last 3 hours ")
+else:
+    print("JIRA found")
+    for jiraticket in range(total):
+        my_mail = "ahmad.hds393@gmail.com"
+        password = "cihh ddgo uztq lmzm"
+        msg = MIMEMultipart()
+        msg['Subject'] = subdetails[jiraticket]
+        msg['From'] = my_mail
+        msg['To'] = eaddress[jiraticket]
+        msg['Cc'] = 'ahanalytics393@gmail.com'
+
+        body="<p> Dear " + uname[jiraticket] +" , <br> <br> Thank you for writing us. <br> <br> This reply to acknowledgment your message. We have received your JIRA ticket number : " +tnumber[jiraticket] + " Please provide the approval from your reporting head and our team is looking into it and we will get back to you , We look forward to intrect soon. <br><br> Thank you <br> Alnafi Support team</p>"
+        t.sleep(3)
+        msg.attach(MIMEText(body, 'html'))
+        connection = smtplib.SMTP('smtp.gmail.com')
+        connection.starttls()
+
+        connection.login(user=my_mail, password=password)
+        connection.send_message(msg)
+        print("mail has been sent " ,uname[jiraticket] )
+        connection.close()

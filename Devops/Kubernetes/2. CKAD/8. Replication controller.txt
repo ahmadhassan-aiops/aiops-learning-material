@@ -1,0 +1,104 @@
+
+[root@client1 ahmad]# cat rc.yaml
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: myapp
+  labels:
+    app: frontend
+spec:
+  replicas: 5
+  selector:
+    app: frontend
+  template:
+    metadata:
+      name: al-nafi
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: alpha
+        image: nginx
+
+--------------------------------------------------
+
+
+[root@client1 ahmad]# kubectl apply -f rc.yaml
+replicationcontroller/myapp created
+--------------------------------------------------
+
+[root@client1 ahmad]# kubectl get replicationcontroller
+NAME    DESIRED   CURRENT   READY   AGE
+myapp   5         5         5       3m10s
+--------------------------------------------------
+
+[root@client1 ahmad]# kubectl get pods
+NAME          READY   STATUS    RESTARTS   AGE
+myapp-4zslp   1/1     Running   0          3m38s
+myapp-cs82v   1/1     Running   0          3m38s
+myapp-jmktm   1/1     Running   0          3m38s
+myapp-w6rnw   1/1     Running   0          3m38s
+myapp-xwrhd   1/1     Running   0          3m38s
+
+
+--------------------------------------------------
+
+
+kubectl describe replicationcontroller myapp
+Name:         myapp
+Namespace:    default
+Selector:     app=frontend
+Labels:       app=frontend
+Annotations:  <none>
+Replicas:     5 current / 5 desired
+Pods Status:  5 Running / 0 Waiting / 0 Succeeded / 0 Failed
+Pod Template:
+  Labels:  app=frontend
+  Containers:
+   alpha:
+    Image:         nginx
+    Port:          <none>
+    Host Port:     <none>
+    Environment:   <none>
+    Mounts:        <none>
+  Volumes:         <none>
+  Node-Selectors:  <none>
+  Tolerations:     <none>
+Events:
+  Type    Reason            Age   From                    Message
+  ----    ------            ----  ----                    -------
+  Normal  SuccessfulCreate  10m   replication-controller  Created pod: myapp-cs82v
+  Normal  SuccessfulCreate  10m   replication-controller  Created pod: myapp-4zslp
+  Normal  SuccessfulCreate  10m   replication-controller  Created pod: myapp-xwrhd
+  Normal  SuccessfulCreate  10m   replication-controller  Created pod: myapp-w6rnw
+  Normal  SuccessfulCreate  10m   replication-controller  Created pod: myapp-jmktm
+
+--------------------------------------------------
+
+
+[root@client1 ahmad]# kubectl get pods
+NAME          READY   STATUS    RESTARTS   AGE
+myapp-4zslp   1/1     Running   0          11m
+myapp-cs82v   1/1     Running   0          11m
+myapp-jmktm   1/1     Running   0          11m
+myapp-w6rnw   1/1     Running   0          11m
+myapp-xwrhd   1/1     Running   0          11m
+[root@client1 ahmad]#
+[root@client1 ahmad]# kubectl delete pods myapp-4zslp
+pod "myapp-4zslp" deleted
+[root@client1 ahmad]# kubectl get pods --watch
+NAME          READY   STATUS    RESTARTS   AGE
+myapp-9p6t8   1/1     Running   0          8s
+myapp-cs82v   1/1     Running   0          12m
+myapp-jmktm   1/1     Running   0          12m
+myapp-w6rnw   1/1     Running   0          12m
+myapp-xwrhd   1/1     Running   0          12m
+
+--------------------------------------------------
+
+[root@client1 ahmad]# kubectl delete replicationcontroller myapp
+replicationcontroller "myapp" deleted
+[root@client1 ahmad]# kubectl get pods
+No resources found in default namespace.
+
+--------------------------------------------------

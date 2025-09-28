@@ -1,0 +1,148 @@
+
+
+Lecture 26 :
+
+Task1 :-
+
+myfiles = ["abd.txt", "abc.csv", "test.txt", "ali.txt", "abdeali.csv"]
+newfiles = []
+for i in myfiles:
+    if "a" in i:
+        newfiles.append(i)
+print(newfiles)
+
+
+O/p:-
+['abd.txt', 'abc.csv', 'ali.txt', 'abdeali.csv']
+
+
+Task 2 :-
+
+Syntax: newfiles = [expression for variable in iterable if condition == True]
+
+myfiles = ["abd.txt", "abc.csv", "test.txt", "ali.txt", "abdeali.csv"]
+newfiles = [i for i in myfiles if i != "abdeali.csv" ]
+print(newfiles)
+
+
+O/p:-
+['abd.txt', 'abc.csv', 'test.txt', 'ali.txt']
+
+
+Task 3:-
+myfiles = ["abd.txt", "abc.csv", "test.txt", "ali.txt", "abdeali.csv"]
+newfiles = [i.upper() for i in myfiles if i != "abdeali.csv" ]
+print(newfiles)
+
+o/p:-
+['ABD.TXT', 'ABC.CSV', 'TEST.TXT', 'ALI.TXT']
+
+
+Task 4:-
+salary = [
+['Abdeali', 20000],
+['Ali', 30000],
+['Kazim', 25000],
+['Katrina', 50000],
+['sarah', 27000]
+]
+for i in salary:
+    if i[1] >=30000:
+        print(i)
+
+O/p:-
+['Ali', 30000]
+['Katrina', 50000]
+
+
+Task 5:-
+salary = [
+['Abdeali', 20000],
+['Ali', 30000],
+['Kazim', 25000],
+['Katrina', 50000],
+['sarah', 27000]
+]
+max_salary = [i for i in salary if i[1] >= 30000]
+print(max_salary)
+
+o/p:-
+[['Ali', 30000], ['Katrina', 50000]]
+
+
+task 6:-
+even_num = []
+for i in range(11):
+    if i%2 == 0:
+        even_num.append(i)
+print(even_num)
+
+O/p:-
+[0, 2, 4, 6, 8, 10]
+
+
+
+Task 7:-
+even_num = [i for i in range(11) if i%2 == 0]
+print(even_num)
+O/p:-
+[0, 2, 4, 6, 8, 10]
+
+
+
+
+Task 8 :-
+salary ={'Abdeali': 20000,'Ali' :40000,'Kazim': 25000,'Katrina': 50000,'sarah': 27000}
+new_dict = {k for (k, v) in salary.items() if v >= 20000 if v <= 30000}
+print(new_dict)
+for i in new_dict:
+    print(i)
+
+
+O/p:-
+{'sarah', 'Kazim', 'Abdeali'}
+sarah
+Kazim
+Abdeali
+
+
+task 9:-
+
+salary ={'Abdeali': 20000,'Ali' :40000,'Kazim': 25000,'Katrina': 50000,'sarah': 27000}
+new_dict = {k:v for (k, v) in salary.items() if v >= 20000 if v <= 30000}
+print(new_dict)
+
+{'Abdeali': 20000, 'Kazim': 25000, 'sarah': 27000}
+
+
+Task 10:-
+
+salary = [
+['Abdeali', 20000],
+['Ali', 30000],
+['Kazim', 25000],
+['atrina', 50000],
+['sarah', 27000]
+]
+final_salary = [i for i in salary if i[0].lower().startswith('a') and i[1] >= 25000]
+print(final_salary)
+
+O/p:-
+
+[['Ali', 30000], ['atrina', 50000]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

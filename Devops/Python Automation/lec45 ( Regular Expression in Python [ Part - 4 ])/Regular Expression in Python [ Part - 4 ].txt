@@ -1,0 +1,230 @@
+
+
+
+Lecture 45:-
+
+
+
+import re
+mytext="My jboss server ip address is 192.168.1.8 \nMy Docker server ip address is 192.168.1.11 \n My broadcast addres is 255.255.255.255 \n My invalid address 192.168.1234.12345"
+pattern=r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+print(re.findall(pattern,mytext))
+
+
+
+import re
+mytext="My jboss server ip address is 192.168.1.8 \nMy Docker server ip address is 192.168.1.11 \n My broadcast addres is 255.255.255.255 \n My invalid address 192.168.1234.12345"
+pattern=r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+print(re.findall(pattern,mytext))
+print(len(re.findall(pattern,mytext)))
+
+
+
+
+['192.168.1.8', '192.168.1.11', '255.255.255.255']
+3
+
+
+
+
+#Finditer()
+
+
+import re
+mytext="My jboss server ip address is 192.168.1.8 \nMy Docker server ip address is 192.168.1.11 \n My broadcast addres is 255.255.255.255 \n My invalid address 192.168.1234.12345"
+pattern=r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+print(re.findall(pattern,mytext))
+print(re.finditer(pattern,mytext))
+
+
+
+
+
+
+import re
+mytext="My 192.168.1.8 jboss server ip address is  \nMy Docker server ip address is 192.168.1.11 \n My broadcast addres is 255.255.255.255 \n My invalid address 192.168.1234.12345"
+pattern=r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+print(re.findall(pattern,mytext))
+myiter=(re.finditer(pattern,mytext))
+
+print(myiter)
+for i in myiter:
+    print(i)
+
+O/p:-
+['192.168.1.8', '192.168.1.11', '255.255.255.255']
+<callable_iterator object at 0x00000259EA6D7FD0>
+<re.Match object; span=(3, 14), match='192.168.1.8'>
+<re.Match object; span=(75, 87), match='192.168.1.11'>
+<re.Match object; span=(113, 128), match='255.255.255.255'>
+
+
+
+
+
+
+import re
+mytext="My 192.168.1.8 jboss server ip address is  \nMy Docker server ip address is 192.168.1.11 \n My broadcast addres is 255.255.255.255 \n My invalid address 192.168.1234.12345"
+pattern=r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+mymatch=(re.findall(pattern,mytext))
+print(type(mymatch))
+
+for i in mymatch:
+    print(i)
+
+
+
+
+
+
+import re
+mytext="My 192.168.1.8 jboss server ip address is  \nMy Docker server ip address is 192.168.1.11 \n My broadcast addres is 255.255.255.255 \n My invalid address 192.168.1234.12345"
+pattern=r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+
+myiter=(re.finditer(pattern,mytext))
+
+for i in myiter:
+    print(i.group())
+
+O/p:-
+192.168.1.8
+192.168.1.11
+255.255.255.255
+
+
+
+
+import re
+mytext="My 192.168.1.8 jboss server ip address is  \nMy Docker server ip address is 192.168.1.11 \n My broadcast addres is 255.255.255.255 \n My invalid address 192.168.1234.12345"
+pattern=r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+
+myiter=(re.finditer(pattern,mytext))
+
+for i in myiter:
+    print('My match string is : ',i.group())
+
+
+#############################################
+
+re.compile()
+python re compile() method is used ti compile a regular express , string to re object 
+(It is fast as compared to other method)
+
+
+import re
+mytext="We are learning python automation course, In devops course python is very important"
+pattern=r"\bcourse\b"
+
+print(re.findall(pattern,mytext))
+
+import re
+mytext="We are learning python automation course, In devops course python is very important"
+pattern=r"\bcourse\b"
+print(type(pattern))
+
+print(re.findall(pattern,mytext))
+
+
+
+import re
+mytext="We are learning python automation course, In devops course python is very important"
+pattern=re.compile('course')
+print(type(pattern))
+
+print(re.findall(pattern,mytext))
+
+
+####################################
+
+
+
+import re
+mytext="My 192.168.1.8 jboss server ip address is  \nMy Docker server ip address is 192.168.1.11 \n My broadcast addres is 255.255.255.255 \n My invalid address 192.168.1234.12345"
+pattern=r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+myfind=(re.findall(pattern,mytext))
+print(myfind)
+
+o/p:-
+['192.168.1.8', '192.168.1.11', '255.255.255.255']
+
+
+#Search
+
+import re
+mytext="My 192.168.1.8 jboss server ip address is  \nMy Docker server ip address is 192.168.1.11 \n My broadcast addres is 255.255.255.255 \n My invalid address 192.168.1234.12345"
+pattern=r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+myfind=(re.search(pattern,mytext))
+print(myfind)
+
+<re.Match object; span=(3, 14), match='192.168.1.8'>
+
+
+
+
+import re
+mytext="My 192.168.1.8 jboss server ip address is  \nMy Docker server ip address is 192.168.1.11 \n My broadcast addres is 255.255.255.255 \n My invalid address 192.168.1234.12345"
+pattern=r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+myfind=(re.search(pattern,mytext))
+print('We are found some string from pattern',myfind)
+print('We are found some string from pattern',myfind.group())
+print('Starting Index',myfind.start())
+print('Ending Index',myfind.end())
+print('Search length is :',myfind.end()-myfind.start())
+
+O/p:-
+We are found some string from pattern <re.Match object; span=(3, 14), match='192.168.1.8'>
+We are found some string from pattern 192.168.1.8
+Starting Index 3
+Ending Index 14
+Search length is : 11
+
+
+
+import re
+mytext="My 192.168.1.8 jboss server ip address is  \nMy Docker server ip address is 192.168.1.11 \n My broadcast addres is 255.255.255.255 \n My invalid address 192.168.1234.12345"
+pattern=r"ABD\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+myfind=(re.search(pattern,mytext))
+print('We are found some string from pattern',myfind)
+print('We are found some string from pattern',myfind.group())
+
+You will get error 
+
+
+
+
+import re
+mytext="My 192.168.1.8 jboss server ip address is  \nMy Docker server ip address is 192.168.1.11 \n My broadcast addres is 255.255.255.255 \n My invalid address 192.168.1234.12345"
+pattern=r"ABD\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+myfind=(re.search(pattern,mytext))
+
+if myfind:
+    print('We are found some string from pattern',myfind.group())
+else:
+    print("Sorry, No match found")
+
+
+
+#You can find character string more than 7 to 8 character 
+import re
+abd="Abdeali"
+pattern=r".{7,}"
+print(re.search(pattern,abd))
+
+
+#You can check whether your string is upper case or not 
+import re
+abd="ABDEALI"
+pattern=r"[A-Z]"
+print(re.search(pattern,abd))
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,356 @@
+
+Operators:
+1. Arithmetic operators
+2. Comparison operators
+3.Logical Operators 
+4. bitwise operatrs e.g & | ^
+5. identify a is b, a is not b
+6. membership, a not in b, a in b
+
+
+
+# arithmetic operators
+
+sudo vim arithmetic.yml
+
+# in this file, i will define variables inside the playbook. 
+# if you take input variables from command line, then these are interpreted as strings, you need to convert them to integers inside your ansible playbook else input will give erros
+# defining a vairbale as int "Sum of two numbers: {{ (a | int) + (b | int) }}" you can see i am converting input variables as integers when i am summing them
+
+
+vim arithmetic.yml
+
+
+---
+- name: this yml file is for arithmetic operators
+  hosts: localhost
+  become: yes
+  vars:
+    a: 5
+    b: 15
+  tasks:
+  - name: performing arithmetic operation
+    debug:
+      msg:
+      - "Sum of two numbers is {{ a + b }} "
+      - "Difference of two numbers is {{ a - b }} "
+      - "Multiplication of two numbers is {{ a * b }}"
+      - "Division of two numbers is {{ a / b }}"
+
+
+
+
+[jhon@master-ansible ansible]$ ansible-playbook arithmetic.yml
+
+PLAY [this yml file is for arithmetic operators] *****************************************************************************
+
+TASK [Gathering Facts] *******************************************************************************************************
+ok: [localhost]
+
+TASK [performing arithmetic operation] ***************************************************************************************
+ok: [localhost] => {
+    "msg": [
+        "Sum of two numbers is 20 ",
+        "Difference of two numbers is -10 ",
+        "Multiplication of two numbers is 75",
+        "Division of two numbers is 0.3333333333333333"
+    ]
+}
+
+PLAY RECAP *******************************************************************************************************************
+localhost                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+
+
+
+=====================================================================================
+
+
+
+Comparison operators:
+
+sudo vim comparison.yml
+
+---
+- name: this yml file is for comparison operators
+  hosts: localhost
+  vars:
+  - a: 15
+  - b: 25
+  - mylist: [10,20,3,0,12,40]
+  - myname: "ahmad"
+  tasks:
+  - name: performing comparison operators
+    debug:
+      msg:
+      - " a and b are equal: {{ a == b }}"
+      - " a and b are not equal: {{ a != b }}"
+      - " a is greater than b: {{ a > b }}"
+      - " a is less than b: {{ a < b }}"
+      - " checking two conditions if a is greater or b: {{ a > 5 or b > 10 }}"
+      - " Maximum number in my list: {{ mylist | max }} "
+      - "Checking if myname is present: {{ myname in 'ahmad' }} "
+
+
+
+
+
+
+[jhon@master-ansible ansible]$ ansible-playbook comparison.yml
+
+PLAY [this yml file is for comparison operators] *****************************************************************************
+
+TASK [Gathering Facts] *******************************************************************************************************
+ok: [localhost]
+
+TASK [performing comparison operators] ***************************************************************************************
+ok: [localhost] => {
+    "msg": [
+        " a and b are equal: False",
+        " a and b are not equal: True",
+        " a is greater than b: False",
+        " a is less than b: True",
+        " checking two conditions if a is greater or b: True",
+        " Maximum number in my list: 40 ",
+        "Checking if myname is present: True "
+    ]
+}
+
+PLAY RECAP *******************************************************************************************************************
+localhost                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+
+
+
+=========================
+
+
+sudo vim comparison_2.yml
+
+
+
+---
+- hosts: localhost
+  vars_prompt:
+  - name: c
+    prompt: "enter the C value:"
+    private:  no
+  - name: d
+    prompt: "Enter the D value:"
+    private: no
+  vars:
+    a: 10
+    b: 5
+    name1: "Abdeali"
+    name2: "Dodiya"
+    lists: [1,4,8,4,2,16]
+    my_lists:
+    - one
+    - two
+    - three
+  tasks:
+  - name: Arithmetic operators 
+    debug:
+      msg: 
+       - "{{ a + b }}"
+       - "my {{c}} and {{d}} total is : {{c|int+d|int}}"
+       - "{{ a - b }}"
+       - "{{ a * b }}"
+       - "{{ a / b }}"
+       - "{{ a % b }}"
+       - "{{ a ** b }}"
+  - name: Comparison operators
+    debug:
+      msg:
+       - "{{ a == b }}"
+       - "{{ a != b }}"
+       - "{{ a < b }}"
+       - "{{ a > b }}"
+       - "{{ a <= b }}"
+       - "{{ a >= b }}"
+       - "{{ name1 in 'Abdeali'}}"
+       - "{{ a > 5 or b > 10 }}"
+       - "{{lists|max}}"
+       - "{{lists|min}}"
+       - "{{name1|lower}}"
+       - "{{name1|upper}}"
+       - "{{name1|title}}"
+       - "{{name1|replace('a','A') }}"
+       - "{{ my_lists | join(', ') }}"
+
+
+
+
+
+
+
+
+[jhon@master-ansible ansible]$ ansible-playbook comparison_2.yml
+enter the C value:: 10
+Enter the D value:: 20
+
+PLAY [localhost] *************************************************************************************************************
+
+TASK [Gathering Facts] *******************************************************************************************************
+ok: [localhost]
+
+TASK [Arithmetic operators] **************************************************************************************************
+ok: [localhost] => {
+    "msg": [
+        "15",
+        "my 10 and 20 total is : 30",
+        "5",
+        "50",
+        "2.0",
+        "0",
+        "100000"
+    ]
+}
+
+TASK [Comparison operators] **************************************************************************************************
+ok: [localhost] => {
+    "msg": [
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        true,
+        true,
+        "16",
+        "1",
+        "abdeali",
+        "ABDEALI",
+        "Abdeali",
+        "AbdeAli",
+        "one, two, three"
+    ]
+}
+
+PLAY RECAP *******************************************************************************************************************
+localhost                  : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+
+
+
+
+
+
+
+=============================================
+
+Video Lecture Notes:
+
+
+vim operators.yml
+
+
+---
+- hosts: localhost
+  vars_prompt:
+  - name: c
+    prompt: "enter the C value:"
+    private:  no
+  - name: d
+    prompt: "Enter the D value:"
+    private: no
+  vars:
+    a: 10
+    b: 5
+    name1: "Abdeali"
+    name2: "Dodiya"
+    lists: [1,4,8,4,2,16]
+    my_lists:
+    - one
+    - two
+    - three
+  tasks:
+  - name: Arithmetic operators 
+    debug:
+      msg: 
+       - "{{ a + b }}"
+       - "my {{c}} and {{d}} total is : {{c|int+d|int}}"
+       - "{{ a - b }}"
+       - "{{ a * b }}"
+       - "{{ a / b }}"
+       - "{{ a % b }}"
+       - "{{ a ** b }}"
+  - name: Comparison operators
+    debug:
+      msg:
+       - "{{ a == b }}"
+       - "{{ a != b }}"
+       - "{{ a < b }}"
+       - "{{ a > b }}"
+       - "{{ a <= b }}"
+       - "{{ a >= b }}"
+       - "{{ name1 in 'Abdeali'}}"
+       - "{{ a > 5 or b > 10 }}"
+       - "{{lists|max}}"
+       - "{{lists|min}}"
+       - "{{name1|lower}}"
+       - "{{name1|upper}}"
+       - "{{name1|title}}"
+       - "{{name1|replace('a','A') }}"
+       - "{{ my_lists | join(', ') }}"
+
+
+
+
+
+[jhon@master-ansible ansible]$ ansible-playbook operators.yml
+enter the C value:: 5
+Enter the D value:: 10
+
+PLAY [localhost] *************************************************************************************************************
+
+TASK [Gathering Facts] *******************************************************************************************************
+ok: [localhost]
+
+TASK [Arithmetic operators] **************************************************************************************************
+ok: [localhost] => {
+    "msg": [
+        "15",
+        "my 5 and 10 total is : 15",
+        "5",
+        "50",
+        "2.0",
+        "0",
+        "100000"
+    ]
+}
+
+TASK [Comparison operators] **************************************************************************************************
+ok: [localhost] => {
+    "msg": [
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        true,
+        true,
+        "16",
+        "1",
+        "abdeali",
+        "ABDEALI",
+        "Abdeali",
+        "AbdeAli",
+        "one, two, three"
+    ]
+}
+
+PLAY RECAP *******************************************************************************************************************
+localhost                  : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+
+
+
+
+
+
+
+
+ 

@@ -1,0 +1,4 @@
+
+1.Create a user like "terraform_user" with admingroup access permission!
+2.Create access key for this user!
+3.In defauly SG add all trafic for specifically MyIP in inbound traffic.

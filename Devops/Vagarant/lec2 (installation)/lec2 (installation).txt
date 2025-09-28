@@ -1,0 +1,13 @@
+requirements :-
+1. Windows Machine
+2. Virtual box (OVM) : https://www.virtualbox.org/wiki/Downloads
+3. Git bash install : https://git-scm.com/download/win
+4. Vagrant software : https://developer.hashicorp.com/vagrant/downloads
+
+
+Path : C:\HashiCorp\Vagrant\
+
+C:\Users\AbdealiDodiya>cd C:\HashiCorp\Vagrant\bin
+
+C:\HashiCorp\Vagrant\bin>vagrant --version
+Vagrant 2.3.4

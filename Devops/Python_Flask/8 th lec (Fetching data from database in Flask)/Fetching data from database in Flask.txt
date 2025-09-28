@@ -1,0 +1,103 @@
+app.py
+
+from flask import Flask, render_template, request, url_for
+from flask_mysqldb import MySQL
+from datetime import date
+
+app = Flask(__name__)
+
+# Database Configuration
+app.config['MYSQL_HOST'] = '192.168.0.105'
+app.config['MYSQL_USER'] = 'mysql_user'
+app.config['MYSQL_PASSWORD'] = 'Ahmad:06331913012'
+app.config['MYSQL_DB'] = 'alnafi'
+
+mysql = MySQL(app)
+
+# Home Page Route
+@app.route("/")
+def get_home():
+    return "HOME PAGE I am here!"
+
+# Trainer Page Route
+@app.route("/trainer")
+def trainer():
+    return render_template('trainer_details.html')
+
+# Trainer Create Route
+@app.route("/trainer_create", methods=['POST', 'GET'])
+def trainer_create():
+    if request.method == 'GET':
+        return render_template('trainer_details.html')  # Ensure a response for GET requests
+
+    if request.method == 'POST':
+        fname_data = request.form['fname']
+        lname_data = request.form['lname']
+        design_data = request.form['design']
+        course_data = request.form['course']
+        cdate = date.today()
+
+        sql = 'INSERT INTO trainer_details (fname, lname, design, course, datetime) VALUES (%s, %s, %s, %s, %s)'
+        val = (fname_data, lname_data, design_data, course_data, cdate)
+
+        try:
+            cursor = mysql.connection.cursor()
+            cursor.execute(sql, val)
+            mysql.connection.commit()
+            cursor.close()
+            return render_template('trainer_details.html')
+        except Exception as e:
+            return f"Error: {e}"
+
+@app.route("/trainer_data", methods=['POST', 'GET'])
+def trainer_data():
+
+    cursor = mysql.connection.cursor()
+    sql = "select * from trainer_details"
+    cursor.execute(sql)
+    row = cursor.fetchall()
+    cursor.close()
+    return render_template('display_trainer.html', output_data = row)
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0")
+
+
+-------------------------------------------------------------------
+
+display_trainer.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trainer Course Details</title>
+</head>
+<body>
+    <table id="testTable" border="1">
+        <tr>
+            <th colspan="5">Trainer Course Details</th>
+        </tr>
+        <tr>
+            <th>Sr.no</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Designation</th>
+            <th>Course</th>
+        </tr>
+        {% for i in output_data %}
+        <tr>
+            <td>{{i[0]}}</td>
+            <td>{{i[1]}}</td>
+            <td>{{i[2]}}</td>
+            <td>{{i[3]}}</td>
+            <td>{{i[4]}}</td>
+        {% endfor %}
+        </tr>
+    </table>
+</body>
+</html>
+
+---------------------------------------------------------
+
+We can simultaneously try adding data using trainer_create page and then see the update on trainer_data!!!!

@@ -1,0 +1,767 @@
+
+
+In Kubernetes (K8s), **probes** are diagnostic checks used by the kubelet to determine the health and availability of containers. 
+They help in managing container lifecycle by deciding whether a container is ready to receive traffic or should be restarted. 
+There are **three types of probes**: *Liveness*, *Readiness*, and *Startup*.
+
+---
+
+### Types of Probes:
+
+**Liveness Probe** checks if the container is alive. If it fails, Kubernetes restarts the container.
+**Readiness Probe** checks if the container is ready to serve requests. If it fails, the container is removed from the service endpoints but not restarted.
+**Startup Probe** is used to check if the application has started. It's helpful for slow-starting apps and disables liveness and readiness probes 
+		  until it succeeds.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+### Readiness Probe:
+
+A **Readiness Probe** ensures the container is fully initialized and ready to accept traffic. If the probe fails, the Pod is temporarily removed 
+from the Service's load balancer, avoiding broken connections or failed requests.
+
+---
+
+### Readiness Probe Methods:
+
+1. **HTTP GET**: Kubernetes sends an HTTP request to a specified path and port. A response in the 200–399 range indicates success.
+2. **TCP Socket**: K8s tries to establish a TCP connection to the specified port. A successful connection marks the container as ready.
+3. **Exec Command**: Kubernetes runs a command inside the container. A 0 exit code means the container is ready.
+
+---
+
+### Important Parameters in Readiness Probe:
+
+* `initialDelaySeconds`: Time to wait before starting the first probe.
+* `periodSeconds`: Time between successive probes.
+* `timeoutSeconds`: Timeout for a single probe attempt.
+* `successThreshold`: Minimum number of successful probes to mark the container as ready.
+* `failureThreshold`: Number of failures before marking the container as unready.
+
+---
+
+### When Readiness Probe Is Required:
+
+Use a readiness probe when your app needs time to initialize or becomes temporarily unable to serve traffic (e.g., waiting for a dependency). 
+It prevents sending traffic to unprepared containers.
+
+---
+
+### When It's Not Needed:
+
+If your container becomes ready as soon as it starts and can always handle requests immediately, a readiness probe may not be required. 
+Stateless or fast-start services often fall in this category.
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+### Liveness Probe:
+
+A **Liveness Probe** checks if a container is still running properly. If the liveness probe fails, Kubernetes **kills the container**, 
+and it is subjected to its **restart policy**. This helps recover from situations where the app is stuck or unresponsive but still running.
+
+---
+
+### Liveness Probe Methods:
+
+1. **HTTP GET**: Kubernetes sends an HTTP GET request to a specified path and port. A 2xx–3xx response means the container is healthy.
+2. **TCP Socket**: Kubernetes attempts to open a TCP connection. Success indicates the container is alive.
+3. **Exec Command**: A command runs inside the container. If the exit code is 0, it is considered healthy.
+
+---
+
+### Important Parameters in Liveness Probe:
+
+* `initialDelaySeconds`: Time to wait after container start before initiating probes.
+* `periodSeconds`: Interval between probe attempts.
+* `timeoutSeconds`: Time allowed for a probe to complete.
+* `successThreshold`: Usually set to **1** (not used much in liveness).
+* `failureThreshold`: Number of consecutive failures required to consider the container unhealthy.
+
+---
+
+### When Liveness Probe Is Required:
+
+Liveness probes are essential when your application might get into a non-recoverable hung or crash state while still technically running. 
+For example, a web server thread freeze or infinite loop scenario.
+
+---
+
+### When It’s Not Needed:
+
+If your container process is short-lived or restarts on its own when failing, or if external monitoring/restarts are handled by another system, 
+a liveness probe may not be necessary.
+
+---
+
+### Can We Use Readiness and Liveness Together?
+
+**Yes**, and it’s recommended in many cases.
+
+* **Readiness** ensures traffic is routed only to containers that are ready.
+* **Liveness** ensures that hung or dead containers are restarted.
+
+They serve **different purposes** and **complement** each other. For example, a container can be alive (liveness=true) but not ready to handle 
+requests (readiness=false).
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+-----------------------------------------------
+
+
+cat alnafi-dev.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: al-nafi-development-webapp
+  labels:
+    app: development
+spec:
+  containers:
+  - name: development-webapp
+    image: kodekloud/webapp-delayed-start
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+
+
+
+
+[root@client1 ahmad]# vim service-dev.yaml
+[root@client1 ahmad]# cat service-dev.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: alnafi-dev-service
+  namespace: default
+spec:
+  ports:
+  - nodePort: 30080
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: development
+  type: NodePort
+
+
+
+
+
+[root@client1 ahmad]# kubectl apply -f alnafi-dev.yaml
+pod/al-nafi-development-webapp created
+[root@client1 ahmad]# kubectl apply -f service-dev.yaml
+service/alnafi-dev-service created
+
+
+
+
+kubectl get po,svc
+NAME                             READY   STATUS              RESTARTS   AGE
+pod/al-nafi-development-webapp   0/1     ContainerCreating   0          51s
+
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   4d23h
+
+
+-----------------------------------------------
+
+kubectl describe svc alnafi-dev-service
+Name:                     alnafi-dev-service
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 app=development
+Type:                     NodePort
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.96.129.46
+IPs:                      10.96.129.46
+Port:                     <unset>  8080/TCP
+TargetPort:               8080/TCP
+NodePort:                 <unset>  30080/TCP
+Endpoints:                10.244.2.4:8080
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Internal Traffic Policy:  Cluster
+Events:                   <none>
+[root@client1 ahmad]#
+
+
+-----------------------------------------------
+
+
+(It is needed because we are using kind cluster so node ip is internal (172 based) . That's why we have to do port-forwarding
+kubectl port-forward pod/al-nafi-development-webapp 8080:8080
+Forwarding from 127.0.0.1:8080 -> 8080
+Forwarding from [::1]:8080 -> 8080
+Handling connection for 8080
+
+
+
+curl http://localhost:8080
+<!doctype html>
+<title>Hello from Flask</title>
+<body style="background: #16a085;"></body>
+<div style="color: #e4e4e4;
+    text-align:  center;
+    height: 90px;
+    vertical-align:  middle;">
+
+  <h1>Hello from al-nafi-development-webapp!</h1>
+
+
+
+-----------------------------------------------
+
+cat alnafi-prod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: al-nafi-production-webapp
+  labels:
+    app: production
+spec:
+  containers:
+  - name: production-webapp
+    image: kodekloud/webapp-delayed-start
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+    env:
+     - name: APP_START_DELAY
+       value: "80"
+
+
+
+
+[root@client1 ahmad]# cat service-prod.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: alnafi-prod-service
+  namespace: default
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: production
+  type: NodePort
+
+
+
+ kubectl apply -f alnafi-prod.yaml
+pod/al-nafi-production-webapp created
+[root@client1 ahmad]# kubectl apply -f service-prod.yaml
+service/alnafi-prod-service created
+
+
+
+
+kubectl describe svc alnafi-prod-service
+Name:                     alnafi-prod-service
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 app=production
+Type:                     NodePort
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.96.126.0
+IPs:                      10.96.126.0
+Port:                     <unset>  8080/TCP
+TargetPort:               8080/TCP
+NodePort:                 <unset>  31485/TCP
+Endpoints:                10.244.1.4:8080
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Internal Traffic Policy:  Cluster
+Events:                   <none>
+
+
+kubectl port-forward pod/al-nafi-production-webapp  8080:8080
+Forwarding from 127.0.0.1:8080 -> 8080
+Forwarding from [::1]:8080 -> 8080
+Handling connection for 8080
+
+
+ curl http://localhost:8080
+<!doctype html>
+<title>Hello from Flask</title>
+<body style="background: #16a085;"></body>
+<div style="color: #e4e4e4;
+    text-align:  center;
+    height: 90px;
+    vertical-align:  middle;">
+
+  <h1>Hello from al-nafi-production-webapp!</h1>
+
+
+(This web page is accessible to us after 80sec)
+
+
+-----------------------------------------------
+
+
+Now we will access both pods from single service. So we will delete the prod service!
+
+-----------------------------------------------
+
+
+ cat alnafi-prod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: al-nafi-production-webapp
+  labels:
+    tier: production
+    app: developement
+spec:
+  containers:
+  - name: production-webapp
+    image: kodekloud/webapp-delayed-start
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+    env:
+     - name: APP_START_DELAY
+       value: "80"
+
+
+
+
+cat alnafi-dev.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: al-nafi-development-webapp
+  labels:
+    app: development
+    tier: production
+spec:
+  containers:
+  - name: development-webapp
+    image: kodekloud/webapp-delayed-start
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+
+
+[root@client1 ahmad]# cat service-dev.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: alnafi-dev-service
+  namespace: default
+spec:
+  ports:
+  - nodePort: 30080
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: development
+    tier: production
+  type: NodePort
+
+
+
+ 
+ tier: production and app: development ---- both labels are present--each specify one pod!
+
+
+-----------------------------------------------
+
+ kubectl delete svc alnafi-dev-service
+service "alnafi-dev-service" deleted
+
+
+kubectl delete pods --all
+pod "al-nafi-development-webapp" deleted
+pod "al-nafi-production-webapp" deleted
+
+
+kubectl apply -f alnafi-prod.yaml
+pod/al-nafi-production-webapp created
+[root@client1 ahmad]# kubectl apply -f alnafi-dev.yaml
+pod/al-nafi-development-webapp created
+[root@client1 ahmad]# kubectl apply -f service-dev.yaml
+service/alnafi-prod-service created
+
+
+kubectl get po,svc
+NAME                             READY   STATUS    RESTARTS   AGE
+pod/al-nafi-development-webapp   1/1     Running   0          24m
+pod/al-nafi-production-webapp    1/1     Running   0          6m59s
+
+NAME                         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+service/alnafi-dev-service   NodePort    10.96.124.144   <none>        8080:30080/TCP   15m
+service/kubernetes           ClusterIP   10.96.0.1       <none>        443/TCP          5d
+
+
+
+
+kubectl port-forward pod/al-nafi-development-webapp 8080:8080
+kubectl port-forward pod/al-nafi-production-webapp 8081:8080
+
+
+
+
+kubectl describe svc alnafi-dev-service
+Name:                     alnafi-dev-service
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 app=development,tier=production
+Type:                     NodePort
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.96.124.144
+IPs:                      10.96.124.144
+Port:                     <unset>  8080/TCP
+TargetPort:               8080/TCP
+NodePort:                 <unset>  30080/TCP
+Endpoints:                10.244.1.6:8080,10.244.2.7:8080
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Internal Traffic Policy:  Cluster
+Events:                   <none>
+
+
+
+
+curl http://localhost:8080
+<!doctype html>
+<title>Hello from Flask</title>
+<body style="background: #16a085;"></body>
+<div style="color: #e4e4e4;
+    text-align:  center;
+    height: 90px;
+    vertical-align:  middle;">
+
+  <h1>Hello from al-nafi-development-webapp!</h1>
+
+
+
+
+curl http://localhost:8081
+<!doctype html>
+<title>Hello from Flask</title>
+<body style="background: #16a085;"></body>
+<div style="color: #e4e4e4;
+    text-align:  center;
+    height: 90px;
+    vertical-align:  middle;">
+
+  <h1>Hello from al-nafi-production-webapp!</h1>
+
+
+
+
+-----------------------------------------------
+
+
+cat alnafi-prod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: al-nafi-production-webapp
+  labels:
+    tier: production
+    app: development
+spec:
+  containers:
+  - name: production-webapp
+    image: kodekloud/webapp-delayed-start
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+    env:
+     - name: APP_START_DELAY
+       value: "180"
+    readinessProbe:
+      httpget:
+        path: /ready
+        port: 8080
+
+
+ kubectl replace --force -f alnafi-prod.yaml
+pod/al-nafi-production-webapp replaced
+[root@client1 ahmad]# kubectl get po
+NAME                         READY   STATUS    RESTARTS   AGE
+al-nafi-development-webapp   1/1     Running   0          36m
+al-nafi-production-webapp    0/1     Running   0          10s
+
+
+
+kubectl port-forward pod/al-nafi-development-webapp  8080:8080
+Forwarding from 127.0.0.1:8080 -> 8080
+Forwarding from [::1]:8080 -> 8080
+Handling connection for 8080
+
+ curl http://localhost:8080
+<!doctype html>
+<title>Hello from Flask</title>
+<body style="background: #16a085;"></body>
+<div style="color: #e4e4e4;
+    text-align:  center;
+    height: 90px;
+    vertical-align:  middle;">
+
+  <h1>Hello from al-nafi-development-webapp!</h1>
+
+
+
+
+kubectl port-forward pod/al-nafi-production-webapp 8081:8080
+Forwarding from 127.0.0.1:8081 -> 8080
+Forwarding from [::1]:8081 -> 8080
+
+
+
+
+ curl http://localhost:8081
+curl: (7) Failed to connect to localhost port 8081: Connection refused
+
+
+
+ kubectl get po
+NAME                         READY   STATUS    RESTARTS   AGE
+al-nafi-development-webapp   1/1     Running   0          38m
+al-nafi-production-webapp    0/1     Running   0          3m6s
+[root@client1 ahmad]# kubectl get po
+NAME                         READY   STATUS    RESTARTS   AGE
+al-nafi-development-webapp   1/1     Running   0          38m
+al-nafi-production-webapp    1/1     Running   0          3m7s
+
+
+(Now the prod-app is up and running after the delayed time specified)
+
+
+ curl http://localhost:8081
+<!doctype html>
+<title>Hello from Flask</title>
+<body style="background: #16a085;"></body>
+<div style="color: #e4e4e4;
+    text-align:  center;
+    height: 90px;
+    vertical-align:  middle;">
+
+  <h1>Hello from al-nafi-production-webapp!</h1>
+
+(Now it is accessible)
+
+-----------------------------------------------
+
+We can crash the prod server in Minikube cluster env (node-internal-ip:nodeport-of-service/crash)
+
+
+curl http://localhost:8081/crash
+Message from al-nafi-production-webapp : Mayday! Mayday! Going to crash!
+
+[root@client1 ahmad]# kubectl get po
+NAME                         READY   STATUS    RESTARTS      AGE
+al-nafi-development-webapp   1/1     Running   0             82m
+al-nafi-production-webapp    0/1     Running   1 (12s ago)   46m
+
+
+[root@client1 ahmad]# curl http://localhost:8081
+curl: (52) Empty reply from server
+
+
+-----------------------------------------------
+
+curl http://localhost:8080/freeze
+
+
+curl http://localhost:8080
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<title>500 Internal Server Error</title>
+<h1>Internal Server Error</h1>
+<p>The server encountered an internal error and was unable to complete your request.  Either the server is overloaded or there is an error in the application.</p>
+[root@client1 ahmad]# kubectl get po
+NAME                         READY   STATUS    RESTARTS        AGE
+al-nafi-development-webapp   1/1     Running   0               87m
+al-nafi-production-webapp    1/1     Running   1 (5m39s ago)   51m
+
+
+
+-----------------------------------------------
+
+
+cat alnafi-dev.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: al-nafi-development-webapp
+  labels:
+    app: development
+    tier: production
+spec:
+  containers:
+  - name: development-webapp
+    image: kodekloud/webapp-delayed-start
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+    livenessProbe:
+      httpGet:
+        path: /live
+        port: 8080
+
+
+
+
+
+[root@client1 ahmad]# vim alnafi-prod.yaml
+cat alnafi-prod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: al-nafi-production-webapp
+  labels:
+    tier: production
+    app: development
+spec:
+  containers:
+  - name: production-webapp
+    image: kodekloud/webapp-delayed-start
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+    env:
+     - name: APP_START_DELAY
+       value: "120"
+    readinessProbe:
+      httpGet:
+        path: /ready
+        port: 8080
+    livenessProbe:
+      httpGet:
+        path: /live
+        port: 8080
+
+
+
+
+kubectl replace --force -f alnafi-prod.yaml
+pod "al-nafi-production-webapp" deleted
+pod/al-nafi-production-webapp replaced
+[root@client1 ahmad]# kubectl replace --force -f alnafi-dev.yaml
+pod "al-nafi-development-webapp" deleted
+pod/al-nafi-development-webapp replaced
+[root@client1 ahmad]# kubectl get po
+NAME                         READY   STATUS    RESTARTS   AGE
+al-nafi-development-webapp   1/1     Running   0          8s
+al-nafi-production-webapp    0/1     Running   0          51s
+[root@client1 ahmad]# kubectl get po
+NAME                         READY   STATUS    RESTARTS   AGE
+al-nafi-development-webapp   1/1     Running   0          12s
+al-nafi-production-webapp    0/1     Running   0          55s
+[root@client1 ahmad]# kubectl get po
+NAME                         READY   STATUS    RESTARTS   AGE
+al-nafi-development-webapp   1/1     Running   0          16s
+al-nafi-production-webapp    0/1     Running   0          59s
+[root@client1 ahmad]# kubectl get po
+NAME                         READY   STATUS    RESTARTS     AGE
+al-nafi-development-webapp   1/1     Running   0            20s
+al-nafi-production-webapp    0/1     Running   1 (2s ago)   63s
+
+
+
+
+-----------------------------------------------
+
+cat alnafi-prod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: al-nafi-production-webapp
+  labels:
+    tier: production
+    app: development
+spec:
+  containers:
+  - name: production-webapp
+    image: kodekloud/webapp-delayed-start
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+    env:
+     - name: APP_START_DELAY
+       value: "120"
+    readinessProbe:
+      httpGet:
+        path: /ready
+        port: 8080
+    livenessProbe:
+      httpGet:
+        path: /live
+        port: 8080
+      periodSeconds: 3
+      initialDelaySeconds: 130
+
+
+
+
+
+
+kubectl replace --force -f alnafi-prod.yaml
+pod "al-nafi-production-webapp" deleted
+pod/al-nafi-production-webapp replaced
+
+
+
+
+
+ kubectl get po
+NAME                         READY   STATUS    RESTARTS   AGE
+al-nafi-development-webapp   1/1     Running   0          61m
+al-nafi-production-webapp    0/1     Running   0          107s
+[root@client1 ahmad]# curl http://localhost:8081
+curl: (52) Empty reply from server
+
+
+
+ kubectl get po
+NAME                         READY   STATUS    RESTARTS   AGE
+al-nafi-development-webapp   1/1     Running   0          63m
+al-nafi-production-webapp    1/1     Running   0          3m55s
+
+[root@client1 ahmad]# curl http://localhost:8081
+<!doctype html>
+<title>Hello from Flask</title>
+<body style="background: #16a085;"></body>
+<div style="color: #e4e4e4;
+    text-align:  center;
+    height: 90px;
+    vertical-align:  middle;">
+
+  <h1>Hello from al-nafi-production-webapp!</h1>
+
+
+
+(Means after 2 min page is accessible)
+
+Also imp point that initialDelaySeconds: time should be higher than APP_START_DELAY!!
+-----------------------------------------------
+
+
+
+-----------------------------------------------
+
+
+
+-----------------------------------------------
+

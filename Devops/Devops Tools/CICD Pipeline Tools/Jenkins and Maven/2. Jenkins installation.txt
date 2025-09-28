@@ -1,0 +1,25 @@
+
+
+https://www.jenkins.io/doc/book/installing/
+
+
+
+(If firewall is active -- in my case firewall is disabled)
+sudo firewall-cmd --permanent --add-port=8080/tcp
+sudo firewall-cmd --reload
+
+-- If we are using aws ec2 instance then have to allow 8080 trafic to pass from firewall as well
+
+
+
+http://localhost:8080
+
+
+
+[root@master-ansible /]# cat /var/lib/jenkins/secrets/initialAdminPassword
+0df0b1**********6ce0e9b3a110
+
+Install basic or manual jenkins, set username and password and jenkins will be ready to use!
+
+
+

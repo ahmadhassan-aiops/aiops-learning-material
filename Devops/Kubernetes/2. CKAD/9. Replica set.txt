@@ -1,0 +1,103 @@
+-----------------------------------------------------
+
+[root@client1 ahmad]# cat replicaset.yaml
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: myapp-replicaset
+  labels:
+    app: frontend-replicaset
+    tier: development
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      name: al-nafi
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: alpha
+        image: nginx
+
+
+[root@client1 ahmad]# cat single-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod
+  labels:
+    app: myapp
+spec:
+  containers:
+  - name: gama
+    image: nginx
+
+
+
+-----------------------------------------------------
+
+[root@client1 ahmad]# kubectl apply -f single-pod.yaml
+pod/test-pod created
+[root@client1 ahmad]# kubectl apply -f replicaset.yaml
+replicaset.apps/myapp-replicaset created
+[root@client1 ahmad]# kubectl get rs
+NAME               DESIRED   CURRENT   READY   AGE
+myapp-replicaset   5         5         5       13s
+[root@client1 ahmad]#
+
+
+-----------------------------------------------------
+[root@client1 ahmad]# kubectl get pods
+NAME                     READY   STATUS    RESTARTS   AGE
+myapp-replicaset-585vw   1/1     Running   0          70s
+myapp-replicaset-hb8bd   1/1     Running   0          70s
+myapp-replicaset-qw4cb   1/1     Running   0          70s
+myapp-replicaset-vqh5q   1/1     Running   0          70s
+test-pod                 1/1     Running   0          81s
+
+
+-----------------------------------------------------
+Reason : Replicaset recognize already present pod and thus create only 4 additional pods to meet 5 pods criteria 
+-----------------------------------------------------
+
+
+​The behavior you've observed—where the ReplicaSet created only four additional pods instead of five—is due to how Kubernetes controllers 
+manage pod replicas. When you applied the replicaset.yaml file specifying five replicas, Kubernetes checked for existing pods that match the 
+ReplicaSet's selector criteria. Since the test-pod already existed and had matching labels (app: myapp), the ReplicaSet considered it as one of 
+the desired replicas and thus launched only four new pods to meet the total count of five.​
+
+This mechanism ensures efficient resource utilization by preventing the creation of duplicate pods when suitable ones are already running.​
+
+Regarding the differences between ReplicationController (RC) and ReplicaSet (RS):​
+
+Both RC and RS are Kubernetes controllers designed to maintain a specified number of pod replicas. 
+The primary distinction lies in their selector capabilities. ReplicationControllers use equality-based selectors, 
+which match pods with exact label values. In contrast, ReplicaSets support both equality-based and set-based selectors, 
+allowing for more flexible and expressive matching criteria. Additionally, ReplicaSets are the successors to ReplicationControllers and are 
+typically managed by Deployments, which provide advanced features like rolling updates and rollbacks. As a result, 
+Deployments and ReplicaSets are preferred in modern Kubernetes deployments over the older ReplicationControllers
+
+
+-----------------------------------------------------
+To have a pod automatically managed by a ReplicaSet, either:
+
+1. Let the RS create the pods itself, or
+2. Pre-create pods before the RS with matching labels and no ownerReference.
+
+
+-----------------------------------------------------
+
+A ReplicaSet (RS) will only manage pods it created itself or adopt existing pods that have matching labels **and** no existing `ownerReference` 
+(i.e., are not already managed by another controller). This means you can create a standalone pod with the same labels **before** applying the RS manifest,
+and the RS will adopt it and create fewer pods to meet the replica count. However, if you create a pod **after** the RS is already managing 
+its desired replicas, the RS will **not** adopt it—even if the labels match—because it assumes control only over pods 
+it created or those without an owner.
+
+-----------------------------------------------------
+
+
+-----------------------------------------------------

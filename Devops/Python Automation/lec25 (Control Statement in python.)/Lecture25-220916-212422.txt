@@ -1,0 +1,128 @@
+
+
+
+Lecture 25 :
+
+
+Lecture 23 task solution:-
+Task 1 :-
+root@abdealidodia:~/lect25# cat task.py
+import os
+import platform
+
+if platform.system() == 'Linux':
+    for i in os.listdir("/root/lect25"):
+        if i.endswith(".txt"):
+            print(i)
+else:
+    for i in os.listdir("c:\\"):
+        if i.endswith(".txt"):
+            print(i)
+
+root@abdealidodia:~/lect25# python3 task.py
+abd.txt
+abd1.txt
+test.txt
+
+
+
+
+
+Task 2 :-
+import os
+find_file=input("Enter search file")
+for roots,dirs,files in os.walk("/"):
+    for i in files:
+        if i==find_file:
+            print(os.path.join(roots,i))
+
+# python3 task1.py
+Enter search filemylecture25.txt
+/root/lect25/mylecture25.txt
+
+
+Control statement in python 
+Break :-
+Break is use for exit your loop.
+break command is use for terminate/exit your current 
+
+Continue :-
+Continue will use skip the current and move to next steps.
+
+i=1
+while True:
+    print(i)
+    i=i+1
+    if i >=5:
+        break
+
+
+o/p:-
+1
+2
+3
+4
+
+
+
+for i in range(1,10):
+    if i==5:
+        break
+    else:
+        print(i)
+
+
+1
+2
+3
+4
+
+
+
+for i in range(1,10):
+    if i==5:
+        continue
+    else:
+        print(i)
+
+o/p:
+1
+2
+3
+4
+6
+7
+8
+9
+
+Pass statement :-
+python pass is a null statement , when the python intrpreter comes across pass statement, it does nothing and is ignored.
+
+Pass statement use as placeholder inside loops, function , class, if statement implament later. 
+
+for i in range(1,10):
+    if i==5:
+  
+
+You will get error bevcause you need pass statement 
+
+for i in range(1,10):
+    if i==5:
+        pass
+
+
+for i in range(1,10):
+    if i==5:
+        pass
+        print(i)
+
+
+
+for i in range(1,10):
+    if i==5:
+        break
+        print(i)
+
+
+
+

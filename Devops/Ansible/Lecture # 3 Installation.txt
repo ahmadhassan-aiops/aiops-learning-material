@@ -1,0 +1,38 @@
+
+
+https://docs.ansible.com/
+https://docs.ansible.com/ansible/2.9/installation_guide/intro_installation.html#installing-ansible-on-rhel-centos-or-fedora
+
+Types:
+1. rpm or yum/apt-get
+2. pip
+3. compile source code install
+
+--------------------------------
+yum install ansible
+----------------------------------
+
+[root@client1 ahmad]# ansible --version
+ansible [core 2.14.18]
+  config file = /etc/ansible/ansible.cfg
+  configured module search path = ['/root/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/lib/python3.9/site-packages/ansible
+  ansible collection location = /root/.ansible/collections:/usr/share/ansible/collections
+  executable location = /usr/bin/ansible
+  python version = 3.9.21 (main, Dec  4 2024, 00:00:00) [GCC 11.5.0 20240719 (Red Hat 11.5.0-2)] (/usr/bin/python3)
+  jinja version = 3.1.2
+  libyaml = True
+
+----------------------------------
+[root@client1 ahmad]# cd /etc/ansible/
+[root@client1 ansible]# ls
+ansible.cfg  hosts  roles
+----------------------------------
+
+[root@client1 ansible]# tree
+.
+├── ansible.cfg
+├── hosts
+└── roles
+
+1 directory, 2 files

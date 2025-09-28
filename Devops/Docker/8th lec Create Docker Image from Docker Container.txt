@@ -1,0 +1,40 @@
+Lecture 8 : Docker Notes
+
+
+
+Docker commit : It will be create docker image from docker container
+
+#docker commit <OLD container> <Newimage:tag>
+
+Question Time:
+
+Q: I take image ubuntu , Create the container from Ubuntu Image and when i run the ubuntu container the it exited
+
+Can i run this command :-
+
+docker commit <Ubuntu containerID> <Dockerimage>
+
+
+Q: Will the image-ID same ? means Ubuntu imageID and New image created both are same? docker commit command
+# docker run --name ali alpine
+containerID:cfebc166741b
+alpineImage: e9adb5357e84
+commit imageID: 01348df28fbc
+
+
+
+Q: Alpine image se --> 2 container banaya --> ek ka name rakha cont1 , cont2  --> docker commit kar diya , cont1 ka image1 and cont2 ka image2 diya hain , to image1 and image2 ka image ID same hoga or different ?
+Answer : Different
+
+
+
+
+#docker build .
+aapki image update ho jayega --> aapki image ID change --> jis image ka naam nahi hota hain to khali image ID ho ta he usko bolte dangling images
+
+If repo and tag name is none but image ID present in your docker images then its called dangling images
+# docker images  --filter "dangling=true"
+
+
+#docker rm $(docker ps -a -q)  (to remove all containers)
+#docker rm $(docker images -q)  (to remove all images)

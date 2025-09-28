@@ -1,0 +1,90 @@
+
+
+
+Lecture 33":
+
+
+Solution :
+
+import os
+import datetime
+
+find_file=input("Enter the search:")
+
+for roots,dirs,files in os.walk("/root/lect25/"):
+    for i in files:
+        if i==find_file:
+            mypath=(os.path.join(roots,i))
+            mycustomdate=datetime.datetime.fromtimestamp(os.path.getctime(mypath))
+            mydate=(mycustomdate.strftime("%B %d %Y"))
+            mytime=(mycustomdate.strftime("%I:%M:%S %p"))
+            print(f"We found the file {mypath} : \n {mypath} date is : {mydate} \n {mypath} time is : {mytime}")
+
+
+
+
+File handling :-
+File will create from python method and write any contents :
+
+
+file=open('abd.txt')
+data=file.read()
+print(data)
+
+
+
+
+file=open('abd.txt')
+data=file.read()
+print(data)
+file.close()
+
+OR 
+
+with open('abd.txt') as file:
+    data=file.read()
+    print(data)
+
+
+with open('abd.txt') as file:
+    print(file.read())
+
+
+
+
+with open('abd.txt') as file:
+    data=file.readlines()
+    print(data)
+
+['My name is Abdeali Dodiya\n', 'We are learning Python.']
+
+
+
+
+with open('abd.txt') as file:
+    data=file.readlines()
+    #print(data)
+    for i in data:
+        word=i.split()
+        print(word)
+
+O/p:-
+['My', 'name', 'is', 'Abdeali', 'Dodiya']
+['We', 'are', 'learning', 'Python.']
+
+
+Absolute path :- Whihch is always begin with root folder.Ex : /root/Lect25/abd.txt
+Relative path :- Which is relative to programs current working directory. ex: abd.txt
+
+
+
+with open('C:\\Users\\AbdealiDodiya\\Desktop\\DevOps\\Python\\Lecture 33\\abd.txt') as file:
+    data=file.readlines()
+    #print(data)
+    for i in data:
+        word=i.split()
+        print(word)
+
+
+
+

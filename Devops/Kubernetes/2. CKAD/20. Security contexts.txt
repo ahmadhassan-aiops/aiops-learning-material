@@ -1,0 +1,201 @@
+
+Security:
+
+In Kubernetes, securityContext can be defined at both the pod and container level, and while they share overlapping fields like 
+runAsUser, fsGroup, and readOnlyRootFilesystem, capabilities can only be set at the container level using the capabilities field inside the 
+container's securityContext. These capabilities (like NET_ADMIN, SYS_TIME, etc.) allow you to add or drop specific Linux kernel privileges, 
+giving precise control over what each container is allowed to do — enhancing security by dropping unnecessary privileges 
+(drop: ["ALL"] being a common baseline) and selectively adding only what's needed. When both pod- and container-level securityContext are used, 
+pod-level fields act as defaults, but container-level settings (including capabilities) take precedence where defined, 
+allowing secure defaults with container-specific overrides.
+
+
+
+-----------------------------------------------
+
+cat test-pod1.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod
+spec:
+  containers:
+  - name: ubuntu
+    image: ubuntu
+    command: ["sleep", "5000"]
+
+[root@client1 ahmad]# kubectl apply -f test-pod1.yaml
+pod/test-pod created
+[root@client1 ahmad]# kubectl get po
+NAME       READY   STATUS              RESTARTS   AGE
+test-pod   0/1     ContainerCreating   0          6s
+
+
+-----------------------------------------------
+
+kubectl exec test-pod -- whoami
+root
+[root@client1 ahmad]# kubectl exec test-pod -- pwd
+/
+
+
+-----------------------------------------------
+
+ cat test-pod2.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod-2
+spec:
+  containers:
+  - name: ubuntu-conatiner
+    image: ubuntu
+    command: ["sleep", "5000"]
+    securityContext:
+      runAsUser: 1002
+
+[root@client1 ahmad]# kubectl apply -f test-pod2.yaml
+pod/test-pod-2 created
+[root@client1 ahmad]# kubectl get po
+NAME         READY   STATUS    RESTARTS   AGE
+test-pod     1/1     Running   0          6m17s
+test-pod-2   1/1     Running   0          5s
+[root@client1 ahmad]# kubectl exec test-pod-2 -- whoami
+whoami: cannot find name for user ID 1002
+command terminated with exit code 1
+[root@client1 ahmad]# kubectl exec test-pod-2 -- pwd
+/
+
+
+-----------------------------------------------
+
+ vim 3-test-pod
+[root@client1 ahmad]# cat 3-test-pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod-3
+spec:
+  securityContext:
+    runAsUser: 1000
+  containers:
+  - name: ubuntu-conatiner
+    image: ubuntu
+    command: ["sleep", "5000"]
+    securityContext:
+      runAsUser: 1008
+
+[root@client1 ahmad]# kubectl apply -f 3-test-pod
+pod/test-pod-3 created
+[root@client1 ahmad]# kubectl get po
+NAME         READY   STATUS              RESTARTS   AGE
+test-pod     1/1     Running             0          14m
+test-pod-2   1/1     Running             0          7m48s
+test-pod-3   0/1     ContainerCreating   0          4s
+[root@client1 ahmad]# kubectl get po
+NAME         READY   STATUS    RESTARTS   AGE
+test-pod     1/1     Running   0          14m
+test-pod-2   1/1     Running   0          8m6s
+test-pod-3   1/1     Running   0          22s
+[root@client1 ahmad]# kubectl exec test-pod-3 -- whoami
+whoami: cannot find name for user ID 1008
+command terminated with exit code 1
+
+
+(Container level user is considered)
+
+-----------------------------------------------
+
+
+vim 4-test-pod
+[root@client1 ahmad]# cat 4-test-pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod-4
+spec:
+  securityContext:
+    runAsUser: 1000
+  containers:
+  - name: ubuntu-conatiner
+    image: ubuntu
+    command: ["sleep", "5000"]
+    securityContext:
+      runAsUser: 1006
+
+  - name: ubuntu-sidecar
+    image: ubuntu
+    command:
+     - "sleep"
+     - "4800"
+
+[root@client1 ahmad]# kubectl apply -f 4-test-pod
+pod/test-pod-4 created
+[root@client1 ahmad]# kubectl get po
+NAME         READY   STATUS    RESTARTS   AGE
+test-pod     1/1     Running   0          20m
+test-pod-2   1/1     Running   0          14m
+test-pod-3   1/1     Running   0          6m58s
+test-pod-4   2/2     Running   0          6s
+[root@client1 ahmad]#
+[root@client1 ahmad]# kubectl exec test-pod-4 -- whoami
+Defaulted container "ubuntu-conatiner" out of: ubuntu-conatiner, ubuntu-sidecar
+whoami: cannot find name for user ID 1006
+command terminated with exit code 1
+
+
+ kubectl exec test-pod-4 -c ubuntu-conatiner -- whoami
+whoami: cannot find name for user ID 1006
+command terminated with exit code 1
+[root@client1 ahmad]# kubectl exec test-pod-4 -c ubuntu-sidecar -- whoami
+ubuntu
+
+
+(ubuntu-sidecar inherits UID 1000 → mapped to ubuntu → returns ubuntu)
+
+
+-----------------------------------------------
+
+vim 5-test-pod.yaml
+[root@client1 ahmad]# cat 5-test-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod-4
+spec:
+  securityContext:
+    runAsUser: 1000
+  containers:
+  - name: ubuntu-conatiner
+    image: ubuntu
+    command: ["sleep", "5000"]
+    securityContext:
+      runAsUser: 1006
+      capabilities:
+        add:
+         - ["NET_ADMIN"]
+
+  - name: ubuntu-sidecar
+    image: ubuntu
+    command:
+     - "sleep"
+     - "4800"
+
+
+(Can also provide specific previllages under capabilities:) 
+
+-----------------------------------------------
+
+ kubectl exec -it test-pod-4 -- bash
+Defaulted container "ubuntu-conatiner" out of: ubuntu-conatiner, ubuntu-sidecar
+I have no name!@test-pod-4:/$ exit
+exit
+[root@client1 ahmad]# kubectl exec -it test-pod -- bash
+root@test-pod:/#
+
+
+(we can see the user name diff in each pod)
+
+-----------------------------------------------
+
+

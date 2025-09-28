@@ -1,0 +1,106 @@
+
+
+
+
+
+=====================================================================================
+
+
+[ahmad@master-ansible terraform]$ ls
+aws  awscliv2.zip  terraform.tfstate  terraform.tfstate.backup
+
+
+[ahmad@master-ansible terraform]$ ssh-keygen -t rsa
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/ahmad/.ssh/id_rsa): ./id_rsa
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in ./id_rsa
+Your public key has been saved in ./id_rsa.pub
+The key fingerprint is:
+SHA256:keS7MtRPs95WANC+lBdUdVjRAAAH5uhQ8PHLZYsgzmk ahmad@master-ansible
+The key's randomart image is:
++---[RSA 3072]----+
+|    ..o *=ooooo**|
+|     o O oo . . o|
+|    o + *.oo .   |
+|   o = + B+.o    |
+|    E o S.+o .   |
+|   . .   +.o  .  |
+|      o . o  .   |
+|       o . ..    |
+|          ...    |
++----[SHA256]-----+
+
+
+[ahmad@master-ansible terraform]$ ls
+aws  awscliv2.zip  id_rsa  id_rsa.pub  terraform.tfstate  terraform.tfstate.backup
+[ahmad@master-ansible terraform]$
+
+
+=====================================================================================
+
+
+
+[root@master-ansible terraform]# cat providers.tf
+provider "aws" {
+  region                  = "us-east-1"
+}
+
+
+
+=====================================================================================
+
+
+
+[root@master-ansible terraform]# cat key.tf
+# Use your already generated public key
+
+	(Here we are using the file function to fetch file path for key)
+
+
+resource "aws_key_pair" "mykey" {
+  key_name   = "my-terraform-key"
+  public_key = file("${path.module}/id_rsa.pub")
+}
+
+
+
+=====================================================================================
+
+
+
+[root@master-ansible terraform]# cat instance.tf
+resource "aws_instance" "myec2" {
+  ami           = "ami-0bbdd8c17ed981ef9"   
+  instance_type = "t2.micro"
+  key_name      = aws_key_pair.mykey.key_name
+
+  tags = {
+    Name = "Terraform-Instance"
+  }
+}
+
+
+
+=====================================================================================
+
+terraform init 
+terraform apply 
+
+
+		(Here the username of your machine is important -- we cannot use the by default ec-2 user)
+
+
+ssh -i id_rsa ubuntu@52.23.201.129
+
+
+(We can also connect directly from aws connect option)
+
+
+=====================================================================================
+
+
+
+
+

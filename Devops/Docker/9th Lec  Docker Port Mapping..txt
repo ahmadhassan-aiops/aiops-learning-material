@@ -1,0 +1,39 @@
+Lecture 9 : Docker Notes
+
+systemctl stop docker.socket
+root@abdealidodia:~# docker ps -a
+Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+
+# docker run -it -d -p 9000:80 --name mywebserver nginx:latest
+
+-d --> Detach mode
+-a is called attach -->
+
+# docker run --name web-NEW nginx
+Above command will not create any binding between host and container port
+
+For mapping , We need to use below command
+docker run --name web-NEW -p 9000:80 nginx
+
+-p flag for port mapping
+
+docker run -it -p 80:80 --name web1 nginx --> Running ? : YES
+docker run -it -p 80:80 --name web2 nginx --> Running ?  : No
+--> Exit status
+
+docker run -it -p 8080:80 --name web2 nginx --> Running ? No (Conflict name)
+docker run -it -p 8080:80 --name web3 nginx --> running ? YES
+docker run -it -p 8001:80 --name web4 nginx --> Running ? YES
+
+
+Homework:-
+1. Socket read about it
+2. IP tables / Networking as per linux (IP address / Subnet : Good to have)
+3. Docker push documents --> Refer all images
+docker push
+
+
+1. Docker components
+2. docker socker file
+3. docker port mapping using nginx images
+4. Docker conflict in container name or port

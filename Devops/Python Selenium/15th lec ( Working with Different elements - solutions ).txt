@@ -1,0 +1,280 @@
+#####################
+TASK 1 for Dropdown
+
+I want to check how many language available in this select tag. 
+https://www.wikipedia.org/
+
+Output : Total number of option elements is : XX
+
+
+
+TASK 2 for Anchor tag :-
+
+Please count the total how many link available in below page.
+Link :- https://dev.alnafi.com/
+
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get("https://www.wikipedia.org/")
+driver.maximize_window()
+
+options_tag = driver.find_element(By.TAG_NAME,"option")
+print(len(options_tag))
+
+Error :-
+TypeError: object of type 'WebElement' has no len()
+
+###############################
+TASK1 :- solyution 
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get("https://www.wikipedia.org/")
+driver.maximize_window()
+
+options_tag = driver.find_elements(By.TAG_NAME,"option")
+print(len(options_tag))
+
+driver.quit()
+
+Output :-
+71
+
+
+#####################
+TASK 2 :-
+Solution
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support.select import Select
+from webdriver_manager.chrome import ChromeDriverManager
+
+# Initialize Chrome WebDriver with Service
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+# Navigate to the Wikipedia homepage
+driver.get("https://www.wikipedia.org/")
+driver.maximize_window()
+
+options_tag = driver.find_elements(By.TAG_NAME,"option")
+print(len(options_tag))
+
+
+Ouput :-
+92
+
+
+
+
+
+
+Enhacnements on task :-
+
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+# Initialize Chrome WebDriver with Service
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+# Navigate to the Wikipedia homepage
+driver.get("https://www.wikipedia.org/")
+driver.maximize_window()
+
+# Find all <option> elements in the dropdown
+options = driver.find_elements(By.TAG_NAME, "option")
+
+# Print the number of options
+print(f"Number of options: {len(options)}")
+
+# Optional: Print the text of each option
+for option in options:
+    print(option.text)
+
+# Wait for a few seconds and quit the browser
+time.sleep(5)
+driver.quit()
+
+
+Output : You will received weird op
+
+#################
+
+
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get("https://www.wikipedia.org/")
+driver.maximize_window()
+
+options_tag = driver.find_elements(By.TAG_NAME,"option")
+for i in options_tag:
+    print("Text is ",i.text)
+print(len(options_tag))
+
+driver.quit()
+
+
+##############
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get("https://www.wikipedia.org/")
+driver.maximize_window()
+
+options_tag = driver.find_elements(By.TAG_NAME,"option")
+for i in options_tag:
+    print("Text is ",i.text, "The languages is ",i.get_attribute("lang"))
+print(len(options_tag))
+
+driver.quit()
+
+#########################
+
+
+
+
+
+
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get("https://dev.alnafi.com/")
+driver.maximize_window()
+
+anchors_tag = driver.find_elements(By.TAG_NAME,"a")
+for links in anchors_tag:
+    print("Text is : ",links.text, "Link is :", links.get_attribute("href"))
+print(len(anchors_tag))
+
+driver.quit()
+
+
+
+################
+
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get("https://dev.alnafi.com/")
+driver.maximize_window()
+
+a_tag = driver.find_element(By.XPATH,'//*[@id="__nuxt"]/div/footer/div[1]/div[2]/div[2]')
+anchors_tag = a_tag.find_elements(By.TAG_NAME,"a")
+for links in anchors_tag:
+    print("Text is : ",links.text, "Link is :", links.get_attribute("href"))
+print(len(anchors_tag))
+
+driver.quit()
+
+
+
+####################
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get("https://dev.alnafi.com/")
+driver.maximize_window()
+
+a_tag = driver.find_element(By.XPATH,'//*[@id="__nuxt"]/div/footer/div[1]/div[2]/div[2]')
+anchors_tag = a_tag.find_elements(By.TAG_NAME,"a")
+print("4th ---------------------------------")
+print(a_tag.find_elements(By.TAG_NAME,"a").__getitem__(3).text)
+print("----------------------------------------------")
+for links in anchors_tag:
+    print("Text is : ",links.text, "Link is :", links.get_attribute("href"))
+print(len(anchors_tag))
+
+driver.quit()
+
+
+########
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get("https://dev.alnafi.com/")
+driver.maximize_window()
+
+a_tag = driver.find_element(By.XPATH,'//*[@id="__nuxt"]/div/footer/div[1]/div[2]/div[2]')
+anchors_tag = a_tag.find_elements(By.TAG_NAME,"a")
+
+mylinks=[]
+for links in anchors_tag:
+    print("Text is : ",links.text, "Link is :", links.get_attribute("href"))
+    mylinks.append(links.text)
+print(len(anchors_tag))
+print("4th Link-----------------------------")
+print(mylinks[3])
+print("------------------------------------")
+
+driver.quit()
+
+
+
+######################
+

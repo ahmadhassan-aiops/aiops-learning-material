@@ -1,0 +1,123 @@
+
+Lecture 22 :-
+
+Mouse over effect :-
+
+https://www.selenium.dev/
+
+https://www.selenium.dev/selenium/docs/api/py/index.html
+
+
+https://www.selenium.dev/selenium/docs/api/py/api.html
+
+
+Website : https://shopping.rediff.com/
+
+
+Error :-
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get('https://shopping.rediff.com/')
+driver.maximize_window()
+driver.implicitly_wait(10)
+
+#driver.find_element(By.XPATH,'/html/body/div[1]/div[2]/div[3]/div[1]/a[2]').click()
+driver.find_element(By.LINK_TEXT,'Bluetooth Headsets').click()
+
+
+time.sleep(5)
+
+driver.quit()
+
+
+##########################
+You need to import action chain 
+from selenium.webdriver import ActionChains
+
+actions = ActionChains(driver)
+
+Menu for mobiles : //*[@id="topcat3"]
+
+
+##############
+FINAl CODE :-
+import time
+from selenium import webdriver
+from selenium.webdriver import ActionChains
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get('https://shopping.rediff.com/')
+driver.maximize_window()
+driver.implicitly_wait(10)
+
+
+menu_bar = driver.find_element(By.XPATH,'//*[@id="topcat3"]')
+actions = ActionChains(driver)
+actions.move_to_element(menu_bar).perform()
+driver.find_element(By.XPATH,'/html/body/div[1]/div[2]/div[3]/div[1]/a[2]').click()
+time.sleep(5)
+
+driver.quit()
+
+
+################################
+import time
+from selenium import webdriver
+from selenium.webdriver import ActionChains
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get('https://www.flipkart.com')
+driver.maximize_window()
+driver.implicitly_wait(10)
+
+
+menu_bar = driver.find_element(By.XPATH,'/html/body/div/div/div[2]/div/div/div[4]/a/div[2]')
+actions = ActionChains(driver)
+actions.move_to_element(menu_bar).perform()
+driver.find_element(By.XPATH,'//*[@id="container"]/div/div[2]/div/div/div[4]/a/div[2]/div[2]/div[2]/div/div/div[2]/a[1]').click()
+time.sleep(5)
+
+driver.quit()
+
+
+
+########################
+
+
+
+Drag and drop_offset 
+import time
+from selenium import webdriver
+from selenium.webdriver import ActionChains
+from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+driver.get('https://www.flipkart.com/clothing-and-accessories/topwear/pr?sid=clo,ash&p[]=facets.ideal_for%255B%255D%3DMen&p[]=facets.ideal_for%255B%255D%3Dmen&otracker=categorytree&fm=neo%2Fmerchandising&iid=M_7288b3c5-4bb1-4dd0-9043-40090bf15929_1_372UD5BXDFYS_MC.AHHHWF67UPNB&otracker=hp_rich_navigation_1_1.navigationCard.RICH_NAVIGATION_Fashion~Men%2527s%2BTop%2BWear~All_AHHHWF67UPNB&otracker1=hp_rich_navigation_PINNED_neo%2Fmerchandising_NA_NAV_EXPANDABLE_navigationCard_cc_1_L2_view-all&cid=AHHHWF67UPNB')
+driver.maximize_window()
+driver.implicitly_wait(10)
+
+
+
+actions = ActionChains(driver)
+Slider_bar = driver.find_element(By.XPATH,'//*[@id="container"]/div/div[3]/div/div[1]/div/div/div/section[4]/div[3]/div[1]/div[2]/div')
+actions.drag_and_drop_by_offset(Slider_bar,-50,0).perform()
+time.sleep(5)
+
+driver.quit()
+
+##############
+
+

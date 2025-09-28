@@ -1,0 +1,723 @@
+Lecture 23 : AWK commands in Bash script.
+
+
+AWK :- 
+
+AWK is use for data manipulation , Searching , task run , action , data generating report
+
+AWK syntax:-
+filename OR command | awk option 'pattern {action}'
+OR
+awk option 'pattern {action}' filename
+
+AWK Options:-
+-F : Field Saparators.
+-f : Filename you need to specified
+
+# cat /etc/passwd  | awk '{ }'
+# cat /etc/passwd  | awk '{ print "Abdeali" }'
+
+AWK Variables:-
+1. $0, $1 , $2 $3 $4 so on
+2. NR --> Number of records
+3. NF --> Number of Fields
+4. FILE
+
+
+
+
+
+
+# cat userdata.txt
+id Name Age username
+1 Ali 27 ali
+2 ABD 35 abd
+3 Kazim 33 kazim
+4 Abdeali 32 abdeali
+
+
+# cat userdata.txt | awk '{print  }'
+id Name Age username
+1 Ali 27 ali
+2 ABD 35 abd
+3 Kazim 33 kazim
+4 Abdeali 32 abdeali
+
+
+# cat userdata.txt | awk '{print $0 }'
+id Name Age username
+1 Ali 27 ali
+2 ABD 35 abd
+3 Kazim 33 kazim
+4 Abdeali 32 abdeali
+
+
+
+# cat userdata.txt | awk '{print $2}'
+Name
+Ali
+ABD
+Kazim
+Abdeali
+
+
+# cat userdata.txt | awk '{print $1,$2}'
+id Name
+1 Ali
+2 ABD
+3 Kazim
+
+
+# cat userdata.txt | awk '{print $2,$3}'
+Name Age
+Ali 27
+ABD 35
+Kazim 33
+Abdeali 32
+
+
+
+
+# cat userdata.txt | awk '{print NR}'
+1
+2
+3
+4
+5
+
+
+# cat userdata.txt  | awk '{print NR $1}'
+1id
+21
+32
+43
+54
+
+
+
+
+# cat userdata.txt  | awk '{print NR "-->" $1}'
+1-->id
+2-->1
+3-->2
+4-->3
+5-->4
+
+
+
+# cat userdata.txt  | awk '{print NR "-->" $0,NF}'
+1-->id Name Age username DOB 5
+2-->1 Ali 27 ali 11 5
+3-->2 ABD 35 abd 12 5
+4-->3 Kazim 33 kazim 13 5
+5-->4 Abdeali 32 abdeali 14 5
+
+
+root@abdealidodia:~/bash/lect23# vim userdata.txt
+root@abdealidodia:~/bash/lect23# cat userdata.txt  | awk '{print NR "-->" $0,NF}'
+1-->id Name Age username DOB 5
+2-->1 Ali 27 ali 11 5
+3-->2 ABD 35 abd 12 5
+4-->3 Kazim 33 kazim 13 12 6
+5-->4 Abdeali 32 abdeali 14 15 12 14 8
+
+
+root@abdealidodia:~/bash/lect23# cat userdata.txt  | awk '{print NR "-->" $0,$NF}'
+1-->id Name Age username DOB DOB
+2-->1 Ali 27 ali 11 11
+3-->2 ABD 35 abd 12 12
+4-->3 Kazim 33 kazim 13 12 12
+5-->4 Abdeali 32 abdeali 14 15 12 14 14
+
+root@abdealidodia:~/bash/lect23# cat userdata.txt  | awk '{print NR "-->" $0}'
+1-->id Name Age username DOB
+2-->1 Ali 27 ali 11
+3-->2 ABD 35 abd 12
+4-->3 Kazim 33 kazim 13 12
+5-->4 Abdeali 32 abdeali 14 15 12 14
+
+root@abdealidodia:~/bash/lect23# cat userdata.txt  | awk '{print $NR "-->" $0}'
+id-->id Name Age username DOB
+Ali-->1 Ali 27 ali 11
+35-->2 ABD 35 abd 12
+kazim-->3 Kazim 33 kazim 13 12
+14-->4 Abdeali 32 abdeali 14 15 12 14
+
+
+# cat userdata.txt  | awk NR==1
+id Name Age username DOB
+
+
+# cat userdata.txt  | awk 'NR==1'
+id Name Age username DOB
+
+# cat userdata.txt  | awk 'NR==1 {print $2}'
+Name
+
+
+# cat /etc/passwd | cut -d ":" -f 2
+
+
+# cat /etc/passwd | awk '{print $1}'
+
+
+
+# cat /etc/passwd | awk -F ':' '{print $1}'
+# cat /etc/passwd | awk --field-separator=':' '{print $1}'
+
+
+# cat data.csv | awk -F "," ' /kazim/ {print $2}'
+
+# systemctl status apache2 | awk ' NR==3 {print$2}'
+
+
+
+Difference b/w GREP , Cut VS AWK
+GREP and CUT commands :-
+# apache2 -v | grep -E "version" | cut -d ":" -f 2 | cut -d "/" -f 2 | cut -d " " -f 1
+OR
+# apache2 -v | grep -E "version" | cut -d "/" -f 2 | cut -d " " -f 1
+
+AWK commands :-
+# apache2 -v | awk -F "/" 'NR==1 {print $2}' | awk -F " " '{print $1}'
+
+# apache2 -v | awk -F "/" '/version/ {print $2}' | awk -F " " '{print $1}'
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Lecture 24 : AWK script in Bash script.
+
+AWK will use two type of your requirement
+
+1. AWK command
+2. AWK scripting languages
+
+AWK script syntax:-
+filname | awk 'BEGIN {start_action} condition {action} END {stop_Action}'
+filename | awk -f <filename.awk>
+
+OFS : Output Field Separators
+
+
+
+# date | awk '{print $2,$3,$4}'
+16 July 2022
+root@abdealidodia:~/bash/lect24# date | awk 'OFS="-" {print $2,$3,$4}'
+16-July-2022
+root@abdealidodia:~/bash/lect24# date | awk 'OFS="/" {print $2,$3,$4}'
+16/July/2022
+
+
+
+# awk 'BEGIN {print "Hey, I am abdeali Dodiya"}'
+
+
+
+# cat simple.awk
+BEGIN {
+print " Hey , I am abdeali Dodiya"
+}
+root@abdealidodia:~/bash/lect24# awk -f simple.awk
+Hey , I am abdeali Dodiya
+
+
+# which awk
+/usr/bin/awk
+
+
+
+# cat simple.awk
+#!/usr/bin/awk -f
+BEGIN {
+print " Hey , I am abdeali Dodiya"
+
+}
+root@abdealidodia:~/bash/lect24# ./simple.awk
+Hey , I am abdeali Dodiya
+
+
+
+# who  | awk 'BEGIN {print "Active Session"} {print $1,$4}'
+Active Session
+abdeali 15:29
+aadmin 15:35
+
+# cat /etc/passwd | awk -F ":" '{print $1,$3,$6}'
+
+
+# cat /etc/passwd | awk -F ":" '$3 >=1000 {print $1,$3,$6}'
+
+
+#cat /etc/passwd | awk -F ":" '$3 >=1000 {print $1,$3,$6}' | wc -l
+
+# cat /etc/passwd | awk -F ":" '$3 >=1000 {print $1,$3,$6}' > mycurrentuser.txt
+
+
+
+
+# awk 'BEGIN { }'
+# awk 'BEGIN {ali=100 }'
+root@abdealidodia:~/bash/lect24# awk 'BEGIN {ali=100 print $ali }'
+awk: cmd. line:1: BEGIN {ali=100 print $ali }
+awk: cmd. line:1:                ^ syntax error
+
+
+root@abdealidodia:~/bash/lect24# awk 'BEGIN {ali=100 print ali }'
+awk: cmd. line:1: BEGIN {ali=100 print ali }
+awk: cmd. line:1:                ^ syntax error
+
+
+root@abdealidodia:~/bash/lect24# awk 'BEGIN {ali=100; print ali }'
+100
+
+
+root@abdealidodia:~/bash/lect24# awk 'BEGIN {ali=100; print $ali }'
+
+root@abdealidodia:~/bash/lect24# awk 'BEGIN {ali=100; print ali }'
+100
+
+
+
+
+-v --> Variable
+-f File
+-F --> sapartors
+# num=51
+root@abdealidodia:~/bash/lect24# awk -v n=100 'BEGIN { print n}'
+100
+root@abdealidodia:~/bash/lect24# awk -v n=101 'BEGIN { print n}'
+101
+root@abdealidodia:~/bash/lect24# awk -v n=num 'BEGIN { print n}'
+num
+root@abdealidodia:~/bash/lect24# awk -v n=$num 'BEGIN { print n}'
+51
+
+
+
+
+
+
+# cat /etc/passwd | awk 'BEGIN {print "Begin block"} /alnafi/ {print $0}  END {print "END Block"}'
+Begin block
+alnafi:x:1006:1008::/home/alnafi:/bin/bash
+END Block
+
+
+
+
+# echo "Abdeali ABD Ali"
+Abdeali ABD Ali
+root@abdealidodia:~/bash/lect24# echo "Abdeali ABD Ali"  | awk -F " " '{print $1}'
+Abdeali
+root@abdealidodia:~/bash/lect24# echo "Abdeali ABD Ali"  | awk -F " " '{print $2}'
+ABD
+root@abdealidodia:~/bash/lect24# echo "Abdeali ABD Ali"  | awk -F " " '{print $3}'
+Ali
+root@abdealidodia:~/bash/lect24# echo "Abdeali ABD Ali"  | awk -F ABD '{print $3}'
+
+root@abdealidodia:~/bash/lect24# echo "Abdeali ABD Ali"  | awk -F ABD '{print $1}'
+Abdeali
+root@abdealidodia:~/bash/lect24# echo "Abdeali ABD Ali"  | awk -F ABD '{print $2}'
+Ali
+
+
+
+
+# cat num.txt
+20
+1
+21
+16
+5
+21
+50
+70
+21
+89
+
+
+# cat num.txt | awk '{if ($1 >=30 ) print $1}'
+50
+70
+89
+45
+
+
+# cat num.txt | awk '{if ($1 <=30 ) print $1}'
+20
+1
+21
+16
+5
+21
+21
+
+
+
+
+# cat num.txt | awk '{if ($1 >=10 && $1 <=30 ) print $1}'
+20
+21
+16
+21
+21
+
+(Note : Apologies :-- in this lecture we use $i but its my fault we need to use $1 instead $i , Output will generated same because there are not any field use in this num.txt file so that we are not getting any error for that.  Once again sorry for that.)
+
+# awk 'BEGIN {for (i=1; i<=10; i++) print "The number", i}'
+
+
+# awk 'BEGIN {i=1; while (i <=10) {print "The number is :", i++}}'
+The number is : 1
+The number is : 2
+The number is : 3
+The number is : 4
+The number is : 5
+The number is : 6
+The number is : 7
+The number is : 8
+The number is : 9
+The number is : 10
+
+
+
+# ls -ltrh | awk '{print $9,$5}'
+
+
+
+# ls -ltrh | awk -v OFS='\t\t' 'BEGIN {printf "%s\t\t%s\n", "Name", "Size"}{print $9,$5} '
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Lecture 25 : SED commands in bash script.
+
+Sed commands is also one of filter and sed command also use one kind stream editor.
+
+
+Sed works:-
+1. Display contents
+2. Find
+3. Replace
+4. Modification
+
+
+Sed syntax:-
+filename or command | sed [options]
+sed [option] filename
+
+
+#cat myuser.txt
+gnome-initial-setup:x:124:65534::/run/gnome-initial-setup/:/bin/false
+gdm:x:125:130:Gnome Display Manager:/var/lib/gdm3:/bin/false
+sssd:x:126:131:SSSD system user,,,:/var/lib/sss:/usr/sbin/nologin
+abdeali:x:1000:1000:Abdeali,,,:/home/abdeali:/bin/bash
+systemd-coredump:x:999:999:systemd Core Dumper:/:/usr/sbin/nologin
+sshd:x:127:65534::/run/sshd:/usr/sbin/nologin
+mysql:x:128:134:MySQL Server,,,:/nonexistent:/bin/false
+aadmin:x:1001:1001::/home/aadmin/:/bin/bash
+mongodb:x:129:65534::/home/mongodb:/usr/sbin/nologin
+ftp:x:130:136:ftp daemon,,,:/srv/ftp:/usr/sbin/nologin
+testuser:x:1002:1002::/home/testuser:/bin/sh
+prometheus:x:998:998::/home/prometheus:/sbin/nologin
+grafana:x:131:137::/usr/share/grafana:/bin/false
+nagios:x:1003:1003::/home/nagios:/bin/sh
+postfix:x:132:138::/var/spool/postfix:/usr/sbin/nologin
+_rpc:x:133:65534::/run/rpcbind:/usr/sbin/nologin
+influxdb:x:997:997::/var/lib/influxdb:/bin/false
+node_exporter:x:1004:1005::/home/node_exporter:/bin/sh
+test:x:1005:1007::/home/test:/bin/bash
+alnafi:x:1006:1008::/home/alnafi:/bin/bash
+
+
+
+# sed ' ' myuser.txt
+OR
+# cat myuser.txt | sed ' '
+
+
+# cat myuser.txt | sed  -n '4p'
+
+
+# cat myuser.txt | sed  -n '$p' (show the last line)
+
+# cat -n myuser.txt | sed -n '1,5p'
+# cat -n myuser.txt | sed -n '5,$p' (5 to last line)
+
+
+# cat -n myuser.txt | sed -n '3,15p'  #range of the line
+OR
+# cat -n myuser.txt | awk 'NR>=3 && NR <=15 {print $0}'   #range of the line
+
+# cat -n myuser.txt | sed -n '/aadmin/,$p'#aadmin to last line
+
+# cat -n myuser.txt | sed -n '/alnafi/p'#Search
+alnafi:x:1006:1008::/home/alnafi:/bin/bash
+
+
+# abd=abdeali
+root@abdealidodia:~/bash/lect25# echo $abd
+abdeali
+
+
+# cat myuser.txt | sed -n '/abdeali/p'
+abdeali:x:1000:1000:Abdeali,,,:/home/abdeali:/bin/bash
+root@abdealidodia:~/bash/lect25# cat myuser.txt | sed -n '/$abd/p'
+root@abdealidodia:~/bash/lect25# cat myuser.txt | sed -n "/$abd/p"
+abdeali:x:1000:1000:Abdeali,,,:/home/abdeali:/bin/bash
+
+
+
+#sed  -i '1,10d' myuser.txt
+
+#sed  -i '/alnafi/d' myuser.txt
+
+# sed  -i.bck '/alnafi/d' myuser.txt#it will be effect on your file and crete bck file
+
+# sed -i.bck '/alnafi/!d' myuser1.txt#except alnafi will remove everything
+
+filename | sed 's/old/new/'
+
+# cat myuser.txt | sed 's/alnafi/Alnafi/'
+
+
+#  sed -i 's/alnafi/Alnafi/' myuser.txt
+
+
+# cat myuser.txt | sed  's/abdeali/ABDEALI/g'
+
+# cat myuser.txt | sed  's/testuser/Ttestuser/2'#number of two word match
+
+
+i --> Insert -->> Before the line 1
+a --> after -->> After the line
+
+# sed -i '1i Sr.no,IP,Hostname' data.csv
+root@abdealidodia:~/bash/lect25# cat data.csv
+Sr.no,IP,Hostname
+1,192.168.1.2,serve1
+2,192.168.1.3,serve2
+
+
+
+
+sed -i '4a 4,192.168.1.5,serv5' data.csv
+root@abdealidodia:~/bash/lect25# cat data.csv
+Sr.no,IP,Hostname
+1,192.168.1.2,serve1
+3,192.168.1.4,serv3
+2,192.168.1.3,serve2
+4,192.168.1.5,serv5
+
+
+
+#  sed -i '/192.168.1.4/d' data.csv
+root@abdealidodia:~/bash/lect25# cat data.csv
+Sr.no,IP,Hostname
+1,192.168.1.2,serve1
+2,192.168.1.3,serve2
+4,192.168.1.5,serv5
+
+
+# sed -i '$d' data.csv
+root@abdealidodia:~/bash/lect25# cat data.csv
+Sr.no,IP,Hostname
+1,192.168.1.2,serve1
+2,192.168.1.3,serve2
+
+
+
+root@abdealidodia:~/bash/lect25# cat data.csv | sed -n '/serve1/p'
+1,192.168.1.2,serve1
+root@abdealidodia:~/bash/lect25# cat data.csv | sed -n '/serve[1,2]/p'
+1,192.168.1.2,serve1
+2,192.168.1.3,serve2
+root@abdealidodia:~/bash/lect25# cat data.csv | sed -n '/serve*/p'
+1,192.168.1.2,serve1
+2,192.168.1.3,serve2
+
+
+root@abdealidodia:~/bash/lect25# cat data.csv | sed -n '/serve?/p'
+root@abdealidodia:~/bash/lect25# cat data.csv | sed -n '/serve./p'
+1,192.168.1.2,serve1
+2,192.168.1.3,serve2
+root@abdealidodia:~/bash/lect25# cat data.csv | sed -n '/serve1$/p'
+1,192.168.1.2,serve1
+root@abdealidodia:~/bash/lect25# cat data.csv | sed -n '/1/p'
+1,192.168.1.2,serve1
+2,192.168.1.3,serve2
+root@abdealidodia:~/bash/lect25# cat data.csv | sed -n '/^1/p'
+1,192.168.1.2,serve1
+
+How to delete empty line from your files
+# sed -i '/^#/d' sshd_config
+
+
+space -->\s
+/word/p
+\: -->special character
+
+
+#cat /var/log/auth.log | sed -n '/Jul\s16\s19\:09/p' > abdeali.txt
+root@abdealidodia:~/bash/lect25# cat abdeali.txt
+Jul 16 19:09:01 abdealidodia CRON[34790]: pam_unix(cron:session): session opened for user root by (uid=0)
+Jul 16 19:09:01 abdealidodia CRON[34790]: pam_unix(cron:session): session closed for user root
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Lecture 26 : Understanding find commands.
+
+
+Find syntax:-
+find <path> <action> <file or patterns>
+
+# find /root/bash/lect26/files -name abd1.txt
+
+# find .  -name abd1.txt
+
+# find . -type d -name abd#find the driectories
+
+# find . -type f -name abd$find the files
+
+# find . -type f -name *.csv
+
+# find . -user root
+
+# find . -group root
+
+# find . -type f -perm 0755 -print
+
+# find . -perm /u=r
+# find . -perm /u=x
+# find . -perm /u=w
+
+
+# find /root/bash/lect26/files/dir1 -type f -name "*.txt" -exec rm -f {} \;
+#find . -type d -perm 777 -print -exec chmod 755 {} \;
+
+# find . -size 50M
+# find . -type f -size 0
+# find . -type f -size 0 | wc -l
+# find . -type f -name ".*"
+
+
+-mtime +n ===> modified more than n days ago
+-mtime -n ==> modified less than n days ago
+
+# find . -type d -mtime -10  (days)
+# find . -cmin -60     (last 60 min)
+# find . -mmin -120     
+
+# find . -newermt "yesterday"
+# ls -ltrh | grep 'Jul 16'
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Lecture 27 : Scheduling task in bash script.
+
+
+
+Email setup at your ubuntu machine.
+1 : You need to login your email account.
+
+2. manage your google account
+https://myaccount.google.com/?hl=en_GB&utm_source=OGB&utm_medium=act&pli=1
+
+3. Click on security option and two way verification
+
+4. Click on security option and app password.
+app password : anwu xntr jwoi iefa
+
+
+5. Move to your ubuntu or linux machine
+#apt-get update
+#apt-get install sendmail mailutils
+
+Rhel9
+(sudo dnf update -y
+sudo dnf install sendmail sendmail-cf mailx -y)
+
+6. create auth directory
+#cd /etc/mail
+# mkdir authinfo
+
+# chmod 700 authinfo/
+
+# cd authinfo/
+# cat gmail
+AuthInfo: "U:root" "I:automation52786@gmail.com" "P:password"
+
+# makemap hash gmail < gmail
+
+
+#cat sendmail.mc
+copy after 101 line
+#GMail settings:
+define(`SMART_HOST',`[smtp.gmail.com]')dnl
+define(`RELAY_MAILER_ARGS', `TCP $h 587')dnl
+define(`ESMTP_MAILER_ARGS', `TCP $h 587')dnl
+define(`confAUTH_OPTIONS', `A p')dnl
+TRUST_AUTH_MECH(`EXTERNAL DIGEST-MD5 CRAM-MD5 LOGIN PLAIN')dnl
+define(`confAUTH_MECHANISMS', `EXTERNAL GSSAPI DIGEST-MD5 CRAM-MD5 LOGIN PLAIN')dnl
+FEATURE(`authinfo',`hash -o /etc/mail/authinfo/gmail.db')dnl
+
+#make
+# /etc/init.d/sendmail reload
+
+
+
+
+# sendmail automation52786@gmail.com
+Test
+test
+.
+
+#less /var/log/mail.log
+
+status=sent
+
+
+
+Crontab syntax:-
+MIN HOUR DOM MON DOW CMD
+
+Field    Description    Allowed Value
+MIN      Minute field    0 to 59
+HOUR     Hour field      0 to 23
+DOM      Day of Month    1-31
+MON      Month field     1-12
+DOW      Day Of Week     0-6
+CMD      Command         Any command to be executed.
+
+
+https://crontab.guru/
+
+#crontab -e
+* * * * * echo $(date) >> /tmp/ABD.txt
+
+
+#  free -gt | awk 'NR==4' | awk '{print $4}'
+
+
+# cat memory.sh
+#!/bin/bash
+free_mem=$( free -gt | awk 'NR==4' | awk '{print $4}')
+
+if [[ $free_mem -le 2 ]]
+then
+echo -e "Server memory very low with $free_mem" | mail -s "ALERT | MEMORY LOW " automation52786@gmail.com
+echo "Mail has been sent due to low memory $free_mem"
+fi

@@ -1,0 +1,50 @@
+Lecture 14 : Docker lectures
+
+Summary :-
+
+1. IT company --> Development --> Code developed
+2. Code Developed --> Containerization (Dockerization , Kubenetes)
+3. Scratch application run --> locally --> Package/Port/open install
+4. Dockerfile create your own --> That's why there are hire you
+5. Docker image --> Policy need to apply --> Register every company --> DockerHUB --> private
+6. Docker image pull --> like run the container
+7. Application port change --> container/Host port --> ENV , variable then you need to run docker
+8.  Docker data persistent --> Permanent data saved into your shared or local drive
+a. Docker Volume
+b. BInd mount
+c. tmpfs
+
+
+#docker run -it --name container1 -v /my_storage alpine /bin/sh (storage will not be created in host machine rather in container only)
+Default path : /var/lib/docker
+map path :  /var/lib/docker/volumes/3366c1fe14ec42ba976237f222eb5e193bb1833f7f88b0b2bbf4968a289a7649/_data
+
+docker volume --help
+1. Docker volume
+docker run -it --name container2 -v /my_storage alpine /bin/sh
+
+2. Bind mount :-
+#mkdir /home/aadmin/my_data
+Method 1 :-
+#docker run -it --name container3 -v /home/aadmin/my_data/:/opt/data alpine /bin/sh
+
+Method : 2
+#docker run -it --mount type=bind,source=/home/aadmin/my_data/,destination=/opt/data alpine /bin/sh
+
+
+
+
+
+
+
+3.tmpfs :-
+Method1:-
+docker run -d -it --name tmptest1 --mount type=tmpfs,destination=/app alpine /bin/sh
+
+Method2:-
+#docker run -d -it --name tmptest2 --tmpfs /app alpine /bin/sh
+
+
+
+Bind Mount application example:-
+docker run --name mynode1 -p 8000:8000 -d -v /root/docker/lect-10/src/:/app/src node_app

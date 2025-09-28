@@ -1,0 +1,180 @@
+
+
+Lecture 36 Task solution :-
+#######TASK TIME#######################
+
+[
+  {
+    "name": "apple",
+    "color": "green",
+    "price": 1.2
+  },
+  {
+    "name": "banana",
+    "color": "yellow",
+    "price": 0.5
+  },
+  {
+    "name": "kiwi",
+    "color": "green",
+    "price": 1.25
+  },
+  { 
+    "name":"grapes",
+    "color": "new",
+    "price": 9.99
+  }
+]
+
+This is my JSON data so i want to display fruits which is above price 1 
+
+
+Output should be like below format:-
+Total we have 3 fruits with 1 price and fruits name is : Apple Kiwi grapes 
+
+
+
+import json
+
+jsonfile=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 37\fruit.json"
+
+with open(jsonfile,"r") as jf:
+    my_dict= json.load(jf)
+#print(my_dict)
+
+for i in my_dict:
+    if i['price'] >=1:
+        print(i)
+
+
+###
+
+import json
+
+jsonfile=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 37\fruit.json"
+
+with open(jsonfile,"r") as jf:
+    my_dict= json.load(jf)
+#print(my_dict)
+
+mydata=[]
+for i in my_dict:
+    if i['price'] >=1:
+        total_count=(len(i.keys()))
+        mydata.append(i['name'])
+print(mydata)
+print(total_count)
+
+
+
+
+####
+import json
+
+jsonfile=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 37\fruit.json"
+
+with open(jsonfile,"r") as jf:
+    my_dict= json.load(jf)
+#print(my_dict)
+
+mydata=[]
+for i in my_dict:
+    if i['price'] >=1:
+        total_count=(len(i.keys()))
+        mydata.append(i['name'])
+#print(mydata)
+#print(total_count)
+myfruits=' '.join(mydata)
+#print(myfruits)
+
+print(f"Total We have {total_count} fruits, Fruits above 1 prices and Fruits name is : {myfruits}")
+
+
+O/p:-
+Total We have 3 fruits, Fruits above 1 prices and Fruits name is : apple kiwi grapes
+
+
+File handling with CSV :
+
+CSV --> Comma separated values 
+
+
+mypath=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 37\servershealth.csv"
+with open(mypath,"r") as datafile:
+    data=datafile.read()
+    print(data)
+
+
+OR 
+
+mypath=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 37\servershealth.csv"
+with open(mypath,"r") as datafile:
+    data=datafile.readlines()
+    print(data)
+
+OR 
+
+mypath=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 37\servershealth.csv"
+with open(mypath,"r") as datafile:
+    data=datafile.readlines()
+
+for i in data:
+    print(i)
+
+
+
+OR 
+
+mypath=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 37\servershealth.csv"
+with open(mypath,"r") as datafile:
+    data=datafile.readlines()
+
+for i in data:
+    print(i.strip("\n"))
+
+OR 
+
+
+
+mypath=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 37\servershealth.csv"
+with open(mypath,"r") as datafile:
+    data=datafile.readlines()
+
+for i in data:
+    print(i.strip("\n").split())
+
+
+
+
+import csv
+
+mypath=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 37\servershealth.csv"
+with open(mypath) as datafile:
+    data=csv.reader(datafile)
+    print(data)
+
+O/p:-
+<_csv.reader object at 0x000002141736E440>
+
+import csv
+
+mypath=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 37\servershealth.csv"
+with open(mypath) as datafile:
+    data=csv.reader(datafile)
+    for each in data:
+        print(each)
+O/p:-
+['ï»¿Srno', 'IP address ', 'OS', 'MAC', 'avail_memory']
+['1', '10.226.17.95', 'AIX', 'd6:60:7b:6e:f6:0c', '52 GB']
+['2', '10.226.17.96', 'RHEL', 'd6:60:7b:6e:f6:1c', '32 GB']
+['3', '10.226.17.97', 'AIX', 'd6:60:7b:6e:f6:2c', '20 GB']
+['4', '10.226.17.98', 'RHEL', 'd6:60:7b:6e:f6:3c', '30 GB']
+['5', '10.226.17.99', 'RHEL', 'd6:60:7b:6e:f6:4c', '10 GB']
+['6', '10.226.17.100', 'SOLARIS', 'd6:60:7b:6e:f6:5c', '5 GB']
+['7', '10.226.17.101', 'AIX', 'd6:60:7b:6e:f6:6c', '2 GB']
+['8', '10.226.17.102', 'AIX', 'd6:60:7b:6e:f6:7c', '3 GB']
+['9', '10.226.17.103', 'RHEL', 'd6:60:7b:6e:f6:8c', '14 GB']
+['10', '10.226.17.104', 'UBUNTU', 'd6:60:7b:6e:f6:8c', '25 GB']
+
+
+

@@ -1,0 +1,63 @@
+
+
+### 🚀 What are Triggers?
+
+In TeamCity, **triggers** are rules that tell the build configuration **when to start a new build automatically**.
+Instead of manually clicking “Run”, you let TeamCity watch for changes/events.
+
+---
+
+### 🔑 Common Trigger Types
+
+1. **VCS Trigger**
+
+   * Starts a build when there’s a new commit in your version control (Git, GitHub, Bitbucket, etc.).
+   * Example: every `git push` triggers a build.
+
+2. **Schedule Trigger**
+
+   * Runs builds on a schedule (like cron jobs).
+   * Example: run nightly at 2 AM.
+
+3. **Finish Build Trigger**
+
+   * Starts a build when another build finishes.
+   * Example: run integration tests after the “Build” configuration finishes.
+
+4. **Branch Filter in Triggers**
+
+   * You can limit triggers to certain branches.
+   * Example: only trigger builds on `main` or `develop`, not feature branches.
+
+5. **Retry Build Trigger**
+
+   * Can re-run a build if it fails, based on rules.
+
+---
+
+### ⚙️ How to Add a Trigger
+
+1. Open your **Build Configuration** in TeamCity.
+2. Go to **Triggers** tab.
+3. Click **Add new trigger** → choose trigger type.
+4. Configure settings (branch filter, quiet period, schedule time, etc.).
+5. Save.
+
+---
+
+### 🧑‍💻 Example Scenarios
+
+* **CI/CD flow:**
+
+  * VCS Trigger → Build starts automatically on commit.
+  * Finish Build Trigger → Deploy runs after build passes.
+
+* **Nightly regression tests:**
+
+  * Schedule Trigger → Run tests every night at 2 AM.
+
+* **Multi-step pipeline:**
+
+  * Build job → triggers Unit tests job → triggers Deploy job.
+
+--

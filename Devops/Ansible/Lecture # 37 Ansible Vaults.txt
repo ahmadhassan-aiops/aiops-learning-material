@@ -1,0 +1,69 @@
+Ansible Vault:
+It secures the yml file and its content with a password.
+After securing it neither you can read it, edit it or run it without password
+Follows AES algorithum to encrypt data
+
+# command to secure yml file
+ansible-vault encrypt sample.yml
+
+# now see the file
+cat sample.yml
+
+# command to run the file secured with vault
+ansible-playbook task.yml --ask-vault-pass
+
+
+# command to read file like cat command does (after providing password)
+ansible-vault view sample.yml
+
+
+# command to decrypt the file, now it will be a normal file
+ansible-vault decrypt sample.yml
+
+# taking ansible vault help
+anisble-vault --help
+
+
+
+
+=================================================================================
+
+
+[jhon@master-ansible ansible]$ vim sample.yml
+
+
+[jhon@master-ansible ansible]$ ansible-vault encrypt sample.yml
+New Vault password:
+Confirm New Vault password:
+Encryption successful
+
+
+[jhon@master-ansible ansible]$ cat sample.yml
+$ANSIBLE_VAULT;1.1;AES256
+31393630623263363331303639663465366336323335636538646434613866666166383334303036
+3561346535613836363133323334663165343339383165350a626333653266616666666231613339
+38616136303432666330623232366466616330323338616664313763393630333964643834626630
+6133653238633038620a333930633565346235653033363130393938323865316564613834306237
+6130
+
+
+
+[jhon@master-ansible ansible]$ ansible-playbook sample.yml --ask-vault-pass
+Vault password:
+ERROR! Empty playbook, nothing to do: /home/jhon/ansible/sample.yml
+
+
+
+[jhon@master-ansible ansible]$ ansible-playbook sample.yml
+ERROR! Attempting to decrypt but no vault secrets found
+
+
+
+[jhon@master-ansible ansible]$ ansible-vault view sample.yml
+Vault password:
+---
+
+
+[jhon@master-ansible ansible]$ ansible-vault decrypt sample.yml
+Vault password:
+Decryption successful

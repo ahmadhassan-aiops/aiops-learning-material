@@ -1,0 +1,252 @@
+
+
+1. Resource Requirements in Kubernetes:
+In Kubernetes, resource requirements define how much CPU and memory a container needs to run. They are set using requests (minimum guaranteed resources) 
+and limits (maximum usable resources) in the pod spec. These settings help Kubernetes schedule and manage pods efficiently across the cluster.
+
+2. How Scheduler Uses Resources to Place Pods:
+The Kubernetes scheduler uses the requests value to decide where to place a pod. It checks which nodes have enough unallocated CPU and memory 
+to satisfy the pod's resource requests. The scheduler does not use limits for scheduling—only requests.
+
+3. Who Needs the Resource Requirement—Pod or Container?:
+Resource requirements are defined at the container level, not the pod level. Each container in a pod specifies its own requests and limits. 
+However, the scheduler uses the total of all containers’ requests to make pod-level placement decisions.
+
+4. Error When Resources Are Insufficient:
+If a node does not have enough resources to meet a pod's requests, the pod remains in a Pending state. If a container tries to use more than its limit, 
+it can be throttled (for CPU) or killed (for memory), often triggering an OOMKilled error for memory.
+
+5. Meaning of mi and gi in Kubernetes:
+mi and gi are units used to specify memory in Kubernetes. 1Mi (mebibyte) = 1,048,576 bytes (2^20), and 1Gi (gibibyte) = 1,073,741,824 bytes (2^30). 
+These binary units are different from MB/GB, which are based on powers of 10.
+
+6. Resource Limits in Kubernetes:
+A resource limit defines the maximum amount of CPU or memory a container can use. CPU is specified in millicores (e.g., 500m = 0.5 CPU), 
+and memory in Mi/Gi. If a container hits its memory limit, it is killed; if it hits CPU limit, it is throttled.
+
+7. If Limit Not Specified, Does Request Become Limit?:
+No, if you only specify a request and not a limit, the container can use more than the request if available. However, 
+if limits are enforced by a LimitRange policy in the namespace, Kubernetes may automatically set the limit equal to the request.
+
+8. What Happens When Limit Is Exceeded?:
+If a container exceeds its CPU limit, it is throttled (slowed down); if it exceeds its memory limit, it is immediately terminated and often restarted, 
+showing an OOMKilled (Out of Memory) status in the pod events or logs.
+
+
+
+
+
+
+-----------------------------------------------
+
+vim cpu-res-pod.yaml
+[root@client1 ahmad]# cat cpu-res-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: al-nafi-pod
+spec:
+  containers:
+  - name: ubuntu-container
+    image: ubuntu
+    resources:
+      limits:
+        cpu: 2
+      requests:
+        cpu: 1
+[root@client1 ahmad]# kubectl apply -f cpu-res-pod.yaml
+pod/al-nafi-pod created
+
+
+-----------------------------------------------
+
+kubectl get po
+NAME           READY   STATUS             RESTARTS        AGE
+al-nafi-pod    0/1     CrashLoopBackOff   2 (18s ago)     41s
+my-dashboard   1/1     Terminating        5 (2m43s ago)   8h
+[root@client1 ahmad]# kubectl get po
+NAME          READY   STATUS             RESTARTS      AGE
+al-nafi-pod   0/1     CrashLoopBackOff   3 (48s ago)   100s
+[root@client1 ahmad]# kubectl get po
+NAME          READY   STATUS      RESTARTS      AGE
+al-nafi-pod   0/1     Completed   4 (60s ago)   112s
+[root@client1 ahmad]# kubectl get po
+NAME          READY   STATUS      RESTARTS      AGE
+al-nafi-pod   0/1     Completed   4 (65s ago)   117s
+[root@client1 ahmad]# kubectl get po
+NAME          READY   STATUS             RESTARTS      AGE
+al-nafi-pod   0/1     CrashLoopBackOff   4 (33s ago)   2m19s
+
+
+-----------------------------------------------
+
+cat cpu-res-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: al-nafi-pod
+spec:
+  containers:
+  - name: ubuntu-container
+    image: ubuntu
+    command:
+      - sleep
+      - "3600"
+    resources:
+      limits:
+        cpu: 2
+      requests:
+        cpu: 1
+
+
+kubectl replace --force -f cpu-res-pod.yaml
+pod "al-nafi-pod" deleted
+pod/al-nafi-pod replaced
+[root@client1 ahmad]# kubectl get po
+NAME          READY   STATUS              RESTARTS   AGE
+al-nafi-pod   0/1     ContainerCreating   0          4s
+[root@client1 ahmad]# kubectl get po
+NAME          READY   STATUS    RESTARTS   AGE
+al-nafi-pod   1/1     Running   0          10s
+[root@client1 ahmad]# kubectl get po
+NAME          READY   STATUS    RESTARTS   AGE
+al-nafi-pod   1/1     Running   0          18s
+
+
+
+(Now it will remain in running status for 3600s before crashing)
+-----------------------------------------------
+
+
+ vim mem-stress-pod.yaml
+[root@client1 ahmad]# cat mem-stress-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mem-stress-pod
+spec:
+  containers:
+  - name: memory-stress
+    image: polinux/stress
+    command:
+    - stress
+    args:
+    - "--vm"
+    - "1"
+    - "--vm-bytes"
+    - "15M"
+    - "--vm-hang"
+    - "1"
+    resources:
+      limits:
+        memory: 10Gi
+      requests:
+        memory: 5Gi
+[root@client1 ahmad]# kubectl apply -f mem-stress-pod.yaml
+pod/mem-stress-pod created
+[root@client1 ahmad]# kubectl get po
+NAME             READY   STATUS    RESTARTS   AGE
+al-nafi-pod      1/1     Running   0          3m37s
+mem-stress-pod   0/1     Pending   0          9s
+
+
+
+
+
+[root@client1 ahmad]# kubectl describe po mem-stress-pod
+Name:             mem-stress-pod
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             <none>
+Labels:           <none>
+Annotations:      <none>
+Status:           Pending
+IP:
+IPs:              <none>
+Containers:
+  memory-stress:
+    Image:      polinux/stress
+    Port:       <none>
+    Host Port:  <none>
+    Command:
+      stress
+    Args:
+      --vm
+      1
+      --vm-bytes
+      15M
+      --vm-hang
+      1
+    Limits:
+      memory:  10Gi
+    Requests:
+      memory:     5Gi
+    Environment:  <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-kmnjr (ro)
+Conditions:
+  Type           Status
+  PodScheduled   False
+Volumes:
+  kube-api-access-kmnjr:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason            Age   From               Message
+  ----     ------            ----  ----               -------
+  Warning  FailedScheduling  18s   default-scheduler  0/2 nodes are available: 1 Insufficient memory, 1 node(s) had untolerated taint {node-role.kubernetes.io/control-plane: }. preemption: 0/2 nodes are available: 1 No preemption victims found for incoming pod, 1 Preemption is not helpful for scheduling.
+
+
+-----------------------------------------------
+
+vim mem-stress-pod.yaml
+[root@client1 ahmad]# cat mem-stress-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mem-stress-pod
+spec:
+  containers:
+  - name: memory-stress
+    image: polinux/stress
+    command:
+    - stress
+    args:
+    - "--vm"
+    - "1"
+    - "--vm-bytes"
+    - "15M"
+    - "--vm-hang"
+    - "1"
+    resources:
+      limits:
+        memory: 100Mi
+      requests:
+        memory: 50Mi
+[root@client1 ahmad]# kubectl replace --force -f mem-stress-pod.yaml
+pod "mem-stress-pod" deleted
+pod/mem-stress-pod replaced
+
+
+[root@client1 ahmad]# kubectl get po
+NAME             READY   STATUS    RESTARTS   AGE
+al-nafi-pod      1/1     Running   0          7m20s
+mem-stress-pod   1/1     Running   0          37s
+
+
+-----------------------------------------------
+
+
+
+
+
+
+

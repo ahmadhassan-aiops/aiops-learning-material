@@ -1,0 +1,185 @@
+
+vim loop.yml
+
+---
+- name: Printin the words
+  hosts: localhost
+  vars:
+    data:
+      - Abdeali
+      - Kazim
+      - Ali
+      - Sarah
+  tasks:
+  - name: Display the data
+    debug:
+      var: item
+    loop: "{{data}}"
+
+
+
+
+
+[jhon@master-ansible ansible]$ ansible-playbook loop.yml
+
+PLAY [Printin the words] *****************************************************************************************************
+
+TASK [Gathering Facts] *******************************************************************************************************
+ok: [localhost]
+
+TASK [Display the data] ******************************************************************************************************
+ok: [localhost] => (item=Abdeali) => {
+    "ansible_loop_var": "item",
+    "item": "Abdeali"
+}
+ok: [localhost] => (item=Kazim) => {
+    "ansible_loop_var": "item",
+    "item": "Kazim"
+}
+ok: [localhost] => (item=Ali) => {
+    "ansible_loop_var": "item",
+    "item": "Ali"
+}
+ok: [localhost] => (item=Sarah) => {
+    "ansible_loop_var": "item",
+    "item": "Sarah"
+}
+
+PLAY RECAP *******************************************************************************************************************
+localhost                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+
+
+
+
+
+===========================================
+
+vim loop_package.yml
+
+---
+- name: Installation package
+  hosts: ubuntu
+  become: yes
+  vars:
+    pacakges:
+      - name: wget
+        state: present
+      - name: git
+        state: present
+  tasks:
+  - name: Install package
+    apt: 
+      name: "{{item.name}}"
+      state: "{{item.state}}"
+    loop: "{{pacakges}}"
+
+
+
+
+
+[jhon@master-ansible ansible]$ ansible-playbook loop_package.yml
+[WARNING]: Could not match supplied host pattern, ignoring: rhel
+
+PLAY [Installation package] **************************************************************************************************
+skipping: no hosts matched
+
+PLAY RECAP *******************************************************************************************************************
+
+[jhon@master-ansible ansible]$ vim loop_package.yml
+[jhon@master-ansible ansible]$ ansible-playbook loop_package.yml
+
+PLAY [Installation package] **************************************************************************************************
+
+TASK [Gathering Facts] *******************************************************************************************************
+ok: [54.166.4.83]
+
+TASK [Install package] *******************************************************************************************************
+changed: [54.166.4.83] => (item={'name': 'wget', 'state': 'present'})
+ok: [54.166.4.83] => (item={'name': 'git', 'state': 'present'})
+
+PLAY RECAP *******************************************************************************************************************
+54.166.4.83                : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+
+
+
+
+
+=================================
+
+Interview question: How to make multiple users in ansible playbook.
+
+
+vim multiple_users.yml
+
+---
+- hosts: ubuntu
+  become: yes
+  vars:
+    my_bulk_users:
+      - username: abdeali
+        password: Admin@123
+      - username: kazim
+        password: Admin@123
+      - username: ali
+        password: Admin@123
+  tasks:
+  - name: Bulk user creation
+    user:
+      name: "{{item.username}}"
+      password: "{{item.password | password_hash('sha512') }}"
+      update_password: on_create
+    loop: "{{my_bulk_users}}"
+
+
+
+
+vim remove_users
+
+---
+- hosts: ubuntu
+  become: yes
+
+  vars:
+    my_bulk_users:
+      - { username: abdeali }
+      - { username: kazim }
+      - { username: ali }
+
+  tasks:
+    - name: Bulk user removal
+      user:
+        name: "{{ item.username }}"
+        state: absent      # this ensures user is removed
+        remove: yes        # also remove home directory
+      loop: "{{ my_bulk_users }}"
+
+
+
+==========================================
+How to create multiple files and their content in ansible playbook
+
+
+vim multiple_files.yml
+
+---
+- name: FIles creation 
+  hosts: ubuntu
+  become: true 
+  vars:
+    my_files:
+      - name: /tmp/abd1.txt
+        content: "This is my abd1 file"
+      - name: /tmp/abd2.txt
+        content: We have abd2 data
+  tasks:
+  - name: Creation files 
+    copy: 
+      dest: "{{item.name}}"
+      content: "{{item.content}}"
+    loop: "{{my_files}}"
+
+
+
+we need to provide only destination in copy section, as we are creating new files not copying that is why source is not needed

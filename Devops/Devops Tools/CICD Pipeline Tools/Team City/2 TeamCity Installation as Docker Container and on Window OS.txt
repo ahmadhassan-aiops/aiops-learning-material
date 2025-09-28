@@ -1,0 +1,39 @@
+
+
+
+				(On linux machine using Docker)			
+
+docker pull jetbrains/teamcity-server
+docker pull jetbrains/teamcity-agent
+
+
+docker run -it --name teamcity-server-instance \
+-v teamcity_data:/data/teamcity_server/datadir \
+-v teamcity_logs:/opt/teamcity/logs \
+-p 8111:8111 jetbrains/teamcity-server
+
+
+
+docker run -d --name teamcity-agent-instance \
+-e SERVER_URL="http://<your-machine-ip>:8111" \
+-v teamcity_agent_conf:/data/teamcity_agent/conf \
+jetbrains/teamcity-agent
+
+
+
+http://localhost:8111
+
+
+
+
+Using TeamCity with Docker is beneficial because it makes installation quick, portable, and isolated from the host system, while also allowing easy scaling 
+of multiple agents with consistent environments. However, the downside is that it adds a learning curve for beginners unfamiliar with Docker, 
+may require extra configuration for networking/storage, and can be slightly less performant than running TeamCity directly on the host OS.
+
+
+
+===========================================================================================
+
+In windows just downlaod the .exe file of teamcity from their website and follow the instructions and provide port 8111 as default port for teamcity.
+
+===========================================================================================

@@ -1,0 +1,70 @@
+Lecture 15 : Docker lectures.
+
+Image Variants
+====================================
+
+Docker pull node:14
+Docker pull node:15
+Docker pull node:14-slim
+Docker pull node:14-alpine
+
+
+root@abdealidodia:~# docker image ls  node
+REPOSITORY   TAG         IMAGE ID       CREATED         SIZE
+node         14          7d03025aad90   6 days ago      946MB
+
+node         15-slim     dd6ccbd57bbd   10 months ago   160MB
+node         15          3d3f41722daf   10 months ago   936MB
+node         15-alpine   75631da67663   11 months ago   112MB
+
+1. node         15          3d3f41722daf   10 months ago   936MB
+Total 946 = 10 MB data + 936 MB Image
+
+
+2:-
+node         15-alpine   75631da67663   11 months ago   112MB
+112 MB Image + 10 MB data = 122 MB Image with data
+
+Two types of image
+1. Alpine
+2. Busybox image
+
+Best size you need manage for docker admin or devops admin
+
+2+3 exp you will gain once you finish my course
+
+
+
+
+Default docker path
+===============================
+
+
+Default docker path : /var/lib/docker
+Key file location : /etc/docker/key.json
+
+mkdir /home/docker
+
+
+systemctl stop docker.socket
+systemctl stop docker.service
+vim /etc/docker/daemon.json
+
+{
+"data-root": "/home/docker"
+}
+
+
+cp -axT /var/lib/docker/ /home/docker/
+
+vim /lib/systemd/system/docker.service
+ExecStart=/usr/bin/dockerd -H fd:// -g /home/docker --containerd=/run/containerd/containerd.sock
+
+systemctl daemon-reload
+systemctl start  docker.service
+systemctl start  docker.socket
+
+
+Image ID Path : /home/docker/image/overlay2/imagedb/content/sha256
+
+# systemctl status docker.service

@@ -1,0 +1,84 @@
+
+#We created jira_page.html and copy all content of trainer_form.html in it. 
+
+#We also add jira function in app.py as well
+@app.route("/jira")
+def jira():
+    return render_template('jira_page.html')
+
+
+# I also linked the tool1 option with jira as well from index.html page
+	148	<li><a href="{{url_for('jira')}}">Tools1</a></li>
+
+
+
+        (jira_page.html)
+
+
+</div>
+    <div id="content_header"></div>
+    <div id="site_content">
+        <div class="form_settings" style="position: relative; right:-155px;">
+            <h1 style="font-family:georgia,garamond,serif;font-size:25px;"><b>Jira ticket creation</b></h1>
+            <form id="reused_form" method="post" action="{{ url_for('trainer_create') }}">
+
+                 <p>
+                    <label for="project">project</label>
+                    <select name="project" class="form-control" id="project" required>
+                        <option value="MYP">myproject(MYP)</option>
+                        <option value="IIP">IT-infra-project(IIP)</option>
+                    </select>
+                </p>
+
+                                 <p>
+                    <label for="Issue Type">Issue Type</label>
+                    <select name="Issue Type" class="form-control" id="Issue Type" required>
+                        <option value="Task">Task</option>
+                        <option value="Issue">Issue</option>
+                        <option value="Story">Story</option>
+                        <option value="Bug">Bug</option>
+                    </select>
+                </p>
+
+
+                <p>
+                    <label for="summary">summary</label>
+                    <input type="text" name="summary" required class="form-control" placeholder="Enter the summary">
+                </p>
+
+                <p>
+                    <label for="Description">Description</label>
+                    <textarea name="desc" required class="form-control" placeholder="Enter the description"> </textarea>
+                </p>
+
+
+                                 <p>
+                    <label for="Report_Name">Report_Name</label>
+                    <select name="Report_Name" class="form-control" id="Report_Name" required>
+                        <option value="712020:863eb8be-d3a2-43c6-82d1-70b584884765">Ahmad Hassan</option>
+                        <option value="712020:105ae976-ef4a-4719-bdde-c764083b0954">Hassan</option>
+                    </select>
+                </p>
+
+
+                                 <p>
+                    <label for="Priority">Priority</label>
+                    <select name="Priority" class="form-control" id="Priority" required>
+                        <option value="Highest">Highest</option>
+                        <option value="High">High</option>
+                        <option value="Low">Low</option>
+                        <option value="Lowest">Lowest</option>
+                    </select>
+                </p>
+
+
+                <p style="padding-top: 15px">
+                    <input class="submit" type="submit" name="submit" value="Create a ticket">
+                </p>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+
+

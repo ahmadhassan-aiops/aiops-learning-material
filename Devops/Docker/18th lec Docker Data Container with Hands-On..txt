@@ -1,0 +1,27 @@
+ecture 18 : Data Container
+
+
+
+1. Docker volume  --> Docker area
+2. Docker bind or bind mount --> File system
+3. tmpfs  --> RAM
+
+Container1 --> Data1
+Container2 --> Data2
+
+Lecture 14 --> Same name directory , directory create but you cant access your existing data from another container
+
+
+docker create -v /dbdata --name dbstore postgres:latest /bin/true (IT WILL WORK)
+docker run -d --volumes-from dbstore --name db1 -e POSTGRES_PASSWORD=mysecretpassword postgres:latest
+
+
+dbdata --> db1
+docker exec -it db1 /bin/sh
+dbdata --> db2
+
+docker run -d --volumes-from dbstore --name db2 -e POSTGRES_PASSWORD=mysecretpassword postgres:latest
+docker exec -it db2/bin/sh
+
+/var/lib/docker/volumes/787b8d2e1049eeb6cf9be2af628b8118548cc8c9c6d140c1e8424d27ccedc84a/_data
+/var/lib/docker/volumes/787b8d2e1049eeb6cf9be2af628b8118548cc8c9c6d140c1e8424d27ccedc84a/_data

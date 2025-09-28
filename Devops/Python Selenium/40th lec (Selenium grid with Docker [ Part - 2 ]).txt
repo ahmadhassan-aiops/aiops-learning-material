@@ -1,0 +1,133 @@
+
+
+
+
+Lecture 40:-
+
+
+Node image :-
+https://hub.docker.com/r/selenium/node-chrome
+#docker pull selenium/node-chrome
+
+
+Hub image :-
+https://hub.docker.com/r/selenium/hub
+#docker pull selenium/hub
+
+
+#docker compose 
+version: "3"
+services:
+        chrome:
+                image: selenium/node-chrome
+                volumes:
+                        - /dev/shm:/dev/shm
+                depends_on:
+                        - selenium-hub
+                environment:
+                - SE_EVENT_BUS_HOST=selenium-hub
+                - SE_EVENT_BUS_PUBLISH_PORT=4442
+                - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+                - SE_NODE_MAX_INTANCES=4
+                - SE_NODE_MAX_SESSION=4
+                - SE_NODE_SESSION_TIMEOUT=10
+        selenium-hub:
+                image: selenium/hub
+                container_name: selenium-hub
+                ports:
+                        - "4444:4444"
+
+
+
+root@abdealidodia:~/lect40_sel_grid# docker-compose -f docker-compose-sel_chrome_hub_node.yml up
+
+
+
+http://192.168.1.11:4444/ui
+
+
+CODE :-
+import time
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+# Selenium Grid Hub URL
+hub_url = "http://192.168.0.109:4444/wd/hub"
+
+chrome_options = Options()
+chrome_options.browser_name = "chrome"
+
+driver = webdriver.Remote(command_executor=hub_url, options=chrome_options)
+
+# Open website
+driver.get("https://www.website.com/?source=SC")
+driver.maximize_window()
+
+# Print page title
+print("Page Title:", driver.title)
+
+# Keep session open
+print("Browser will remain open. Close manually when done.")
+while True:
+    time.sleep(10)  # Keep script running
+
+
+
+########################################
+Now we will work pytest project with docker container 
+
+import pytest
+from allure_commons.types import AttachmentType
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
+import time
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+
+
+def setup_function():
+    global driver
+    hub_url = "http://192.168.0.109:4444/wd/hub"
+    chrome_options = Options()
+    chrome_options.browser_name = "chrome"
+    driver = webdriver.Remote(command_executor=hub_url, options=chrome_options)
+    driver.get("https://alnafi.com/auth/sign-in")
+    driver.maximize_window()
+
+
+def teardown_function():
+    driver.quit()
+
+
+def my_cred():
+    return [
+        ('abdeali@gmail.com', 'abdeali@123'),
+        ('ali@gmail.com', 'ali@123'),
+        ('abd@gmail.com', 'abd@123')
+    ]
+
+
+@pytest.mark.parametrize("username,password", my_cred())
+def test_login(username, password):
+    print("My pytest login")
+    driver.find_element(By.NAME, 'email').send_keys(username)
+    time.sleep(0.7)
+    driver.find_element(By.NAME, 'password').send_keys(password)
+    time.sleep(0.7)
+
+
+
+
+
+
+
+

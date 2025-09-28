@@ -1,0 +1,126 @@
+
+
+Lecture 9 :-
+
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+import time
+
+driver = webdriver.Chrome(ChromeDriverManager().install())
+
+time.sleep(5)
+driver.get("https://www.saucedemo.com/")
+driver.maximize_window()
+time.sleep(5)
+#this is username section
+myusername = driver.find_element(By.ID,"user-name")
+myusername.send_keys("standard_user")
+
+time.sleep(5)
+#This is password section
+mypassword= driver.find_element(By.ID,"password")
+mypassword.send_keys("secret_sauce")
+
+time.sleep(5)
+#This is login section
+mylogin = driver.find_element(By.ID,"login-button")
+mylogin.click()
+
+
+
+
+time.sleep(5)
+driver.quit()
+
+
+
+
+
+
+
+
+########
+
+
+
+###########################
+TASK TIME :-
+You need to login :
+Gmail and alnafi website :-
+
+Alnafi:-
+
+https://dev.alnafi.com
+Username : testuser
+password : 123@test
+
+
+
+<input type="text" required="" value="" placeholder="Enter Your Username or Email" id="Username/ Email" class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-Bluish">
+
+
+
+
+Alnafi :-
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+
+driver = webdriver.Chrome(ChromeDriverManager().install())
+driver.get("https://dev.alnafi.com")
+my_username = driver.find_element(By.ID,"Username/ Email")
+my_username.send_keys("testuser")
+
+
+Error:-
+
+NameError: name 'By' is not defined
+
+
+#####
+from selenium import webdriver
+from webdriver_manager.firefox import GeckoDriverManager
+from selenium.webdriver.common.by import By
+import time
+
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+driver.get("https://dev.alnafi.com/auth/signin")
+driver.maximize_window()
+time.sleep(3)
+my_username = driver.find_element(By.ID,"Username/ Email")
+time.sleep(3)
+my_username.send_keys("testuser")
+time.sleep(3)
+driver.quit()
+
+
+
+###Final script for Lanfi login page#####
+
+from selenium import webdriver
+from webdriver_manager.firefox import GeckoDriverManager
+from selenium.webdriver.common.by import By
+import time
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+driver.get("https://dev.alnafi.com/auth/signin")
+driver.maximize_window()
+
+my_username = driver.find_element(By.ID,"Username/ Email")
+my_username.send_keys("testuser")
+
+driver.find_element(By.ID,'Password').send_keys("123@test")
+
+my_button = driver.find_element(By.XPATH,'/html/body/div[1]/div/div/div[2]/div/form/div[3]/button')
+my_button.click()
+
+time.sleep(10)
+driver.quit()
+
+
+
+##################
+GMAIL :-
+
+
+

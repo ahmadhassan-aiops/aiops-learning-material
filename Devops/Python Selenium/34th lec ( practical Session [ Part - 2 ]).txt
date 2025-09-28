@@ -1,0 +1,322 @@
+
+
+Lecture 34 :-
+TASK 1 :-
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+driver.get('https://alnafi.com')
+driver.maximize_window()
+driver.implicitly_wait(5)
+print(driver.title)
+time.sleep(3)
+driver.quit()
+
+
+##############
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+driver.get('https://alnafi.com')
+driver.maximize_window()
+driver.implicitly_wait(5)
+print(driver.title)
+time.sleep(3)
+driver.close()
+
+
+
+
+##############
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+driver.get('https://bdjobs.com/')
+driver.maximize_window()
+driver.implicitly_wait(5)
+print(driver.title)
+time.sleep(3)
+driver.find_element(By.XPATH,'//*[@id="lin_footer02"]/div/div/div/div/div[4]/ul/li[6]/a/span/span').click()
+time.sleep(5)
+
+
+
+
+###################
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+driver.get('https://bdjobs.com/')
+driver.maximize_window()
+driver.implicitly_wait(5)
+print(driver.title)
+time.sleep(3)
+driver.find_element(By.XPATH,'//*[@id="lin_footer02"]/div/div/div/div/div[4]/ul/li[6]/a/span/span').click()
+time.sleep(5)
+driver.close()
+
+
+Output :-
+driver.close() will close your current session 
+
+################
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+driver.get('https://bdjobs.com/')
+driver.maximize_window()
+driver.implicitly_wait(5)
+print(driver.title)
+time.sleep(3)
+driver.find_element(By.XPATH,'//*[@id="lin_footer02"]/div/div/div/div/div[4]/ul/li[6]/a/span/span').click()
+time.sleep(5)
+driver.quit()
+
+Output :-
+driver.quit()  --> Will close all tabs 
+
+
+#######################################
+TASK 4 :-
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+driver.implicitly_wait(5)
+driver.get("https://alnafi.com")
+driver.maximize_window()
+time.sleep(5)
+print(driver.title)
+driver.get("https://google.com")
+print(driver.title)
+time.sleep(5)
+driver.quit()
+
+
+####################
+
+Task 5 :-
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+driver.implicitly_wait(5)
+driver.get("https://bdjobs.com/")
+driver.maximize_window()
+time.sleep(5)
+print(driver.title)
+driver.execute_script("window.open('https://google.com','new window')")
+print(driver.title)
+time.sleep(5)
+driver.quit()
+
+
+
+###################
+TASK 6:-
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+driver.implicitly_wait(5)
+driver.get("https://bdjobs.com/")
+driver.maximize_window()
+time.sleep(5)
+driver.execute_script("window.open('https://google.com','new window')")
+wins = driver.window_handles
+time.sleep(2)
+driver.switch_to.window(wins[0])
+print("This is my zero index "+ driver.title)
+driver.switch_to.window(wins[1])
+time.sleep(2)
+print("This is my first index " + driver.title)
+time.sleep(5)
+driver.quit()
+
+
+
+
+##############
+task 7:-
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+driver.implicitly_wait(5)
+driver.get("https://alnafi.com")
+driver.maximize_window()
+time.sleep(5)
+driver.execute_script("window.open('https://google.com','new window')")
+wins = driver.window_handles
+time.sleep(2)
+driver.switch_to.window(wins[0])
+print("\n=================This is my zero index (alnafi)==============\n"+ driver.title)
+mylanfi=driver.find_element(By.XPATH,'//*[@id="__nuxt"]/div/div[4]/div[3]/div/div')
+print(mylanfi.text)
+driver.switch_to.window(wins[1])
+time.sleep(2)
+print("\n=====================This is my first index(google)=====================\n " + driver.title)
+mygoogle = driver.find_element(By.XPATH,'//*[@id="SIvCob"]')
+print(mygoogle.text)
+time.sleep(5)
+driver.quit()
+
+
+
+
+##################################
+TASK 8:-    (Their website is changed now)
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+driver.implicitly_wait(5)
+driver.get("https://alnafi.com/courses/python")
+driver.maximize_window()
+time.sleep(5)
+
+driver.execute_script("window.open('https://alnafi.com/courses/sysops','new window')")
+wins = driver.window_handles
+time.sleep(5)
+
+#This is python course details
+driver.switch_to.window(wins[0])
+course_name = driver.find_element(By.XPATH,'//*[@id="__nuxt"]/div/div[4]/div[1]/section/div/section/aside[1]/h1').text
+fees_usd = driver.find_element(By.XPATH,'//*[@id="__nuxt"]/div/div[4]/div[1]/section/div/section/aside[2]/section/div[2]/div[6]/span').text
+print(course_name)
+print(fees_usd)
+
+
+#This is sysops course details
+driver.switch_to.window(wins[1])        #Sysops
+time.sleep(5)
+course_name = driver.find_element(By.XPATH,'//*[@id="__nuxt"]/div/div[4]/div[1]/section/div/section/aside[1]/h1').text
+fees_usd = driver.find_element(By.XPATH,'//*[@id="__nuxt"]/div/div[4]/div[1]/section/div/section/aside[2]/section/div[2]/div[6]/span').text
+print(course_name)
+print(fees_usd)
+
+
+time.sleep(5)
+driver.quit()
+
+
+
+##############################
+TASK 8 : final code :-
+
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
+
+
+driver.implicitly_wait(5)
+driver.get("https://alnafi.com/courses/python")
+driver.maximize_window()
+time.sleep(5)
+
+courses=[]
+fees=[]
+
+driver.execute_script("window.open('https://alnafi.com/courses/sysops','new window')")
+wins = driver.window_handles
+time.sleep(5)
+
+#This is python course details
+driver.switch_to.window(wins[0])
+course_name = driver.find_element(By.XPATH,'//*[@id="__nuxt"]/div/div[4]/div[1]/section/div/section/aside[1]/h1').text
+fees_usd = driver.find_element(By.XPATH,'//*[@id="__nuxt"]/div/div[4]/div[1]/section/div/section/aside[2]/section/div[2]/div[6]/span').text
+courses.append(course_name)
+fees.append(fees_usd)
+
+
+#This is sysops course details
+driver.switch_to.window(wins[1])        #Sysops
+time.sleep(8)
+course_name = driver.find_element(By.XPATH,'//*[@id="__nuxt"]/div/div[4]/div[1]/section/div/section/aside[1]/h1').text
+fees_usd = driver.find_element(By.XPATH,'//*[@id="__nuxt"]/div/div[4]/div[1]/section/div/section/aside[2]/section/div[2]/div[6]/span').text
+courses.append(course_name)
+fees.append(fees_usd)
+print(courses)
+print(fees)
+
+
+time.sleep(5)
+driver.quit()
+
+
+
+Output :-
+
+['Python', 'SysOps (System Operations)']
+['35 USD', '325 USD']
+
+
+
+
+
+
+

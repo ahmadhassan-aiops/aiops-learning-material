@@ -1,0 +1,29 @@
+
+
+key = NRAK-FEOEZMD0UIIHOZSRDFEIRXFQME0
+
+
+(Linux)
+
+curl -Ls https://download.newrelic.com/install/newrelic-cli/scripts/install.sh | bash && sudo NEW_RELIC_API_KEY=NRAK-FEOEZMD0UIIHOZSRDFEIRXFQME0 NEW_RELIC_ACCOUNT_ID=7102323 /usr/local/bin/newrelic install
+
+
+imp new relic files:
+
+[root@master-ansible ahmad]# cd /etc/newrelic-infra/
+[root@master-ansible newrelic-infra]# ls
+integrations.d  logging.d
+
+
+
+[root@master-ansible newrelic-infra]# cd /var/log/newrelic-infra/
+[root@master-ansible newrelic-infra]# ls
+(here its own logs are present if any!)
+
+================================================
+
+
+
+(Windows)
+
+same we can create vm windows and open powershell as admin and run the command provided by new relic!

@@ -1,0 +1,75 @@
+Lecture 3 :-
+
+https://alnafi.atlassian.net/jira/your-work
+
+
+Seetting --> Billing --> it will open 
+
+Project --> view all boards --> create boards --> sample data --> Create 
+
+Agile:-
+
+Agile Principle :-
+
+1. Intrective developements 
+2. Adapative to changing requirements 
+3. frequent delivery
+4. Close collboration between cross function team 
+6. SCRUm and kanban methologies 
+
+
+SCRUM :-
+
+Scrum is framworkd for project managment that emphasizes tema work , accountablity , intrective , well defined goal . The 
+framworkd begin with simple premise : Track the progress and tweak as necessary 
+
+
+Epic -->
+larger body of work , broken into stories 
+
+User story --> Story smallest unit of work 
+
+Python --> sub task --> monthly --> Scrum flow --> 
+
+backlog --> You backlog is usally a list of issues which is decribing what your team is going to do on a project , 
+
+Story --> item --> TO DO --> In progress --> Done 
+
+
+2-4 week complate 
+
+
+Scrum roles :-
+1. Product owner 
+2. Developement 
+3. Scrum master 
+
+
+Scrum event :-
+1. Sprint planning --> Sprint point --> hours --> 5 days more than 5 days , 3 days three or less days --> Start of month 
+2. Daily Scrum -->  Daily work , --> process 
+3. Sprint review --> what you have done so far , next spirnt move --> 
+
+
+
+Scrum board process 
+TO DO --> In Progress --> DONE 
+
+
+
+kanban :-
+Kanban is framwork --> agile methodologies 
+
+Kanban --> visualization --> 
+Kanbanboard process 
+
+To DO --> In proress --> DOne 
+
+Kanban --> time limit nahi hoti hain 
+Scrum --> time limit hoti hain 
+
+
+Kanban :-
+A banban board is an agile project managment tools designed to help a visualization work , limit work in progress , maximzation flow.
+
+It can help both agile and devops team establish order in their delivry work 

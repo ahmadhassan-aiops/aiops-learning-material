@@ -1,0 +1,244 @@
+Lecture 12 :  Tuple data structure in python.
+
+
+
+#####################TASK Solution###############################
+input=["Abdeali","Dodia","Bangalore"]
+
+output = Abdeali Dodia Bangalore
+
+>>> input=["Abdeali","Dodia","Bangalore"]
+>>> ' '.join(input)
+'Abdeali Dodia Bangalore'
+>>> mystring=' '.join(input)
+>>> print(mystring)
+Abdeali Dodia Bangalore
+
+
+
+Tuple data structure :-
+
+Tuple will define as ()
+tuple are used to stored multiple items in single variable.
+tuples are immutable, this means tuple cannot be changed, tuples are more memory efficient than lists.
+
+
+>>> abd=(1,3,7)
+>>> print(abd)
+(1, 3, 7)
+>>> print(type(abd))
+<class 'tuple'>
+
+
+>>> abd=(1)
+>>> print(abd)
+1
+>>> print(type(abd))
+<class 'int'>
+
+
+>>> abd=(1,)
+>>> print(abd)
+(1,)
+>>> print(type(abd))
+<class 'tuple'>
+
+
+
+>>> abd=(1,)
+>>> print(abd)
+(1,)
+>>> print(type(abd))
+<class 'tuple'>
+
+
+>>> abd=(1,3,7,[9,5,6],7,2)
+>>> print(type(abd))
+<class 'tuple'>
+>>> print(abd)
+(1, 3, 7, [9, 5, 6], 7, 2)
+
+
+
+#Slicing
+>>> abd=(1,3,7,[9,5,6],7,2)
+>>> print(abd)
+(1, 3, 7, [9, 5, 6], 7, 2)
+>>> print(abd[1])
+3
+>>> print(abd[2])
+7
+>>> print(abd[3])
+[9, 5, 6]
+>>> print(abd[3][0])
+9
+>>> print(abd[3][1])
+5
+>>> print(abd[3][2])
+6
+
+
+>>> abd=(1,3,7,[9,5,6],7,2)
+>>> print(abd[3][1])
+5
+>>> print(abd[1])
+3
+>>> abd[1]="ABD"
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+TypeError: 'tuple' object does not support item assignment
+
+
+
+>>> abd=(1,3,7,[9,5,6],7,2)
+>>> print(abd[3][1])
+5
+>>> abd[3][1]="ABD"
+>>> print(abd)
+(1, 3, 7, [9, 'ABD', 6], 7, 2)
+
+
+
+
+
+
+>>> print(abd[-1])
+2
+>>> print(abd[:-2])
+(1, 3, 7, [9, 'ABD', 6])
+>>> print(abd[-2])
+7
+>>> print(abd[-3])
+[9, 'ABD', 6]
+>>> print(abd[1:4])
+(3, 7, [9, 'ABD', 6])
+>>> print(abd[0:])
+(1, 3, 7, [9, 'ABD', 6], 7, 2)
+>>> print(abd[:-1])
+(1, 3, 7, [9, 'ABD', 6], 7)
+>>> print(abd[:-2])
+(1, 3, 7, [9, 'ABD', 6])
+>>> print(abd[:-3])
+(1, 3, 7)
+>>> print(abd[::-1])
+(2, 7, [9, 'ABD', 6], 7, 3, 1)
+
+
+Interview question :-
+>>> print(bool(abd))
+False
+>>> abd=(3,5,6)
+>>> print(bool(abd))
+True
+
+
+#how to convert from list to tuple
+>>> abd=[1,5,1,23]
+>>> print(type(abd))
+<class 'list'>
+>>> convert_string=tuple(abd)
+>>> print(convert_string)
+(1, 5, 1, 23)
+>>> print(type(convert_string))
+<class 'tuple'>
+
+
+
+
+
+#Nested tuple
+>>> my_tuple=("ABD",[8,5,4],(1,4,5))
+>>> print(my_tuple)
+('ABD', [8, 5, 4], (1, 4, 5))
+>>> print(type(my_tuple))
+<class 'tuple'>
+>>> print(my_tuple[0])
+ABD
+>>> print(my_tuple[1])
+[8, 5, 4]
+>>> print(my_tuple[1][1])
+5
+>>> print(my_tuple[2])
+(1, 4, 5)
+>>> print(my_tuple[2][2])
+5
+
+
+#DEL
+>>> abd=(1,5,6,9)
+>>> print(abd)
+(1, 5, 6, 9)
+>>> del abd
+>>> print(abd)
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+NameError: name 'abd' is not defined. Did you mean: 'abs'?
+>>> abd=(1,5,6,9)
+>>> print(abd[0])
+1
+>>> del abd[0]
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+TypeError: 'tuple' object doesn't support item deletion
+
+
+
+#Length
+>>> abd=(5,6,78,98)
+>>> print(abd)
+(5, 6, 78, 98)
+>>> print(len(abd))
+4
+
+
+
+
+#count
+>>> abd=(5,6,78,98,5,7,5)
+>>> abd.count(5)
+3
+
+#index
+>>> abd.index(5)
+0
+>>> print(abd.index(5))
+0
+>>> print(abd.index(6))
+1
+>>> print(abd.index(78))
+2
+>>> print(abd.index(5,1))
+4
+>>> print(abd.index(5,5))
+6
+
+#MIN max and sum
+>>> abd=(5,6,78,98,5,7,5)
+>>> print(min(abd))
+5
+>>> print(max(abd))
+98
+>>> print(sum(abd))
+204
+>>>
+
+
+
+#concatenation
+>>> abd=(1,5,8)
+>>> abd1=(6,7)
+>>> print(abd)
+(1, 5, 8)
+>>> print(abd1)
+(6, 7)
+>>> final=abd+abd1
+>>> print(final)
+(1, 5, 8, 6, 7)
+
+
+#repeat
+>>> abd="abd"
+>>> print(abd)
+abd
+>>> print((abd,)*2)
+('abd', 'abd')

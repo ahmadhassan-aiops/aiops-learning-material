@@ -1,0 +1,29 @@
+Lecture 27 : Docker notes
+
+
+
+Gitlab --> WebIDE create own dockerfile then push into Gitlab repo via Automation
+Gitlab --> WebIDE create own dockerfile then push into AWS ECR repo via automation , Automation via CICD pipline --> Creted workflow
+
+
+GitHUB --> Upload Image and push to AWS ECR
+
+Repo --> sample-web
+URL :https://github.com/abdealidodiya/sample-web.git
+
+GITHUB token :
+
+download and install git bash
+
+Extract your code into your local machine
+git init
+git add .
+$ git config --global user.email "ahmad.hds393@gmail.com"
+$ git config --global user.name "786AHMADHASSAN"
+git commit -m "Fresh code"
+git push
+
+now your files will show on your repo GITUHB
+
+URL https://github.com/abdealidodiya/sample-web/settings/secrets/actions
+REPO -- >Settings --> Secret --> Action

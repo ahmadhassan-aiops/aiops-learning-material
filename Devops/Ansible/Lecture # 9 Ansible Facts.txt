@@ -1,0 +1,138 @@
+
+		"The concept of retriving remote information as variables"
+
+
+# checking the setup of a machine
+ansible ubuntu -m setup
+
+# using filters with setup module
+ansible ubuntu -m setup -a "filter='ansible_python_version'"
+
+
+#getting information of master machine
+ansible localhost -m setup -a "filter='ansible_python_version'"
+
+
+Creating custom facts:
+Make sure httpd is installed in your master machine
+sudo dnf install httpd -y
+
+
+step # 1 
+go to /etc/ansible path on master machine
+create a facts.d directory here
+
+Step # 2
+make a script in facts.d directory with following files (.fact extansion files -- It can be present in any lang):
+
+vim apache2_status.fact --> for ubunt 
+vim httpd_status.fact --> for rhel
+
+Fact file output should be in json format
+
+==============================================================
+# content of fact file in Centos9 for httpd service
+#!/bin/bash
+
+status=$(systemctl is-active httpd)
+
+if [[ $status == "active" ]]
+then
+	state="httpd is Running"
+else
+	state="httpd is not running"
+fi
+echo "{\"httpd_status:\":\"$state\"}" ---------> this line is the output of script and it must be in json format
+=====================================================================
+
+you can see after vi, the output is in json format
+
+# now calling local host ansible setup and fetching the status of httpd by applying custom filter
+ansible localhost -m setup -a "filter=ansible_local"
+
+the above command output will show httpd status from the setup information
+
+Step # 3
+yo need to create facts.d directory in both master and worker machine.
+As my machine centos9 is master i will create httpd_status.fact file
+as my machine ubuntu is a worker node, i will create apache2_status.fact file
+
+
+cat /etc/ansible/facts.d/apache.fact
+#!/bin/bash
+
+status=$(systemctl is-active apache)
+
+if [[ $status == "active" ]]
+then
+        state="apache is Running"
+else
+        state="apache is not running"
+fi
+echo "{\"apache_status:\":\"$state\"}"
+
+
+
+
+[jhon@master-ansible ansible]$ ansible ubuntu -m file -a "path=/etc/ansible/facts.d state=directory" -b
+54.166.4.83 | CHANGED => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": true,
+    "gid": 0,
+    "group": "root",
+    "mode": "0755",
+    "owner": "root",
+    "path": "/etc/ansible/facts.d",
+    "size": 4096,
+    "state": "directory",
+    "uid": 0
+}
+
+
+# you can create both files in ubuntu and can copy in rhel
+such as
+
+[jhon@master-ansible ansible]$ ansible ubuntu -m copy -a "src=/etc/ansible/facts.d/apache.fact dest=/etc/ansible/facts.d" -b
+
+54.166.4.83 | CHANGED => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": true,
+    "checksum": "d0e54c3721e199b9001e7418dc6f6e74aabaa22b",
+    "dest": "/etc/ansible/facts.d/apache.fact",
+    "gid": 0,
+    "group": "root",
+    "md5sum": "2e28a52664d50e85c63818aedaf0dd95",
+    "mode": "0644",
+    "owner": "root",
+    "size": 190,
+    "src": "/home/ubuntu/.ansible/tmp/ansible-tmp-1756256101.1530733-95182-154171813634789/source",
+    "state": "file",
+    "uid": 0
+}
+
+
+
+##in worker node runs!!
+sudo chmod +x /etc/ansible/facts.d/apache.fact
+
+
+[jhon@master-ansible ansible]$ ansible ubuntu -m setup -a "filter=ansible_local"
+54.166.4.83 | SUCCESS => {
+    "ansible_facts": {
+        "ansible_local": {
+            "apache": {
+                "apache_status:": "apache is not running"
+            }
+        },
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false
+
+
+
+make sure you have facts.d directory in worker
+

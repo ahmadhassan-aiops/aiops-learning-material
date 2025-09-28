@@ -1,0 +1,8 @@
+Lecture 4:- 
+https://alnafi.atlassian.net/jira/your-work 
+
+ Project have multiple boards --> Ek saath dusre board pe ja sakte ho aap  
+Board VS project  Bord and project not one to one relationship 
+project --> it can be derived that a project is some kind of folder or group Board --> It is display type , or other language word a place , where the issue can be display  Project have multiple boards but board can be only single project  
+
+C --> use for creating ticket

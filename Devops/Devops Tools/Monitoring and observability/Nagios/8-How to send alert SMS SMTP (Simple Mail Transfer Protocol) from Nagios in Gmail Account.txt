@@ -1,0 +1,185 @@
+
+
+# 📘 Easy Notes: Nagios Email Notification Setup (Server ↔ Client)
+
+---
+
+## **1. Gmail SMTP Setup on Nagios Server (CentOS)**
+
+### Install mailx (s-nail)
+
+```bash
+sudo yum install -y mailx
+```
+
+### Configure `/etc/mail.rc`
+
+Edit the file:
+
+```bash
+sudo vim /etc/mail.rc
+```
+
+Add the following (replace with your Gmail + App Password):
+
+```bash
+set smtp-use-starttls
+set ssl-verify=ignore
+set smtp=smtp://smtp.gmail.com:587
+set smtp-auth=login
+set smtp-auth-user=ahmad.hds393@gmail.com
+set smtp-auth-password=pcmwsvuqhstigemy
+set from="ahmad.hds393@gmail.com (Nagios Monitoring)"
+```
+
+---
+
+## **2. Test Email from Nagios Server**
+
+```bash
+echo "Nagios Test Email from Server" | mailx -v -s "Nagios Test" your_email@gmail.com
+```
+
+✅ If you see *“TLS connection established”* and receive the email → Gmail relay works.
+
+---
+
+## **3. Enable Nagios External Commands**
+
+### Add web user to `nagcmd` group
+
+For CentOS:
+
+```bash
+sudo usermod -a -G nagcmd apache
+```
+
+### Restart services
+
+```bash
+sudo systemctl restart nagios
+sudo systemctl restart httpd
+```
+
+Now the **External Command Interface** should work in the Nagios dashboard.
+
+---
+
+## **4. Configure Contacts for Email Alerts**
+
+Edit:
+
+```bash
+sudo vim /usr/local/nagios/etc/objects/contacts.cfg
+```
+
+Change to use your Gmail:
+
+```bash
+define contact {
+    contact_name            nagiosadmin
+    alias                   Nagios Admin
+    service_notification_period 24x7
+    host_notification_period    24x7
+    service_notification_options w,u,c,r
+    host_notification_options   d,u,r
+    service_notification_commands notify-service-by-email
+    host_notification_commands   notify-host-by-email
+    email                   ahmad.hds393@gmail.com
+}
+```
+
+---
+
+## **5. Configure Client Service Check (Ubuntu)**
+
+### On Nagios Client (Ubuntu EC2)
+
+Ensure SSH is running:
+
+```bash
+sudo systemctl status ssh
+```
+
+If inactive:
+
+```bash
+sudo systemctl start ssh
+```
+
+---
+
+### On Nagios Server (CentOS)
+
+Edit:
+
+```bash
+sudo vim /usr/local/nagios/etc/objects/clients.cfg
+```
+
+Example for Ubuntu client host:
+
+```bash
+define host {
+    use             linux-server
+    host_name       ubuntu-client
+    alias           Ubuntu Client
+    address         172.31.29.100
+}
+```
+
+Add SSH service check:
+
+```bash
+define service {
+    use                     generic-service
+    host_name               ubuntu-client
+    service_description     SSH
+    check_command           check_ssh
+}
+```
+
+---
+
+## **6. Apply and Restart Nagios**
+
+```bash
+sudo /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+sudo systemctl restart nagios
+```
+
+---
+
+## **7. Test Email Notifications**
+
+* **Force a service check (SSH):**
+
+```bash
+echo "[`date +%s`] SCHEDULE_FORCED_SVC_CHECK;ubuntu-client;SSH;`date +%s`" \
+| sudo tee /usr/local/nagios/var/rw/nagios.cmd
+```
+
+* **Simulate failure:**
+
+```bash
+sudo systemctl stop ssh   # on Ubuntu client
+```
+
+You should get a **“CRITICAL: SSH down”** email.
+Then:
+
+```bash
+sudo systemctl start ssh
+```
+
+You should get a **“RECOVERY: SSH OK”** email.
+
+---
+
+# ✅ End Result
+
+* Nagios server sends email alerts via Gmail.
+* Host (Ubuntu) and Service (SSH) failures trigger notifications.
+* External Command Interface in Nagios dashboard works.
+
+---

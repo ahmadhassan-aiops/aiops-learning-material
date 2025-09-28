@@ -1,0 +1,135 @@
+Perfect 👍 Let’s create a **very simple Maven project demo** so you can see how it works step by step.
+
+---
+
+# 🚀 Maven Project Demo (Beginner-Friendly)
+
+### 1️⃣ Project Structure (standard Maven layout)
+
+When you create a Maven project, it follows a **standard folder structure**:
+
+```
+my-app/
+ ├── pom.xml                 # Project Object Model (Maven config)
+ └── src/
+     ├── main/
+     │   └── java/
+     │       └── com/myapp/App.java   # Main Java code
+     └── test/
+         └── java/
+             └── com/myapp/AppTest.java   # Unit test
+```
+
+---
+
+### 2️⃣ Create Project (Command)
+
+On CentOS (or Linux), run:
+
+```bash
+mvn archetype:generate -DgroupId=com.myapp -DartifactId=my-app \
+  -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+```
+
+👉 This will generate a sample Java project in a folder called **`my-app`**.
+
+---
+
+### 3️⃣ The Important Files
+
+#### (A) `pom.xml`
+
+This file controls the project:
+
+```xml
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.myapp</groupId>
+  <artifactId>my-app</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <dependencies>
+    <!-- JUnit for testing -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
+```
+
+---
+
+#### (B) `App.java` (main class)
+
+```java
+package com.myapp;
+
+public class App {
+    public static void main(String[] args) {
+        System.out.println("Hello, Maven Project!");
+    }
+}
+```
+
+---
+
+#### (C) `AppTest.java` (JUnit test)
+
+```java
+package com.myapp;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class AppTest {
+    @Test
+    public void testApp() {
+        assertTrue(true);   // simple test that always passes
+    }
+}
+```
+
+---
+
+### 4️⃣ Build & Run the Project
+
+Inside the project folder:
+
+```bash
+cd my-app
+mvn clean package
+```
+
+* `clean` → removes old files.
+* `package` → compiles, runs tests, and creates a `.jar` file inside `target/`.
+
+👉 Output example:
+
+```
+target/my-app-1.0-SNAPSHOT.jar
+```
+
+Run the program:
+
+```bash
+java -cp target/my-app-1.0-SNAPSHOT.jar com.myapp.App
+```
+
+Output:
+
+```
+Hello, Maven Project!
+```
+
+---
+
+### ✅ What Did We Learn?
+
+* **Maven standard structure** organizes code.
+* **`pom.xml`** defines dependencies & project info.
+* **Maven lifecycle** automates build → test → package.
+* Result: a runnable **JAR file**.
+
+---

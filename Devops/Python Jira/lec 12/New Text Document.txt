@@ -1,0 +1,51 @@
+Lecture 13 :https://pypi.org/project/jira/ 
+#pip install jira 
+OR #pip install jira --> python2 OR #pip3 install jira 
+
+>>>>python
+>>>from jira import JIRA 
+>>>user="ahmad.hds393@gmail.com" 
+>>> password="Alnafi@12344" 
+>>> server = "https://ahmadhds393.atlassian.net/" 
+>>> jira = JIRA(server,basic_auth=(user,password))
+
+ Solution:- 
+https://id.atlassian.com/manage-profile/profile-and-visibility 
+
+Security --> manage API --> Create --> lable --> copy and paste  
+my_token= ATATT3xFfGF0sNKU9IS6a0pTWUCyYhAE4tN4Kz3bUP9Qy0qTy_u7L5H5t_yozce4gDF3sfvoITwMi9_kTzZHvXscgH8J4rKLCrrKoeoIzAVsAb8WWa7M23D3ocgW3GkZjzN8WFBMDcR8cifPW4NjVyEdwTgyfILuRmtbLvHrbRqwDI_CauE1SNM=E3B35198
+
+>>> from jira import JIRA 
+>>> user="ahmad.hds393@gmail.com" 
+>>> my_token='ATATT3xFfGF0sNKU9IS6a0pTWUCyYhAE4tN4Kz3bUP9Qy0qTy_u7L5H5t_yozce4gDF3sfvoITwMi9_kTzZHvXscgH8J4rKLCrrKoeoIzAVsAb8WWa7M23D3ocgW3GkZjzN8WFBMDcR8cifPW4NjVyEdwTgyfILuRmtbLvHrbRqwDI_CauE1SNM=E3B35198' 
+>>> server = "https://ahmadhds393.atlassian.net/" 
+>>> jira = JIRA(server,basic_auth=(user,my_token)) 
+>>> print(jira.fields()) 
+
+
+>>> ticket='MYP-8'
+>>> issue = jira.issue(ticket)
+
+>>> print(type(issue))
+<class 'jira.resources.Issue'>
+
+>>> print(issue.fields.project)
+MYP
+
+>>> print(issue.fields.project.key)
+MYP
+
+>>> print(issue.fields.issuetype.name)
+Bug
+
+>>> print(issue.fields.reporter.displayName)
+Ahmad Hassan
+
+>>> print(issue.fields.summary)
+Critical Bug
+
+>>> print(issue.fields.project.name)
+myproject
+
+
+

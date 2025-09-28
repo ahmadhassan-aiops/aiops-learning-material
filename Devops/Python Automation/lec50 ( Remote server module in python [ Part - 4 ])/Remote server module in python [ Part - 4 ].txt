@@ -1,0 +1,332 @@
+Lecture 50 : Remote server module in python [ Part - 4 ]
+
+
+import paramiko
+hostname="192.168.1.11"
+username="aadmin"
+
+client= paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+client.connect(hostname=hostname,username=username,key_filename='myprivatekey')
+
+mycmd="df -h"
+
+
+stdin, stdout, stderr = client.exec_command(mycmd)
+
+mycmdout=stdout.read().decode()
+print(mycmdout)
+client.close()
+
+O/p:-
+Filesystem                 Size  Used Avail Use% Mounted on
+udev                       1.7G     0  1.7G   0% /dev
+tmpfs                      341M  1.9M  339M   1% /run
+/dev/mapper/vgubuntu-root  456G   87G  347G  20% /
+tmpfs                      1.7G     0  1.7G   0% /dev/shm
+tmpfs                      5.0M  4.0K  5.0M   1% /run/lock
+tmpfs                      1.7G     0  1.7G   0% /sys/fs/cgroup
+/dev/loop1                 128K  128K     0 100% /snap/bare/5
+/dev/loop0                  56M   56M     0 100% /snap/core18/2538
+/dev/loop10                347M  347M     0 100% /snap/gnome-3-38-2004/115
+/dev/loop6                 219M  219M     0 100% /snap/gnome-3-34-1804/72
+/dev/loop7                 219M  219M     0 100% /snap/gnome-3-34-1804/77
+/dev/loop13                884M  884M     0 100% /snap/intellij-idea-community/381
+/dev/loop11                 82M   82M     0 100% /snap/gtk-common-themes/1534
+/dev/loop2                  62M   62M     0 100% /snap/core20/1593
+/dev/loop5                  71M   71M     0 100% /snap/core22/188
+/dev/loop4                  56M   56M     0 100% /snap/core18/2566
+/dev/loop12                 92M   92M     0 100% /snap/gtk-common-themes/1535
+/dev/loop8                 401M  401M     0 100% /snap/gnome-3-38-2004/112
+/dev/loop14                884M  884M     0 100% /snap/intellij-idea-community/387
+/dev/loop3                  71M   71M     0 100% /snap/core22/275
+/dev/loop9                  64M   64M     0 100% /snap/core20/1623
+/dev/loop15                 55M   55M     0 100% /snap/snap-store/558
+/dev/loop22                 46M   46M     0 100% /snap/snap-store/599
+/dev/loop17                 48M   48M     0 100% /snap/snapd/17029
+/dev/loop16                 47M   47M     0 100% /snap/snapd/16292
+/dev/loop20                348M  348M     0 100% /snap/telegram-desktop/4208
+/dev/loop19                296M  296M     0 100% /snap/vlc/2344
+/dev/loop23                348M  348M     0 100% /snap/wine-platform-runtime/314
+/dev/loop21                100M  100M     0 100% /snap/wine-platform-3-stable/14
+/dev/loop24                347M  347M     0 100% /snap/wine-platform-runtime/316
+/dev/sda1                  511M  4.0K  511M   1% /boot/efi
+/dev/loop25                354M  354M     0 100% /snap/telegram-desktop/4249
+tmpfs                      341M  8.0K  341M   1% /run/user/1000
+tmpfs                      341M  8.0K  341M   1% /run/user/1001
+
+
+
+
+
+How to get 80% more than storage details
+
+
+import paramiko
+hostname="192.168.1.11"
+username="aadmin"
+password="123@abd"
+client= paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+client.connect(hostname=hostname,username=username,password=password)
+
+mycmd="df -h"
+
+
+stdin, stdout, stderr = client.exec_command(mycmd)
+
+mycmdout = stdout.readlines()
+for i in mycmdout:
+
+	print(i.split()[4])
+
+
+
+
+
+
+How to remove header from list
+
+import paramiko
+hostname="192.168.1.11"
+username="aadmin"
+password="123@abd"
+client= paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+client.connect(hostname=hostname,username=username,password=password)
+
+mycmd="df -h"
+
+
+stdin, stdout, stderr = client.exec_command(mycmd)
+
+mycmdout = stdout.readlines()
+for i in mycmdout[1:]:
+	print(i)
+
+
+
+
+
+
+How to remove percentage from usage of df -h output
+
+import paramiko
+hostname="192.168.1.11"
+username="aadmin"
+password="123@abd"
+client= paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+client.connect(hostname=hostname,username=username,password=password)
+
+mycmd="df -h"
+
+
+stdin, stdout, stderr = client.exec_command(mycmd)
+
+mycmdout = stdout.readlines()
+for i in mycmdout[1:]:
+	full_size= (i.split()[4])
+		print(full_size.replace('%',''))
+
+
+
+
+Final script
+
+import paramiko
+hostname="192.168.1.11"
+username="aadmin"
+password="123@abd"
+client= paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+client.connect(hostname=hostname,username=username,password=password)
+
+mycmd="df -h"
+
+
+stdin, stdout, stderr = client.exec_command(mycmd)
+
+mycmdout = stdout.readlines()
+for i in mycmdout[1:]:
+    myvalue= (i.split()[4])
+    full_size= myvalue.replace('%','')
+    if int(full_size) >=80:
+        print(i.strip('\n'))
+
+
+O/p:-
+C:\python3\python.exe "C:/Users/AbdealiDodiya/Desktop/DevOps/Python/Lecture 50/para_test.py"
+/dev/loop1                 128K  128K     0 100% /snap/bare/5
+/dev/loop0                  56M   56M     0 100% /snap/core18/2538
+/dev/loop10                347M  347M     0 100% /snap/gnome-3-38-2004/115
+/dev/loop6                 219M  219M     0 100% /snap/gnome-3-34-1804/72
+/dev/loop7                 219M  219M     0 100% /snap/gnome-3-34-1804/77
+/dev/loop13                884M  884M     0 100% /snap/intellij-idea-community/381
+/dev/loop11                 82M   82M     0 100% /snap/gtk-common-themes/1534
+/dev/loop2                  62M   62M     0 100% /snap/core20/1593
+/dev/loop5                  71M   71M     0 100% /snap/core22/188
+/dev/loop4                  56M   56M     0 100% /snap/core18/2566
+/dev/loop12                 92M   92M     0 100% /snap/gtk-common-themes/1535
+/dev/loop8                 401M  401M     0 100% /snap/gnome-3-38-2004/112
+/dev/loop14                884M  884M     0 100% /snap/intellij-idea-community/387
+/dev/loop3                  71M   71M     0 100% /snap/core22/275
+/dev/loop9                  64M   64M     0 100% /snap/core20/1623
+/dev/loop15                 55M   55M     0 100% /snap/snap-store/558
+/dev/loop22                 46M   46M     0 100% /snap/snap-store/599
+/dev/loop17                 48M   48M     0 100% /snap/snapd/17029
+/dev/loop16                 47M   47M     0 100% /snap/snapd/16292
+/dev/loop20                348M  348M     0 100% /snap/telegram-desktop/4208
+/dev/loop19                296M  296M     0 100% /snap/vlc/2344
+/dev/loop23                348M  348M     0 100% /snap/wine-platform-runtime/314
+/dev/loop21                100M  100M     0 100% /snap/wine-platform-3-stable/14
+/dev/loop24                347M  347M     0 100% /snap/wine-platform-runtime/316
+/dev/loop25                354M  354M     0 100% /snap/telegram-desktop/4249
+
+Process finished with exit code 0
+
+WIndows --> Linux
+
+Linux --> Linux
+
+Windows -->Windows
+Linux --> Windows
+
+remote machine ssh installed required
+
+
+how to install openssh in windows 10
+
+windows --> Settings --> Optional features --> openssh cleint and open ssh server you need to isntall
+
+windows --> R --> Run --> services.msc
+find openssh ssh server --> start
+
+
+Linux --> Windows
+
+
+lusrmgr.msc --> users
+New users
+
+We are connecting From linux to windows machine
+
+
+#Linux :-
+import paramiko
+hostname="192.168.1.7"
+username="test"
+password="Abdeali@123456"
+
+client= paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+client.connect(hostname=hostname,username=username,password=password)
+
+mycmd="dir"
+
+
+stdin, stdout, stderr = client.exec_command(mycmd)
+
+mycmdout=stdout.read().decode()
+print(mycmdout)
+client.close()
+
+
+
+
+How to get available memory
+
+import paramiko
+hostname="192.168.1.11"
+username="aadmin"
+password="123@abd"
+client= paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+client.connect(hostname=hostname,username=username,password=password)
+
+mycmd="free -g  | grep Mem | awk '{print $7}'"
+
+
+stdin, stdout, stderr = client.exec_command(mycmd)
+
+mycmdout = stdout.read().decode()
+print(mycmdout)
+
+
+
+
+Realtime project (Working)  
+
+-------------(logo path is taken from lec 50 folder)
+
+
+import paramiko
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+from datetime import date, datetime
+
+# Get current date and time
+day = date.today()
+time = datetime.now()
+
+my_custom = day.strftime("%B %d %Y")
+current_time = time.strftime("%I:%M:%S %p")
+
+# SSH connection details
+hostname = "192.168.0.102"
+username = "ahmad"
+password = "12345"
+
+client = paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+client.connect(hostname=hostname, username=username, password=password)
+
+# Command to check memory
+mycmd = "free -g | grep Mem | awk '{print $7}'"
+stdin, stdout, stderr = client.exec_command(mycmd)
+
+mycmdout = stdout.read().decode().strip()
+print(mycmdout)
+
+# Convert output to integer and check condition
+if int(mycmdout) <= 2:
+    msg = MIMEMultipart()
+    mylogo = r"W:\Alnafi\Devops\Python Automation\lec50 ( Remote server module in python [ Part - 4 ])\alnafi-220930-222108.jpg"
+    my_mail = "ahmad.hds393@gmail.com"
+    email_password = "lqyw tjlb jklc rztj"
+
+    msg['Subject'] = f"ALERT : Memory Available {mycmdout} GB on JBoss server at {my_custom}"
+    msg['From'] = my_mail
+    msg['To'] = my_mail
+    msg['Cc'] = 'ahmad.hds393@gmail.com'
+
+    # Email body
+    body = """
+    <html>
+        <p><b><i>Hi Team,<br> 
+        Please check JBOSS server memory.<b><i><br>
+        <img src="cid:alogo" width="100" height="50">
+        </p>
+    </html>
+    """
+    msg.attach(MIMEText(body, 'html'))
+
+    # Attach logo
+    with open(mylogo, 'rb') as filelogo:
+        msgIMAGE = MIMEImage(filelogo.read())
+
+    msgIMAGE.add_header('Content-ID', '<alogo>')
+    msg.attach(msgIMAGE)
+
+    # Send email
+    connection = smtplib.SMTP('smtp.gmail.com', 587)
+    connection.starttls()  # TLS security
+    connection.login(user=my_mail, password=email_password)
+    connection.send_message(msg)
+    connection.quit()
+
+    print("Mail has been sent")
+else:
+    print("Everything is fine")

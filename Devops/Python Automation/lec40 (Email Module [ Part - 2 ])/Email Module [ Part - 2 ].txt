@@ -1,0 +1,273 @@
+Lecture 40 
+
+
+
+import smtplib
+from email.message import EmailMessage
+
+my_mail="automation52786@gmail.com"
+password=""
+connection=smtplib.SMTP('smtp.gmail.com')
+connection.starttls()       #TLS transport layer security
+
+msg=EmailMessage()
+msg['Subject']= "This is testing 4 "
+msg['From']= my_mail
+msg['To'] = my_mail
+msg['Cc'] = ["abdealipython@gmail.com",'abdealidodia@gmail.com']
+
+msg.set_content("Hi team we are testing smtp server via python")
+
+#This is attachemnt section
+with open('myfile.csv','rb') as file:
+    attach=file.read()
+    file_name=file.name
+
+msg.add_attachment(attach,maintype='application',subtype='octet-stream',filename=file_name)
+
+
+connection.login(user=my_mail,password=password)
+connection.send_message(msg)
+connection.close()
+print("Mail has been sent")
+
+##################################
+We will use html format in body 
+
+
+import smtplib
+from email.message import EmailMessage
+
+my_mail="automation52786@gmail.com"
+password=""
+connection=smtplib.SMTP('smtp.gmail.com')
+connection.starttls()       #TLS transport layer security
+
+msg=EmailMessage()
+msg['Subject']= "This is testing 5 "
+msg['From']= my_mail
+msg['To'] = my_mail
+msg['Cc'] = ["abdealipython@gmail.com",'abdealidodia@gmail.com']
+
+msg.add_alternative(""" 
+<html> <b> Hi Team, <br> We re testing server via python script </b>  </html>
+""",subtype='html')
+connection.login(user=my_mail,password=password)
+connection.send_message(msg)
+connection.close()
+print("Mail has been sent")
+
+#####################################
+
+
+NEW MIME Method to send email
+
+MIME --> (Multipurpose Internet Mail Extensions): It is internet standard thant extedns the format of email messages to supports text in characters set of other the ascii 
+suchh au audio , video , images and application prgram
+
+
+MIME (Multipurpose Internet Mail Extensions) is an extension of the original Simple Mail Transport Protocol (SMTP) email protocol. It lets users exchange different kinds of data files, including audio, video, images and application programs, over email.
+
+
+MIMEMultipart --> its saying i have more than one part ans listing the parts , you can implemtn text and html version
+
+
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+
+msg=MIMEMultipart()
+
+my_mail="automation52786@gmail.com"
+password=""
+msg['Subject']= "This is testing 6"
+msg['From']= my_mail
+msg['To'] = my_mail
+msg['Cc'] = 'abdealipython@gmail.com'
+
+body=""" 
+<html><p> <b> <i>Hi Team,<br> This is testing email server via python script. <b> <i></p> </html> 
+"""
+msg.attach(MIMEText(body,'html'))
+
+
+
+connection=smtplib.SMTP('smtp.gmail.com')
+connection.starttls()       #TLS transport layer security
+
+
+connection.login(user=my_mail,password=password)
+connection.send_message(msg)
+connection.close()
+print("Mail has been sent")
+
+
+
+#####################
+With attachment 
+
+encorders --> its used by MIMEAudio and MIMEimage class,
+
+
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import  encoders
+
+filename=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 40\test.txt"
+
+msg=MIMEMultipart()
+
+my_mail="automation52786@gmail.com"
+password=""
+msg['Subject']= "This is testing 8"
+msg['From']= my_mail
+msg['To'] = my_mail
+msg['Cc'] = 'abdealipython@gmail.com'
+msg['CC'] = 'abdealidodia@gmail.com'
+
+body=""" 
+<html><p> <b> <i>Hi Team,<br> This is testing email server via python script. <b> <i></p> </html> 
+"""
+msg.attach(MIMEText(body,'html'))
+
+#ATTACHMENT section
+attachment=open(filename,'rb')
+part = MIMEBase('application','octet-stream')
+part.set_payload((attachment).read())
+encoders.encode_base64(part)
+part.add_header('Content-Disposition',"attachment; filename=%s" % filename)
+msg.attach(part)
+
+connection=smtplib.SMTP('smtp.gmail.com')
+connection.starttls()       #TLS transport layer security
+
+
+connection.login(user=my_mail,password=password)
+connection.send_message(msg)
+connection.close()
+print("Mail has been sent")
+
+
+####################
+Now we will make logo in email body
+
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email.mime.image import MIMEImage
+from email import  encoders
+
+filename=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 40\test.txt"
+mylogo=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 40\alnafi.jpg"
+msg=MIMEMultipart()
+
+my_mail="automation52786@gmail.com"
+password="nrjxoxmahyxzybvm"
+msg['Subject']= "my subject"
+msg['From']= my_mail
+msg['To'] = my_mail
+msg['Cc'] = 'abdealipython@gmail.com'
+
+
+body=""" 
+<html><p> <b> <i>Hi Team,<br> This is testing email server via python script. <b> <i> <br> <img src="cid:alogo" width="100" height="50"></p> </html> 
+"""
+msg.attach(MIMEText(body,'html'))
+
+
+###LOGO section
+filelogo=open(mylogo,'rb')
+msgIMAGE=MIMEImage(filelogo.read())
+filelogo.close()
+msgIMAGE.add_header('Content-ID','<alogo>')
+msg.attach(msgIMAGE)
+
+
+#ATTACHMENT section
+attachment=open(filename,'rb')
+part = MIMEBase('application','octet-stream')
+part.set_payload((attachment).read())
+encoders.encode_base64(part)
+part.add_header('Content-Disposition',"attachment; filename=%s" % filename)
+msg.attach(part)
+
+connection=smtplib.SMTP('smtp.gmail.com')
+connection.starttls()       #TLS transport layer security
+
+
+connection.login(user=my_mail,password=password)
+connection.send_message(msg)
+connection.close()
+print("Mail has been sent")
+
+
+
+
+
+##############
+Sending email with date and time 
+
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email.mime.image import MIMEImage
+from email import  encoders
+from datetime import *
+import time as t
+
+day=date.today()
+time=datetime.now()
+
+my_custom=day.strftime("%B %d %Y")
+current_time=time.strftime("%I:%M:%S %p")
+
+
+filename=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 40\test.txt"
+mylogo=r"C:\Users\AbdealiDodiya\Desktop\DevOps\Python\Lecture 40\alnafi.jpg"
+msg=MIMEMultipart()
+
+my_mail="automation52786@gmail.com"
+password="nrjxoxmahyxzybvm"
+msg['Subject']= f"Citrix connection alert {my_custom} {current_time}"
+msg['From']= my_mail
+msg['To'] = my_mail
+msg['Cc'] = 'abdealipython@gmail.com'
+
+
+body=""" 
+<html><p> <b> <i>Hi Team,<br> This is testing email server via python script. <b> <i> <br> <img src="cid:alogo" width="100" height="50"></p> </html> 
+"""
+msg.attach(MIMEText(body,'html'))
+
+
+###LOGO section
+filelogo=open(mylogo,'rb')
+msgIMAGE=MIMEImage(filelogo.read())
+filelogo.close()
+msgIMAGE.add_header('Content-ID','<alogo>')
+msg.attach(msgIMAGE)
+
+
+#ATTACHMENT section
+attachment=open(filename,'rb')
+part = MIMEBase('application','octet-stream')
+part.set_payload((attachment).read())
+encoders.encode_base64(part)
+part.add_header('Content-Disposition',"attachment; filename=%s" % filename)
+msg.attach(part)
+
+connection=smtplib.SMTP('smtp.gmail.com')
+connection.starttls()       #TLS transport layer security
+
+
+connection.login(user=my_mail,password=password)
+connection.send_message(msg)
+connection.close()
+
+
+

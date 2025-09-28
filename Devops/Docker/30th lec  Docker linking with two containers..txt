@@ -1,0 +1,28 @@
+Docker lecture 30
+
+
+Docker linking  --> 2 connect container
+Custom network --> Connect
+
+
+
+docker run -d -P training/webapp python app.py
+docker run -d -p 8000-9000:5000 training/webapp python app.py
+docker run -d -p 127.0.0.1:8001:5001 training/webapp python app.py
+docker run -d -p 127.0.0.1::5000 training/webapp python app.py
+docker port 2a261088829a
+
+docker kill $(docker ps -q )
+docker rm  $(docker ps -a -q )
+
+docker run -d --name db training/postgres
+
+docker run -d -P --name web --link db:db training/webapp python app.py
+
+--link <name or ID>: alias
+
+
+docker inspect -f "{{ .HostConfig.Links }}" web
+
+
+172.17.0.2

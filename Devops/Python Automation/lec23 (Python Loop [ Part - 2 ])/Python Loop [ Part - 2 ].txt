@@ -1,0 +1,247 @@
+Lecture 23 :
+
+
+While Loop :-
+while true condition:
+statement
+
+
+
+i=1
+while i <= 10:
+print(i)
+i=i+1
+
+O/p:-
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+
+
+
+
+i=10
+while i >= 0:
+print(i)
+i=i-1
+
+O/p:-
+10
+9
+8
+7
+6
+5
+4
+3
+2
+1
+0
+
+
+
+root@abdealidodia:~/lect23# python3 os_Walk_for.py
+[('/root/lect23', ['test'], ['os_Walk_for.py', 'abd.csv']), ('/root/lect23/test', [], [])]
+root@abdealidodia:~/lect23# tree
+.
+├── abd.csv
+├── os_Walk_for.py
+└── test
+
+1 directory, 2 files
+
+
+
+import os
+#print((list(os.walk(os.getcwd()))))
+for roots,dirs, files in (list(os.walk(os.getcwd()))):
+print(roots)
+
+
+# python3 os_Walk_for.py
+/root/lect23
+/root/lect23/test
+/root/lect23/test/test1
+
+
+
+
+
+# cat os_Walk_for.py
+import os
+#print((list(os.walk(os.getcwd()))))
+for roots,dirs, files in (list(os.walk(os.getcwd()))):
+print(roots)
+print(dirs)
+
+
+
+root@abdealidodia:~/lect23# tree
+.
+├── abd.csv
+├── os_Walk_for.py
+└── test
+└── test1
+
+2 directories, 2 files
+root@abdealidodia:~/lect23# python3 os_Walk_for.py
+/root/lect23
+['test']
+/root/lect23/test
+['test1']
+/root/lect23/test/test1
+[]
+
+
+
+
+root@abdealidodia:~/lect23# tree
+.
+├── abd.csv
+├── os_Walk_for.py
+└── test
+└── test1
+
+2 directories, 2 files
+root@abdealidodia:~/lect23# cat os_Walk_for.py
+import os
+#print((list(os.walk(os.getcwd()))))
+for roots,dirs, files in (list(os.walk(os.getcwd()))):
+print(roots)
+print(dirs)
+print(files)
+root@abdealidodia:~/lect23# python3 os_Walk_for.py
+/root/lect23
+['test']
+['os_Walk_for.py', 'abd.csv']
+/root/lect23/test
+['test1']
+[]
+/root/lect23/test/test1
+[]
+[]
+
+
+
+
+
+
+root@abdealidodia:~/lect23# tree
+.
+├── abd.csv
+├── os_Walk_for.py
+└── test
+├── test1
+└── testing.csv
+
+2 directories, 3 files
+root@abdealidodia:~/lect23# cat os_Walk_for.py
+import os
+#print((list(os.walk(os.getcwd()))))
+for roots,dirs, files in (list(os.walk(os.getcwd()))):
+print(roots,dirs,files)
+print(len(files))
+root@abdealidodia:~/lect23# python3 os_Walk_for.py
+/root/lect23 ['test'] ['os_Walk_for.py', 'abd.csv']
+2
+/root/lect23/test ['test1'] ['testing.csv']
+1
+/root/lect23/test/test1 [] []
+0
+
+
+
+
+
+
+
+
+
+
+root@abdealidodia:~/lect23# cat os_Walk_for.py
+import os
+#print((list(os.walk(os.getcwd()))))
+for roots,dirs, files in (list(os.walk(os.getcwd()))):
+if len(files) !=0:
+print(roots)
+for i in files:
+print(i)
+
+
+root@abdealidodia:~/lect23# tree
+.
+├── abd.csv
+├── os_Walk_for.py
+└── test
+├── test1
+└── testing.csv
+
+2 directories, 3 files
+
+
+
+root@abdealidodia:~/lect23# python3 os_Walk_for.py
+/root/lect23
+os_Walk_for.py
+abd.csv
+/root/lect23/test
+testing.csv
+
+
+
+
+
+root@abdealidodia:~/lect23# tree
+.
+├── ABD
+├── abd.csv
+├── os_Walk_for.py
+└── test
+├── test1
+└── testing.csv
+
+3 directories, 3 files
+root@abdealidodia:~/lect23# cat os_Walk_for.py
+import os
+#print((list(os.walk(os.getcwd()))))
+for roots,dirs, files in (list(os.walk(os.getcwd()))):
+if len(files) !=0:
+print(roots)
+for i in files:
+print(os.path.join(roots,i))
+root@abdealidodia:~/lect23# python3 os_Walk_for.py
+/root/lect23
+/root/lect23/os_Walk_for.py
+/root/lect23/abd.csv
+/root/lect23/test
+/root/lect23/test/testing.csv
+
+
+
+#####################TASK time #################################
+
+Task 1:-
+How to find txt file in python (One script will run any of your OS like windows or Linux)
+
+
+Task 2:-
+I want to create like find command in linux , If you are search any files using user define variable then it will be search from your path or entire server.
+
+Example:-
+# find /root/lect23/  -name testing.csv
+/root/lect23/test/testing.csv
+
+
+
+
+
+
+
+NOTE : Please download Practical session phase one pdf file and do the practice, We will upload practical solution soon.

@@ -1,0 +1,195 @@
+this lecture is totally opposite of previous lectures, where we defined linux commands in a json file.
+read the json file in python, and ran the commands.
+
+
+Now, we will run commands directly in ansible playbook
+
+vim collect_cmd_details.yml
+
+---
+- hosts: all
+  tasks:
+  - name: Collecting hostname 
+    shell: "hostname | tr -d '\n'" # running command in ansible playbook and storing its output then calling output through debug command
+    register: hostname_details
+  - debug:
+      var: hostname_details.stdout
+  - name: Collecting IP address
+    shell: "hostname -I | awk '{print $1}' | tr -d '\n'"
+    register: ip_details
+  - debug:
+      var: ip_details.stdout
+  - name: Collecting the disk storage output
+    shell: "df -h | grep -v 'tmpfs'"
+    register: df_details
+  - debug:
+      var: df_details.stdout_lines
+
+
+
+
+
+[jhon@master-ansible reports]$ ansible-playbook collect_cmd_details.yml
+
+PLAY [all] *******************************************************************************************************************
+
+TASK [Gathering Facts] *******************************************************************************************************
+ok: [54.166.4.83]
+
+TASK [Collecting hostname] ***************************************************************************************************
+changed: [54.166.4.83]
+
+TASK [debug] *****************************************************************************************************************
+ok: [54.166.4.83] => {
+    "hostname_details.stdout": "ip-172-31-26-215"
+}
+
+TASK [Collecting IP address] *************************************************************************************************
+changed: [54.166.4.83]
+
+TASK [debug] *****************************************************************************************************************
+ok: [54.166.4.83] => {
+    "ip_details.stdout": "172.31.26.215"
+}
+
+TASK [Collecting the disk storage output] ************************************************************************************
+changed: [54.166.4.83]
+
+TASK [debug] *****************************************************************************************************************
+ok: [54.166.4.83] => {
+    "df_details.stdout_lines": [
+        "Filesystem      Size  Used Avail Use% Mounted on",
+        "/dev/root       6.8G  2.6G  4.2G  38% /",
+        "/dev/xvda16     881M  149M  671M  19% /boot",
+        "/dev/xvda15     105M  6.2M   99M   6% /boot/efi"
+    ]
+}
+
+PLAY RECAP *******************************************************************************************************************
+54.166.4.83                : ok=7    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+
+
+
+====================================
+
+
+
+Now, we will save the output of commands in a csv file.
+
+
+vim collect_cmd_details_csv.yml
+
+---
+- hosts: all
+  tasks:
+  - name: Adding the header to CSV file
+    lineinfile:
+      path: /home/ubuntu/OS_OUTPUT.csv
+      line: "HOSTNAME,IP ADDRESS,DF -h (mount details)"
+      create: yes
+
+  - name: Collecting hostname
+    shell: "hostname | tr -d '\n'"
+    register: hostname_details
+
+  - debug:
+      var: hostname_details.stdout
+
+  - name: Collecting IP address
+    shell: "hostname -I | awk '{print $1}' | tr -d '\n'"
+    register: ip_details
+
+  - debug:
+      var: ip_details.stdout
+
+  - name: Collecting the disk storage output
+    shell: "df -h | grep -v 'tmpfs'"
+    register: df_details
+
+  - debug:
+      var: df_details.stdout_lines
+
+  - name: Save data to CSV file
+    lineinfile:
+      path: /home/ubuntu/OS_OUTPUT.csv
+      line: "{{ hostname_details.stdout }},{{ ip_details.stdout }},\"{{ df_details.stdout }}\""
+      create: yes
+
+  - name: Fetch the CSV file to master machine
+    fetch:
+      src: /home/ubuntu/OS_OUTPUT.csv
+      dest: /home/jhon/ansible/OS_OUTPUT_{{ inventory_hostname }}_{{ansible_date_time.hour}}{{ansible_date_time.minute}}.csv
+      flat: yes
+      backup: yes
+
+     
+=====================================================================================
+
+
+
+
+[jhon@master-ansible reports]$ ansible-playbook collect_cmd_details_csv.yml
+
+PLAY [all] *******************************************************************************************************************
+
+TASK [Gathering Facts] *******************************************************************************************************
+ok: [54.166.4.83]
+
+TASK [Adding the header to CSV file] *****************************************************************************************
+ok: [54.166.4.83]
+
+TASK [Collecting hostname] ***************************************************************************************************
+changed: [54.166.4.83]
+
+TASK [debug] *****************************************************************************************************************
+ok: [54.166.4.83] => {
+    "hostname_details.stdout": "ip-172-31-26-215"
+}
+
+TASK [Collecting IP address] *************************************************************************************************
+changed: [54.166.4.83]
+
+TASK [debug] *****************************************************************************************************************
+ok: [54.166.4.83] => {
+    "ip_details.stdout": "172.31.26.215"
+}
+
+TASK [Collecting the disk storage output] ************************************************************************************
+changed: [54.166.4.83]
+
+TASK [debug] *****************************************************************************************************************
+ok: [54.166.4.83] => {
+    "df_details.stdout_lines": [
+        "Filesystem      Size  Used Avail Use% Mounted on",
+        "/dev/root       6.8G  2.6G  4.2G  38% /",
+        "/dev/xvda16     881M  149M  671M  19% /boot",
+        "/dev/xvda15     105M  6.2M   99M   6% /boot/efi"
+    ]
+}
+
+TASK [Save data to CSV file] *************************************************************************************************
+changed: [54.166.4.83]
+
+TASK [Fetch the CSV file to master machine] **********************************************************************************
+changed: [54.166.4.83]
+
+PLAY RECAP *******************************************************************************************************************
+54.166.4.83                : ok=10   changed=5    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+
+
+====================================
+
+
+
+[jhon@master-ansible ansible]$ cat OS_OUTPUT_54.166.4.83_0703.csv
+HOSTNAME,IP ADDRESS,DF -h (mount details)
+ip-172-31-26-215,172.31.26.215,"Filesystem      Size  Used Avail Use% Mounted on
+/dev/root       6.8G  2.6G  4.2G  38% /
+/dev/xvda16     881M  149M  671M  19% /boot
+/dev/xvda15     105M  6.2M   99M   6% /boot/efi"
+
+     
+
+

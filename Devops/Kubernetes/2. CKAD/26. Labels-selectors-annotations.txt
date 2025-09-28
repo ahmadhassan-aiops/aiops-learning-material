@@ -1,0 +1,248 @@
+
+
+
+
+
+-----------------------------------------------
+
+
+ kubectl run my-pod --image nginx --dry-run=client -o yaml > my-pod.yaml
+[root@client1 ahmad]# cat my-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: my-pod
+  name: my-pod
+spec:
+  containers:
+  - image: nginx
+    name: my-pod
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+[root@client1 ahmad]# vim my-pod.yaml
+[root@client1 ahmad]# cat my-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    env: dev
+    tier: frontend
+  name: my-pod
+spec:
+  containers:
+  - image: nginx
+    name: my-pod
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+[root@client1 ahmad]# kubectl apply -f my-pod.yaml
+pod/my-pod created
+[root@client1 ahmad]# kubectl get po
+NAME     READY   STATUS    RESTARTS   AGE
+my-pod   1/1     Running   0          6s
+
+
+
+-----------------------------------------------
+
+
+kubectl get po --selector tier=frontend
+NAME     READY   STATUS    RESTARTS   AGE
+my-pod   1/1     Running   0          54s
+
+
+-----------------------------------------------
+
+kubectl get po --selector tier=frontend --no-headers
+my-pod   1/1   Running   0     2m31s
+[root@client1 ahmad]# kubectl get po --selector tier=frontend --no-headers | wc -l
+1
+
+
+-----------------------------------------------
+
+ kubectl get all --selector tier=frontend --no-headers | wc -l
+1
+
+
+-----------------------------------------------
+
+
+kubectl create service clusterip demo-svc --tcp=5678:8080 --dry-run=client
+service/demo-svc created (dry run)
+[root@client1 ahmad]# kubectl create service clusterip demo-svc --tcp=5678:8080 --dry-run=client -o yaml > demo-svc.yaml
+[root@client1 ahmad]# vim demo-svc.yaml
+[root@client1 ahmad]# kubectl apply -f demo-svc.yaml
+service/demo-svc created
+[root@client1 ahmad]# kubectl get svc
+NAME         TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+demo-svc     ClusterIP   10.96.140.81   <none>        5678/TCP   5s
+kubernetes   ClusterIP   10.96.0.1      <none>        443/TCP    3d20h
+[root@client1 ahmad]# cat demo-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    tier: frontend
+  name: demo-svc
+spec:
+  ports:
+  - name: 5678-8080
+    port: 5678
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: demo-svc
+  type: ClusterIP
+status:
+  loadBalancer: {}
+
+
+
+
+-----------------------------------------------
+
+kubectl get all --selector tier=frontend --no-headers
+pod/my-pod   1/1   Running   0     7m47s
+service/demo-svc   ClusterIP   10.96.140.81   <none>   5678/TCP   88s
+[root@client1 ahmad]# kubectl get all --selector tier=frontend --no-headers | wc -l
+2
+
+
+-----------------------------------------------
+
+kubectl get all --selector tier=frontend,env=dev --no-headers
+pod/my-pod   1/1   Running   0     9m42s
+
+
+ kubectl get all --selector tier=frontend,env=dev --no-headers | wc -l
+1
+
+
+-----------------------------------------------
+
+
+kubectl create deployment test-deploy --image=nginx --replicas 3 --dry-run=client
+deployment.apps/test-deploy created (dry run)
+[root@client1 ahmad]# kubectl create deployment test-deploy --image=nginx --replicas 3 --dry-run=client -o yaml > test-deploy
+[root@client1 ahmad]# vim test-deploy
+[root@client1 ahmad]# cat test-deploy
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    tier: backend
+    bu: finance
+  name: test-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: test-deploy
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        env: prod
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        resources: {}
+status: {}
+[root@client1 ahmad]# kubectl apply -f test-deploy
+The Deployment "test-deploy" is invalid: spec.template.metadata.labels: Invalid value: map[string]string{"env":"prod"}: `selector` does not match template `labels`
+
+
+-----------------------------------------------
+
+cat test-deploy
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    tier: backend
+    bu: finance
+  name: test-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      env: prod
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        env: prod
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        resources: {}
+status: {}
+
+
+(now matchlabels are indeed matched)
+
+
+-----------------------------------------------
+
+kubectl apply -f test-deploy
+deployment.apps/test-deploy created
+[root@client1 ahmad]# kubectl get deploy
+NAME          READY   UP-TO-DATE   AVAILABLE   AGE
+test-deploy   2/3     3            2           9s
+[root@client1 ahmad]#
+[root@client1 ahmad]# kubectl get all --selector tier=backend
+NAME                          READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/test-deploy   3/3     3            3           38s
+
+
+-----------------------------------------------
+
+kubectl get all --selector bu=finance
+NAME                          READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/test-deploy   3/3     3            3           104s
+[root@client1 ahmad]# kubectl get all --selector bu=finance,tier=backend
+NAME                          READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/test-deploy   3/3     3            3           116s
+[root@client1 ahmad]# kubectl get all --selector bu=finance,tier=frontend
+No resources found in default namespace.
+
+
+
+-----------------------------------------------
+
+kubectl get all --selector env=prod
+NAME                               READY   STATUS    RESTARTS   AGE
+pod/test-deploy-68578b5d96-db7c4   1/1     Running   0          2m38s
+pod/test-deploy-68578b5d96-dj2l8   1/1     Running   0          2m38s
+pod/test-deploy-68578b5d96-fjh56   1/1     Running   0          2m38s
+
+NAME                                     DESIRED   CURRENT   READY   AGE
+replicaset.apps/test-deploy-68578b5d96   3         3         3       2m38s
+
+
+-----------------------------------------------
+
+
+kubectl get all --selector env=prod --no-headers | wc -l
+4
+[root@client1 ahmad]# kubectl get rs --selector env=prod --no-headers | wc -l
+1
+
+
+-----------------------------------------------
+
+

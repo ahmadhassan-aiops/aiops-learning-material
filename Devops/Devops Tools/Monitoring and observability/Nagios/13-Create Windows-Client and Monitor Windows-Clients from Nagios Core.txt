@@ -1,0 +1,73 @@
+
+I created free tier windows insatnce on aws and use the exact same sg like i took for nagios server and add rdp and port 12489. This machine server as 
+windows clinent. With public ip 54.164.53.218 and private 172.31.29.198
+
+Take rdp of this windows client. Download the nsclient++ (NSCP-0.5.2.41-x64.msi 31.5 MB Apr 26, 2018) , unckeck nrpe and check (enable client server)
+
+
+(At nagios-server)
+
+[root@ip-172-31-20-168 ~]# cd /usr/local/nagios/
+[root@ip-172-31-20-168 nagios]# ls
+bin  etc  libexec  sbin  share  var
+[root@ip-172-31-20-168 nagios]# cd etc
+[root@ip-172-31-20-168 etc]# ls
+cgi.cfg  htpasswd.users  nagios.cfg  objects  resource.cfg  servers
+[root@ip-172-31-20-168 etc]# vi nagios.cfg
+
+
+	This line will be entered at the start	(cfg_file=/usr/local/nagios/etc/objects/windows.cfg)
+
+
+[root@ip-172-31-20-168 objects]# vim windows.cfg
+(Here just add the public ip of windows client machine)
+
+
+Now we will go to windows client program files and then nslient folder and then nsclient file where the nagios server ip is already set! And made
+following changes:
+
+; Undocumented key
+CheckExternalScripts = 1
+
+; Undocumented key
+CheckHelpers = 1
+
+; Undocumented key
+CheckEventLog = 1
+
+; Undocumented key
+CheckNSCP = 1
+
+; Undocumented key
+CheckDisk = 1
+
+; Undocumented key
+CheckSystem = 1
+
+; Undocumented key
+NSClientServer = 1
+
+
+
+now on windows server we have to go to services and then select nsclient service and restart it!
+
+
+
+#on nagios server
+[root@ip-172-31-20-168 objects]# systemctl restart nagios
+
+
+
+if windows server is still down then do this
+
+
+[root@ip-172-31-20-168 objects]# vim windows.cfg
+
+define host {
+    use             windows-server
+    host_name       winserver
+    alias           Windows Client
+    address         172.31.29.198
+    check_command   check_nt!UPTIME
+}
+

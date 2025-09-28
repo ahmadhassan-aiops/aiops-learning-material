@@ -1,0 +1,212 @@
+Lecture 13 : Dictionary data structure in Python.
+
+Dictionary:-
+Dictionary can be implement in various ways, They are also known as associate arrays
+
+Dictionary is pair with unique keys.
+
+Dictionary are optimized to retrieve values when the keys is known. Dictionary are used to stored the values in key , key : values pair.
+
+Dictionary don't allow duplicate keys.
+
+
+person = [12,3,5,7]#LIST
+person =(12,4,5,6)#Tuple
+person = {12,4,5,6,7}#Set
+person= {"name":"abd","age":67}
+
+name --> key
+abd --> values
+age --> key
+67 --> values
+
+
+>>> dict1={uname:"abd"}
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+NameError: name 'uname' is not defined
+>>> uname="abd"
+>>> print(uname)
+abd
+>>> dict1={"uname":"abdeali"}
+>>> print(dict1)
+{'uname': 'abdeali'}
+
+
+>>> print(type(dict1))
+<class 'dict'>
+
+
+{'uname': 'abdeali'}
+>>> print(type(dict1))
+<class 'dict'>
+>>> dict1={"uname":"abdeali","pass","abd123"}
+File "<stdin>", line 1
+dict1={"uname":"abdeali","pass","abd123"}
+^
+SyntaxError: ':' expected after dictionary key
+>>> dict1={"uname":"abdeali","pass":"abd123"}
+>>> print(dict1)
+{'uname': 'abdeali', 'pass': 'abd123'}
+uname --> keys
+pass >> keys
+
+
+
+
+#how to access your values by keys
+>>> print(dict1)
+{'uname': 'abdeali', 'pass': 'abd123'}
+>>> print(dict1['uname'])
+abdeali
+>>> print(dict1['pass'])
+abd123
+>>> print(dict1['Pass'])
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+KeyError: 'Pass'
+
+
+
+
+#Interview question :-
+Q: how to handle your exception handling while keys is not foudn from your dictionary
+
+Answer:-
+>>> print(dict1.get['pass'])
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+TypeError: 'builtin_function_or_method' object is not subscriptable
+>>> print(dict1.get('pass'))
+abd123
+>>> print(dict1.get('Pass'))
+None
+>>> print(dict1['Pass'])
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+KeyError: 'Pass'
+
+
+
+Interview question :-
+What is different between python2 and python3 for dictionary data when you print
+
+Python3:-
+>>> person={"name":"ABD","age":44,"city":"Bangalore","country":"India"}
+>>> print(person)
+{'name': 'ABD', 'age': 44, 'city': 'Bangalore', 'country': 'India'}
+>>>
+
+
+Python2:-
+
+>>> person={"name":"ABD","age":44,"city":"Bangalore","country":"India"}
+>>> print(person)
+{'city': 'Bangalore', 'age': 44, 'name': 'ABD', 'country': 'India'}
+>>>
+
+
+
+
+#Assigment
+>>> person={"name":"ABD","age":44,"city":"Bangalore","country":"India"}
+>>> print(person)
+{'name': 'ABD', 'age': 44, 'city': 'Bangalore', 'country': 'India'}
+
+>>> print(person['name'])
+ABD
+>>> person['name']='Abdeali'
+>>> print(person)
+{'name': 'Abdeali', 'age': 44, 'city': 'Bangalore', 'country': 'India'}
+
+
+
+>>> person['names']='Abdeali'
+>>> print(person)
+{'name': 'Abdeali', 'age': 44, 'city': 'Bangalore', 'country': 'India', 'names': 'Abdeali'}
+
+
+
+
+
+
+#COPY
+>>> person={"name":"ABD","age":44,"city":"Bangalore","country":"India"}
+>>> person1=person
+>>> print(person)
+{'name': 'ABD', 'age': 44, 'city': 'Bangalore', 'country': 'India'}
+>>> print(person1)
+{'name': 'ABD', 'age': 44, 'city': 'Bangalore', 'country': 'India'}
+>>> print(id(person1))
+2046855854976
+>>> print(id(person))
+2046855854976
+>>>
+
+Assign memory allocation will be same
+
+
+>>> person2=person.copy()
+>>> print(person2)
+{'name': 'ABD', 'age': 44, 'city': 'Bangalore', 'country': 'India'}
+>>> print(id(person2))
+2046856207552
+>>> print(id(person))
+2046855854976
+
+
+
+#KEYS
+How to get keys of dictionary ?
+
+>>> print(person)
+{'name': 'ABD', 'age': 44, 'city': 'Bangalore', 'country': 'India'}
+>>> print(person.keys())
+dict_keys(['name', 'age', 'city', 'country'])
+
+
+
+#Values
+>>> print(person)
+{'name': 'ABD', 'age': 44, 'city': 'Bangalore', 'country': 'India'}
+>>> print(person.values())
+dict_values(['ABD', 44, 'Bangalore', 'India'])
+
+
+#Items
+how to get keys and values pair of dictionary ?
+>>> print(person)
+{'name': 'ABD', 'age': 44, 'city': 'Bangalore', 'country': 'India'}
+>>> print(person.items())
+dict_items([('name', 'ABD'), ('age', 44), ('city', 'Bangalore'), ('country', 'India')])
+>>> myitems=(person.items())
+>>> print(myitems)
+dict_items([('name', 'ABD'), ('age', 44), ('city', 'Bangalore'), ('country', 'India')])
+>>> print(type(myitems))
+<class 'dict_items'>
+
+
+
+#CLEAR
+>>> print(person)
+{'name': 'ABD', 'age': 44, 'city': 'Bangalore', 'country': 'India'}
+
+>>> person.clear()
+>>> print(person)
+{}
+
+
+
+#Update
+>>> person={"name":"ABD","age":44,"city":"Bangalore","country":"India"}
+>>> print(person)
+{'name': 'ABD', 'age': 44, 'city': 'Bangalore', 'country': 'India'}
+>>> person['salary']=1000
+>>> print(person)
+{'name': 'ABD', 'age': 44, 'city': 'Bangalore', 'country': 'India', 'salary': 1000}
+>>> person1={"company":"google"}
+>>> print(person1)
+{'company': 'google'}
+>>> person.update(person1)
+>>> print(person)
+{'name': 'ABD', 'age': 44, 'city': 'Bangalore', 'country': 'India', 'salary': 1000, 'company': 'google'}

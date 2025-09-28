@@ -1,0 +1,109 @@
+Lecture 24 : Practical Phase 4 with Solution.
+
+
+Task 1 :-
+cat >HelloWorld.java <<EOF
+class HelloWorld {
+public static void main(String[] a) {
+System.out.println("Hello world!");
+}
+}
+EOF
+
+
+cat >Dockerfile <<EOF
+FROM openjdk:11-jdk
+COPY HelloWorld.java .
+RUN javac HelloWorld.java
+CMD java HelloWorld
+EOF
+
+
+docker build --tag helloworld:huge .
+docker run helloworld:huge
+
+docker container run --volume $PWD:/src --workdir /src openjdk:11-jdk javac *.java
+docker container run -it --volume $PWD:/src --workdir /src openjdk:11-jdk sh
+
+cat >Dockerfile <<EOF
+FROM openjdk:11-jre
+COPY HelloWorld.class .
+CMD java HelloWorld
+EOF
+
+
+create new dir and copy java file to in this location
+docker image build --tag helloworld:run .
+
+docker container run helloworld:run
+
+
+
+cat >Dockerfile <<EOF
+FROM openjdk:11-jdk AS build
+COPY HelloWorld.java .
+RUN javac HelloWorld.java
+FROM openjdk:11-jre AS run
+COPY --from=build HelloWorld.class .
+CMD java HelloWorld
+EOF
+
+docker image build --tag helloworld:small .
+
+docker container run helloworld:small
+
+
+
+
+Tasks 3
+FROM alpine:3.10
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /root/
+
+COPY vendor vendor
+COPY app    .
+
+
+
+
+#!/bin/sh
+echo Building using multi-stage build
+
+docker build --no-cache -t alexellis2/href-counter:0.1.0 . -f Dockerfile.multi
+
+
+readme.md
+
+
+### Running the example
+
+* With Go
+
+```sh
+go build
+
+$ url=http://blog.alexellis.io/ ./href-counter
+{"internal":40,"external":2}
+
+$ url=http://blog.alexellis.io/golang-json-api-client/  ./href-counter
+{"internal":17,"external":15}
+```
+
+* Build with multi-stage build
+
+```sh
+./build.sh
+```
+
+* Run with Docker
+
+```sh
+docker run -e url=https://www.alexellis.io/ -ti alexellis2/href-counter:0.1.0
+{"internal":6,"external":11}
+```
+
+* Build with multiple Dockerfiles
+
+```sh
+./build-multi-dockerfiles.sh

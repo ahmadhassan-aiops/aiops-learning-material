@@ -1,0 +1,100 @@
+
+
+
+
+-------------------------------------------------------------
+kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/release-3.7/deploy/gatekeeper.yaml
+
+
+namespace/gatekeeper-system created
+resourcequota/gatekeeper-critical-pods created
+customresourcedefinition.apiextensions.k8s.io/assign.mutations.gatekeeper.sh created
+customresourcedefinition.apiextensions.k8s.io/assignmetadata.mutations.gatekeeper.sh created
+customresourcedefinition.apiextensions.k8s.io/configs.config.gatekeeper.sh created
+customresourcedefinition.apiextensions.k8s.io/constraintpodstatuses.status.gatekeeper.sh created
+customresourcedefinition.apiextensions.k8s.io/constrainttemplatepodstatuses.status.gatekeeper.sh created
+customresourcedefinition.apiextensions.k8s.io/constrainttemplates.templates.gatekeeper.sh created
+customresourcedefinition.apiextensions.k8s.io/modifyset.mutations.gatekeeper.sh created
+customresourcedefinition.apiextensions.k8s.io/mutatorpodstatuses.status.gatekeeper.sh created
+customresourcedefinition.apiextensions.k8s.io/providers.externaldata.gatekeeper.sh created
+serviceaccount/gatekeeper-admin created
+role.rbac.authorization.k8s.io/gatekeeper-manager-role created
+clusterrole.rbac.authorization.k8s.io/gatekeeper-manager-role created
+rolebinding.rbac.authorization.k8s.io/gatekeeper-manager-rolebinding created
+clusterrolebinding.rbac.authorization.k8s.io/gatekeeper-manager-rolebinding created
+secret/gatekeeper-webhook-server-cert created
+service/gatekeeper-webhook-service created
+Warning: spec.template.metadata.annotations[container.seccomp.security.alpha.kubernetes.io/manager]: non-functional in v1.27+; use the "seccompProfile" field instead
+deployment.apps/gatekeeper-audit created
+deployment.apps/gatekeeper-controller-manager created
+mutatingwebhookconfiguration.admissionregistration.k8s.io/gatekeeper-mutating-webhook-configuration created
+validatingwebhookconfiguration.admissionregistration.k8s.io/gatekeeper-validating-webhook-configuration created
+resource mapping not found for name: "gatekeeper-admin" namespace: "" from "https://raw.githubusercontent.com/open-policy-agent/gatekeeper/release-3.7/deploy/gatekeeper.yaml": no matches for kind "PodSecurityPolicy" in version "policy/v1beta1"
+ensure CRDs are installed first
+resource mapping not found for name: "gatekeeper-controller-manager" namespace: "gatekeeper-system" from "https://raw.githubusercontent.com/open-policy-agent/gatekeeper/release-3.7/deploy/gatekeeper.yaml": no matches for kind "PodDisruptionBudget" in version "policy/v1beta1"
+ensure CRDs are installed first
+
+
+
+-------------------------------------------------------------
+
+kubectl get pods -n gatekeeper-system
+NAME                                             READY   STATUS    RESTARTS   AGE
+gatekeeper-audit-655f8945b7-5jfbk                1/1     Running   0          66s
+gatekeeper-controller-manager-76f9b77f76-5cznp   1/1     Running   0          66s
+gatekeeper-controller-manager-76f9b77f76-fcc4v   1/1     Running   0          66s
+gatekeeper-controller-manager-76f9b77f76-wrrnk   1/1     Running   0          66s
+
+
+-------------------------------------------------------------
+
+
+
+-------------------------------------------------------------
+
+
+
+-------------------------------------------------------------
+
+
+
+-------------------------------------------------------------
+
+
+
+-------------------------------------------------------------
+
+
+
+
+-------------------------------------------------------------
+
+
+
+
+-------------------------------------------------------------
+
+
+
+
+-------------------------------------------------------------
+
+
+
+
+-------------------------------------------------------------
+
+
+
+
+-------------------------------------------------------------
+
+
+
+
+-------------------------------------------------------------
+
+
+
+
+-------------------------------------------------------------

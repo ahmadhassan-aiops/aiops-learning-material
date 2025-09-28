@@ -1,0 +1,40 @@
+
+just need to go to vagrant file and using vim we have to uncomment the public network. This way we will be able to connect our host machine network with 
+the vagrant.
+
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+  config.vm.network "public_network"
+
+
+------------------------------
+
+vagrant up
+vagrant ssh
+
+
+now check the ip using ifconfig
+use that ip to ping on command promp it will work!
+----------------------------------
+
+We will use puTTy to provide ip of vagrant and access it by providing username and password as 'vagrant'
+Now if we make dir and files in vagrant from bash it will be visible in puTTY based vagrant as well!
+
+---------------------------------------------------
+
+Now we can exit vagrant from puTTy and bash and run destroy vagrant ad again go to vagrantfile and change
+
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+  config.vm.network "public_network" , ip: "192.168.0.105" , bridge: "Intel(R) Wi-Fi 6 AX201 160MHz"
+
+
+vagrant up
+vagrant ssh
+ifconfig
+
+-------------------------------------------
+
+

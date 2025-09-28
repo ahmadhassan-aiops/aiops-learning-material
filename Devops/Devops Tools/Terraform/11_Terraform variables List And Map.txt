@@ -1,0 +1,94 @@
+
+
+
+
+
+=====================================================================================
+
+---
+
+# **Example 1: Using List**
+
+### **providers.tf**
+
+```hcl
+provider "aws" {
+  region     = "us-east-1"
+}
+```
+
+### **variables.tf**
+
+```hcl
+variable "instance_types" {
+  type    = list(string)
+  default = ["t2.micro", "t2.small", "t2.medium"]
+}
+```
+
+### **createinstance.tf**
+
+```hcl
+resource "aws_instance" "list_example" {
+  ami           = "ami-0bbdd8c17ed981ef9"
+  instance_type = var.instance_types[1]   # → t2.small
+
+  tags = {
+    Name = "ListExampleInstance"
+  }
+}
+```
+
+=====================================================================================
+
+
+
+# **Example 2: Using Map**
+
+### **providers.tf**
+
+```hcl
+provider "aws" {
+  region     = "us-east-1"
+}
+```
+
+### **variables.tf**
+
+```hcl
+variable "amis" {
+  type = map(string)
+  default = {
+    us-east-1 = "ami-0bbdd8c17ed981ef9"
+    us-west-2 = "ami-0abcdef1234567890"
+  }
+}
+```
+
+### **createinstance.tf**
+
+```hcl
+resource "aws_instance" "map_example" {
+  ami           = var.amis["us-east-1"]
+  instance_type = "t2.micro"
+
+  tags = {
+    Name = "MapExampleInstance"
+  }
+}
+```
+
+
+
+
+
+=======================================================================================
+
+
+
+
+Both examples are **separate setups**.
+
+* **Example 1** → Picks **instance type** from a **list**.
+* **Example 2** → Picks **AMI** from a **map**.
+

@@ -1,0 +1,519 @@
+Lecture 8 : Positional parameter in Bash script
+
+echo "enter the number"
+read abd
+abd --> Abdeali
+$abd
+
+a=10
+a
+$a
+
+$0 -->  Program or script name
+$1.$9 --> parameter passed
+$# --> Count the total number of parameter
+$* --> Display the parameter passed
+$@ --> same as $* both are same
+$$ --> Provide the current PID of shell
+
+
+#!/bin/bash
+echo "This is positional parameter example script" $0
+echo "Hello, My name is : " $1
+echo "Here is " $2
+echo "this is " $3
+echo "total count value is " $#
+echo "Display the parameter which are passed" $*
+echo "Fetch information" $@
+echo "PID of current shell"
+echo "Exit status of last executed command " $?
+
+
+(output)
+./test.sh King Queen Prince ABD alnafi
+This is positional parameter example script ./test.sh
+Hello, My name is :  King
+Here is  Queen
+this is  Prince
+total count value is  5
+Display the parameter the passed King Queen Prince ABD alnafi
+Fetch information King Queen Prince ABD alnafi
+PID of current shell
+Exit status of last executed command  0
+
+
+#!/bin/bash
+echo  "Enter the service name which you want to check"
+read service_name
+echo  "Enter the status"
+read status
+sudo systemctl $status $service_name
+
+
+#!/bin/bash
+service_name=$1
+status=$2
+sudo systemctl $status $service_name
+#./service_status.sh docker status
+
+
+
+#!/bin/bash
+#echo  "Enter the service name which you want to check"
+#read service_name
+#echo  "Enter the status"
+#read status
+
+if [[ $# -ne 2 ]]
+then
+echo "Hey Admin, Please run the script as per instruction"
+echo "Example : $0 <servicename> <ActiontoBeExecuted>"
+echo "Example : $0 docker status"
+echo "Action valid : status, stop, start , restart"
+else
+service_name=$1
+status=$2
+sudo systemctl $status $service_name
+fi
+
+(Output)
+root@abdealidodia:~/bash/lect8# ./service_status.sh docker
+Hey Admin, Please run the script as per instruction
+Example : ./service_status.sh <servicename> <ActiontoBeExecuted>
+Example : ./service_status.sh docker status
+Action valid : status, stop, start , restart
+root@abdealidodia:~/bash/lect8# ./service_status.sh docker status
+docker.service - Docker Application Container Engine
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Lecture 9 :  Introduction to Loops in Bash script.
+
+
+What is loop ?
+In programming languages any repeated task more than one.
+
+A loop is a sequence of instructions that is continually repeated until certain condition is reached.
+
+Types of Loops:-
+
+1. For loop
+2. While Loop
+3. Untill loop
+4. Salect case loop
+
+
+
+Syntax :-
+For variable in list
+do
+echo "Statement"
+done
+
+touch 1 to 100
+#touch file1
+#touch file2 file3 file4 file5
+#adduser user1 user2 user3
+
+#SMART work
+50 user
+stop
+
+#ls -ltrh
+# ls /etc/resolved.conf
+
+#cat abd.txt
+Abdeali Dodiya
+from alnafi
+Bangalore , India
+read from loop
+redirect file
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Lecture 10 : For loop in Bash script.
+
+Syntax :-
+for variable in list
+do
+echo "Statement"
+done
+
+
+#!/bin/bash
+for var in 1 2 3 4 5
+do
+echo Hello-$var
+done
+
+(output)
+./simple.sh
+Hello-1
+Hello-2
+Hello-3
+Hello-4
+Hello-5
+
+
+Interview Question :-
+
+How to create 10 files using single command.
+touch file{1..10}
+
+
+vim simple.sh
+#!/bin/bash
+for i in {1..11..2}
+do
+echo "Welcome $i"
+done
+
+(output)
+./simple.sh
+Welcome 1
+Welcome 3
+Welcome 5
+Welcome 7
+Welcome 9
+Welcome 11
+
+
+Syntax:  (C programming based also works)
+for ((var=1; var<=5; var++))
+do
+echo $var
+done
+
+
+#!/bin/bash
+if [[ -x file9 ]]
+then
+echo "simple.sh is having execution permission"
+else
+echo "simple.sh is is not having exe permission"
+fi
+
+
+#!/bin/bash
+for each in file1 file2 file3 file4 file5
+do
+if [[ -x $each ]]
+then
+echo "$each is having execution permission"
+else
+echo "$each is is not having exe permission"
+fi
+done
+
+
+#!/bin/bash
+for each in $(ls)
+do
+if [[ -f $each ]]
+then
+echo "$each is file"
+else
+echo "$each is directory"
+fi
+done
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Lecture 11 : While loop in Bash script.
+
+Infinity Loop: When there are no limits in your condition, then it's called infinity.
+
+
+While Loop Syntax:-
+While condition
+do
+ statement
+done
+
+
+vim infinity.sh
+#!/bin/bash
+while true
+do
+ echo "Alnafi"
+ echo "********"
+done
+
+
+#!/bin/bash
+start=1
+while [[ $start -le 10 ]]
+do
+ echo "Alnafi : $start"
+ ((start++))
+done
+
+
+#!/bin/bash
+start=10
+while [[ $start -ge 1 ]]
+do
+ echo "Alnafi : $start"
+ ((start--))
+done
+
+
+Reading file contents:-
+while read line
+do
+ statement
+done < filename
+
+
+vim name.txt
+1,Abdeali
+2,Kazim
+3,Ali
+
+
+vim fileread.sh
+#!/bin/bash
+file="name.txt"
+while read each_line
+do
+ echo "$each_line"
+done < $file
+
+
+File read syntax:-
+command | while read <variable>
+do
+ statement
+done
+
+
+vim fileread.sh
+#!/bin/bash
+file="/root/bash/lect11/name.txt"
+cat $file | while read each_line
+do
+echo "$each_line"
+done
+
+
+root@abdealidodia:~/bash/lect11# cat fileread.sh
+#!/bin/bash
+#file="/root/bash/lect11/name.txt"
+ls -ltrh  | while read each_line
+do
+echo "$each_line"
+done
+
+
+While loop with IFS,
+IFS :- Internal field Separator
+CSV file : 1,Abdeali,12,34
+
+
+While syntax with IFS
+while IFS="Separator" read variable1 variable2 variable3
+do
+ statement
+done < filename
+
+OR
+
+command | while IFS="Separator" read variable1 variable2 variable3
+do
+ statement
+done
+
+
+vim server.csv
+1,Ansible,192.168.1.8
+2,Node1,192.168.1.9
+3,Node2,192.168.1.10
+4,Node3,192.168.1.11
+
+
+(to see only the ips of services)
+#!/bin/bash
+file="/root/bash/lect11/server.csv"
+cat $file | while IFS="," read var1 var2 var3
+do
+echo "$var3"
+done
+
+
+#!/bin/bash
+file="/root/bash/lect11/server1.csv"
+while IFS=" " read var1 var2 var3
+do
+echo "$var2"
+done < $file
+
+
+#!/bin/bash   (by default criteria is space so need to use ifs)
+file="/root/bash/lect11/server1.csv"
+while read var1 var2 var3
+do
+echo "$var2"
+done < $file
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Lecture 12 : Until Loop in Bash Script.
+
+Until Loop syntax :-
+Until <Condition>
+do
+statement
+done
+
+until --> False to true
+While --> True to False
+
+
+vim simple.sh
+#!/bin/bash
+start=1
+until [[ $start -ge 5 ]] #Keep running for False scenario untill True is achived means 5 = 5
+do
+echo "Num is : $start"
+((start++))
+done
+
+
+root@abdealidodia:~/bash/lect12# cat simple2.sh
+#!/bin/bash
+start=1
+while [[ $start -le 10 ]]  #Keep running for True scenario untill False is achived means 10 = 10
+do
+echo "My Loop $start"
+#((start++))
+start=`expr $start + 1`   (this expression can be used as well rather than start++)
+done
+
+
+root@abdealidodia:~/bash/lect12# cat file_exist.sh
+#!/bin/bash
+until [[ -e /tmp/file ]] ...(-e is used to check file existance)
+do
+echo "file does not not exist"
+sleep 1
+done
+echo "File exist in the system"
+
+
+Difference :- The main difference is that while loops are design to run while a condition is satisfied and then terminated once that condition returns false. on the other end until loops are designed to run while the condition return false and only terminate when the condition return true.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Lecture 13 : Select Loop in Bash script.
+
+
+Loop Types:-
+
+
+1. For loop
+2. While Loop and While IFS
+3. Until Loop
+4. Select Loop
+
+Select Loop : Used for menu driven program onlu.
+
+Select Loop Syntax:-
+Questions options lets say present
+case <variable> in
+	pattern)
+		statement
+	;;
+	patter)
+		statement
+	;;
+	*)
+		statement
+	;;
+esac
+
+
+vim simple.sh
+#!/bin/bash
+echo "Please enter the number betweeen 1 to 3"
+read num
+case $num in
+	1)
+		echo "You have enter the one number"
+	;;
+	2)
+		echo "You have enter two"
+	;;
+	3)
+		echo "You have enter the Three"
+	;;
+	*)
+		echo "Sorry You have enter the wrong number"
+	;;
+esac
+
+
+
+#!/bin/bash
+clear
+echo "Enter your file extension: "
+read ext
+case $ext in
+	".txt")
+		ls -ltrh *.txt
+	;;
+	".sh")
+		ls -ltrh *.sh
+	;;
+	*)
+echo "Sorry, You have enter the invalid file extention"
+;;
+esac
+
+
+vim menudriven.sh
+#/bin/bash
+echo -e " \n1. Operating System information\n"
+echo -e "\n2. Hostaname inforamtion\n"
+echo -e "\n3. Memory details\n"
+echo -e "\n4. My disk usage\n"
+echo -e "\n5 Exit\n"
+echo "Enter your choice"
+read choice
+case $choice in
+	1)
+		echo "Your linux system information : $(uname -a)"
+	;;
+	2)
+		echo "Hostname is : $(hostname)"
+	;;
+	3)
+		echo "$(free -g)"
+	;;
+	4)
+		echo "$(df -h)"
+	;;
+	5)
+		echo "Bye Bye"
+		exit 1
+	;;
+esac
+
+
+
+TASK :- 
+Please make menu script with below details using select case. 
+
+1. OS
+2. Hostname
+3. Memory
+4. Disk details
+5. Network IP details
+6. Last Logged users
+7. Process usage

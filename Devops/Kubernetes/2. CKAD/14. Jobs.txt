@@ -1,0 +1,420 @@
+
+JOBS: To run containerized task!
+
+Docker lets you run containers—lightweight, standalone packages of software—kind of like solving `3 + 2 = 5` in a calculator: 
+it does one job, starts, runs, and exits. Kubernetes (K8s), on the other hand, is like a manager of many calculators, 
+each doing `3 + 2 = 5` in parallel or sequentially depending on your instructions. A *Job* in Kubernetes ensures that a specific task (like a calculation) 
+runs to completion, even if the container fails and needs to be retried. Unlike Docker, which just runs and exits, 
+Kubernetes Jobs track success and retry failed pods as needed to ensure the task finishes. This is especially useful for batch or one-off tasks.
+
+
+Kubernetes Jobs come with three restart policies: `Never` (don't restart on failure), `OnFailure` (retry if it fails), 
+and `Always` (not allowed for Jobs—used in other controllers like Deployments). You can also define *completions* (how many successful runs you want) 
+and *parallelism* (how many pods can run at the same time). For example, if you want 5 successful executions with a parallelism of 2, 
+Kubernetes will run two at a time until five total complete successfully. This allows for controlled, scalable batch processing across multiple containers.
+
+
+-----------------------------------------------
+
+[root@client1 ahmad]# kubectl get jobs
+No resources found in default namespace.
+[root@client1 ahmad]# kubectl get jobs -A
+No resources found
+
+
+-----------------------------------------------
+
+
+metadata:
+  name: my-job
+  namespace: default
+spec:
+  backoffLimit: 4                # Retry failed pods up to 4 times
+  activeDeadlineSeconds: 10      # Job timeout limit in seconds
+  template:
+    spec:
+      containers:
+      - name: example-job
+        image: busybox:stable
+        command: ["echo", "This is a Test Job!!"]  # What the container should execute
+      restartPolicy: Never        # Do not restart container if it fails
+
+[root@client1 ahmad]# kubectl apply -f job-test.yaml
+job.batch/my-job created
+[root@client1 ahmad]# kubectl get jobs
+NAME     STATUS     COMPLETIONS   DURATION   AGE
+my-job   Complete   1/1           3s         11s
+[root@client1 ahmad]# kubectl get pods
+NAME           READY   STATUS      RESTARTS   AGE
+my-job-tw566   0/1     Completed   0          37s
+
+
+-----------------------------------------------
+
+ kubectl describe job my-job
+Name:                     my-job
+Namespace:                default
+Selector:                 batch.kubernetes.io/controller-uid=ea15adf1-8cdd-430e-9020-23936bc5193e
+Labels:                   batch.kubernetes.io/controller-uid=ea15adf1-8cdd-430e-9020-23936bc5193e
+                          batch.kubernetes.io/job-name=my-job
+                          controller-uid=ea15adf1-8cdd-430e-9020-23936bc5193e
+                          job-name=my-job
+Annotations:              <none>
+Parallelism:              1
+Completions:              1
+Completion Mode:          NonIndexed
+Suspend:                  false
+Backoff Limit:            4
+Start Time:               Sat, 03 May 2025 00:04:37 +0500
+Completed At:             Sat, 03 May 2025 00:04:40 +0500
+Duration:                 3s
+Active Deadline Seconds:  10s
+Pods Statuses:            0 Active (0 Ready) / 1 Succeeded / 0 Failed
+Pod Template:
+  Labels:  batch.kubernetes.io/controller-uid=ea15adf1-8cdd-430e-9020-23936bc5193e
+           batch.kubernetes.io/job-name=my-job
+           controller-uid=ea15adf1-8cdd-430e-9020-23936bc5193e
+           job-name=my-job
+  Containers:
+   example-job:
+    Image:      busybox:stable
+    Port:       <none>
+    Host Port:  <none>
+    Command:
+      echo
+      This is a Test Job!!
+    Environment:   <none>
+    Mounts:        <none>
+  Volumes:         <none>
+  Node-Selectors:  <none>
+  Tolerations:     <none>
+Events:
+  Type    Reason            Age    From            Message
+  ----    ------            ----   ----            -------
+  Normal  SuccessfulCreate  3m23s  job-controller  Created pod: my-job-tw566
+  Normal  Completed         3m20s  job-controller  Job completed
+
+
+-----------------------------------------------
+
+
+[root@client1 ahmad]# kubectl logs my-job-tw566
+This is a Test Job!!
+
+
+-----------------------------------------------
+
+(Change completion to 5 times!)
+
+vim job-test.yaml
+[root@client1 ahmad]# cat job-test.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: my-job
+  namespace: default
+spec:
+  backoffLimit: 4                # Retry failed pods up to 4 times
+  activeDeadlineSeconds: 40    # Job timeout limit in seconds
+  completions: 5
+  template:
+    spec:
+      containers:
+      - name: example-job
+        image: busybox:stable
+        command: ["echo", "This is a Test Job!!"]  # What the container should execute
+      restartPolicy: Never        # Do not restart container if it fails
+
+[root@client1 ahmad]# kubectl replace --force -f job-test.yaml
+job.batch "my-job" deleted
+job.batch/my-job replaced
+[root@client1 ahmad]# kubectl get jobs
+NAME     STATUS    COMPLETIONS   DURATION   AGE
+my-job   Running   1/5           6s         6s
+[root@client1 ahmad]# kubectl get jobs
+NAME     STATUS    COMPLETIONS   DURATION   AGE
+my-job   Running   3/5           11s        11s
+[root@client1 ahmad]# kubectl get jobs
+NAME     STATUS    COMPLETIONS   DURATION   AGE
+my-job   Running   4/5           15s        15s
+[root@client1 ahmad]# kubectl get jobs
+NAME     STATUS     COMPLETIONS   DURATION   AGE
+my-job   Complete   5/5           16s        18s
+[root@client1 ahmad]# kubectl get pods
+NAME           READY   STATUS      RESTARTS   AGE
+my-job-6h7w4   0/1     Completed   0          29s
+my-job-6ljxj   0/1     Completed   0          19s
+my-job-svv8g   0/1     Completed   0          16s
+my-job-vxkp5   0/1     Completed   0          25s
+my-job-zkzqx   0/1     Completed   0          22s
+[root@client1 ahmad]# kubectl logs my-job-tw566
+error: error from server (NotFound): pods "my-job-tw566" not found in namespace "default"
+[root@client1 ahmad]# kubectl describe job my-job
+Name:                     my-job
+Namespace:                default
+Selector:                 batch.kubernetes.io/controller-uid=dd2af7b3-7385-45a5-be0b-645d6f05b664
+Labels:                   batch.kubernetes.io/controller-uid=dd2af7b3-7385-45a5-be0b-645d6f05b664
+                          batch.kubernetes.io/job-name=my-job
+                          controller-uid=dd2af7b3-7385-45a5-be0b-645d6f05b664
+                          job-name=my-job
+Annotations:              <none>
+Parallelism:              1
+Completions:              5
+Completion Mode:          NonIndexed
+Suspend:                  false
+Backoff Limit:            4
+Start Time:               Sat, 03 May 2025 00:13:25 +0500
+Completed At:             Sat, 03 May 2025 00:13:41 +0500
+Duration:                 16s
+Active Deadline Seconds:  40s
+Pods Statuses:            0 Active (0 Ready) / 5 Succeeded / 0 Failed
+Pod Template:
+  Labels:  batch.kubernetes.io/controller-uid=dd2af7b3-7385-45a5-be0b-645d6f05b664
+           batch.kubernetes.io/job-name=my-job
+           controller-uid=dd2af7b3-7385-45a5-be0b-645d6f05b664
+           job-name=my-job
+  Containers:
+   example-job:
+    Image:      busybox:stable
+    Port:       <none>
+    Host Port:  <none>
+    Command:
+      echo
+      This is a Test Job!!
+    Environment:   <none>
+    Mounts:        <none>
+  Volumes:         <none>
+  Node-Selectors:  <none>
+  Tolerations:     <none>
+Events:
+  Type    Reason            Age   From            Message
+  ----    ------            ----  ----            -------
+  Normal  SuccessfulCreate  71s   job-controller  Created pod: my-job-6h7w4
+  Normal  SuccessfulCreate  67s   job-controller  Created pod: my-job-vxkp5
+  Normal  SuccessfulCreate  64s   job-controller  Created pod: my-job-zkzqx
+  Normal  SuccessfulCreate  61s   job-controller  Created pod: my-job-6ljxj
+  Normal  SuccessfulCreate  58s   job-controller  Created pod: my-job-svv8g
+  Normal  Completed         55s   job-controller  Job completed
+
+
+-----------------------------------------------
+
+kubectl delete job my-job
+job.batch "my-job" deleted
+[root@client1 ahmad]# kubectl get pods
+No resources found in default namespace.
+[root@client1 ahmad]# kubectl get jobs
+No resources found in default namespace.
+
+
+-----------------------------------------------
+
+
+ cat job-pod.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: dice-job
+  namespace: default
+spec:
+  backoffLimit: 60           # Retry a failed pod up to 30 times
+  completions: 2             # Total successful runs required
+  parallelism: 3             # Run up to 3 pods at the same time
+  template:
+    spec:
+      containers:
+      - name: dice-job-container
+        image: kodekloud/throw-dice
+      restartPolicy: Never   # Required for Jobs
+
+[root@client1 ahmad]# kubectl apply -f job-pod.yaml
+job.batch/dice-job created
+[root@client1 ahmad]# kubectl get jobs
+NAME       STATUS    COMPLETIONS   DURATION   AGE
+dice-job   Running   0/2           4s         4s
+[root@client1 ahmad]# kubectl get jobs
+NAME       STATUS    COMPLETIONS   DURATION   AGE
+dice-job   Running   1/2           10s        10s
+[root@client1 ahmad]# kubectl get jobs
+NAME       STATUS    COMPLETIONS   DURATION   AGE
+dice-job   Running   1/2           15s        15s
+[root@client1 ahmad]# kubectl get jobs
+NAME       STATUS    COMPLETIONS   DURATION   AGE
+dice-job   Running   1/2           20s        20s
+[root@client1 ahmad]# kubectl get jobs
+NAME       STATUS     COMPLETIONS   DURATION   AGE
+dice-job   Complete   2/2           22s        29s
+[root@client1 ahmad]# kubectl describe job dice-job
+Name:             dice-job
+Namespace:        default
+Selector:         batch.kubernetes.io/controller-uid=1ad0364f-8dcc-4ef7-a095-f3aaf6e58899
+Labels:           batch.kubernetes.io/controller-uid=1ad0364f-8dcc-4ef7-a095-f3aaf6e58899
+                  batch.kubernetes.io/job-name=dice-job
+                  controller-uid=1ad0364f-8dcc-4ef7-a095-f3aaf6e58899
+                  job-name=dice-job
+Annotations:      <none>
+Parallelism:      3
+Completions:      2
+Completion Mode:  NonIndexed
+Suspend:          false
+Backoff Limit:    60
+Start Time:       Sat, 03 May 2025 00:38:19 +0500
+Completed At:     Sat, 03 May 2025 00:38:41 +0500
+Duration:         22s
+Pods Statuses:    0 Active (0 Ready) / 2 Succeeded / 1 Failed
+Pod Template:
+  Labels:  batch.kubernetes.io/controller-uid=1ad0364f-8dcc-4ef7-a095-f3aaf6e58899
+           batch.kubernetes.io/job-name=dice-job
+           controller-uid=1ad0364f-8dcc-4ef7-a095-f3aaf6e58899
+           job-name=dice-job
+  Containers:
+   dice-job-container:
+    Image:         kodekloud/throw-dice
+    Port:          <none>
+    Host Port:     <none>
+    Environment:   <none>
+    Mounts:        <none>
+  Volumes:         <none>
+  Node-Selectors:  <none>
+  Tolerations:     <none>
+Events:
+  Type    Reason            Age   From            Message
+  ----    ------            ----  ----            -------
+  Normal  SuccessfulCreate  41s   job-controller  Created pod: dice-job-vml6z
+  Normal  SuccessfulCreate  41s   job-controller  Created pod: dice-job-fp7md
+  Normal  SuccessfulCreate  23s   job-controller  Created pod: dice-job-z57zk
+  Normal  Completed         19s   job-controller  Job completed
+[root@client1 ahmad]# kubectl get pods
+NAME             READY   STATUS      RESTARTS   AGE
+dice-job-fp7md   0/1     Error       0          48s
+dice-job-vml6z   0/1     Completed   0          48s
+dice-job-z57zk   0/1     Completed   0          30s
+[root@client1 ahmad]# kubectl logs dice-job-fp7md
+2
+[root@client1 ahmad]# kubectl logs dice-job-vml6z
+6
+[root@client1 ahmad]# kubectl logs dice-job-z57zk
+6
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+
+                                                CRON JOBS
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+They run task based on a pre determined schedule!
+
+
+-----------------------------------------------
+
+ cat cron-job.yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: my-cronjob
+  namespace: default
+spec:
+  schedule: "*/1 * * * *"           # Every 1 minute
+  jobTemplate:
+    spec:
+      backoffLimit: 5               # Retry failed pods up to 5 times
+      activeDeadlineSeconds: 20     # Max time allowed for a job run
+      template:
+        spec:
+          containers:
+          - name: test-cronjob-container
+            image: busybox:stable
+            command: ["echo", "This is a Test CronJob!!"]
+          restartPolicy: Never       # Required for Jobs and CronJobs
+
+[root@client1 ahmad]# kubectl get cronjob
+NAME         SCHEDULE      TIMEZONE   SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+my-cronjob   */1 * * * *   <none>     False     1        0s              4m18s
+[root@client1 ahmad]# kubectl get jobs
+NAME                  STATUS     COMPLETIONS   DURATION   AGE
+my-cronjob-29103593   Complete   1/1           3s         2m4s
+my-cronjob-29103594   Complete   1/1           3s         64s
+my-cronjob-29103595   Complete   1/1           3s         4s
+[root@client1 ahmad]# kubectl get pods
+NAME                        READY   STATUS      RESTARTS   AGE
+my-cronjob-29103593-mnwtd   0/1     Completed   0          2m8s
+my-cronjob-29103594-26sm7   0/1     Completed   0          68s
+my-cronjob-29103595-qsn4x   0/1     Completed   0          8s
+[root@client1 ahmad]# kubectl logs my-cronjob-29103593-mnwtd
+This is a Test CronJob!!
+[root@client1 ahmad]# kubectl logs my-cronjob-29103594-26sm7
+This is a Test CronJob!!
+[root@client1 ahmad]# kubectl logs my-cronjob-29103595-qsn4x
+This is a Test CronJob!!
+
+
+
+-----------------------------------------------
+
+kubectl describe cronjob my-cronjob
+Name:                          my-cronjob
+Namespace:                     default
+Labels:                        <none>
+Annotations:                   <none>
+Schedule:                      */1 * * * *
+Concurrency Policy:            Allow
+Suspend:                       False
+Successful Job History Limit:  3
+Failed Job History Limit:      1
+Starting Deadline Seconds:     <unset>
+Selector:                      <unset>
+Parallelism:                   <unset>
+Completions:                   <unset>
+Active Deadline Seconds:       20s
+Pod Template:
+  Labels:  <none>
+  Containers:
+   test-cronjob-container:
+    Image:      busybox:stable
+    Port:       <none>
+    Host Port:  <none>
+    Command:
+      echo
+      This is a Test CronJob!!
+    Environment:     <none>
+    Mounts:          <none>
+  Volumes:           <none>
+  Node-Selectors:    <none>
+  Tolerations:       <none>
+Last Schedule Time:  Sat, 03 May 2025 00:56:00 +0500
+Active Jobs:         <none>
+Events:
+  Type    Reason            Age    From                Message
+  ----    ------            ----   ----                -------
+  Normal  SuccessfulCreate  5m36s  cronjob-controller  Created job my-cronjob-29103591
+  Normal  SawCompletedJob   5m34s  cronjob-controller  Saw completed job: my-cronjob-29103591, condition: Complete
+  Normal  SuccessfulCreate  4m36s  cronjob-controller  Created job my-cronjob-29103592
+  Normal  SawCompletedJob   4m33s  cronjob-controller  Saw completed job: my-cronjob-29103592, condition: Complete
+  Normal  SuccessfulCreate  3m36s  cronjob-controller  Created job my-cronjob-29103593
+  Normal  SawCompletedJob   3m33s  cronjob-controller  Saw completed job: my-cronjob-29103593, condition: Complete
+  Normal  SuccessfulCreate  2m36s  cronjob-controller  Created job my-cronjob-29103594
+  Normal  SuccessfulDelete  2m33s  cronjob-controller  Deleted job my-cronjob-29103591
+  Normal  SawCompletedJob   2m33s  cronjob-controller  Saw completed job: my-cronjob-29103594, condition: Complete
+  Normal  SuccessfulCreate  96s    cronjob-controller  Created job my-cronjob-29103595
+  Normal  SuccessfulDelete  93s    cronjob-controller  Deleted job my-cronjob-29103592
+  Normal  SawCompletedJob   93s    cronjob-controller  Saw completed job: my-cronjob-29103595, condition: Complete
+  Normal  SuccessfulCreate  36s    cronjob-controller  Created job my-cronjob-29103596
+  Normal  SuccessfulDelete  34s    cronjob-controller  Deleted job my-cronjob-29103593
+  Normal  SawCompletedJob   34s    cronjob-controller  Saw completed job: my-cronjob-29103596, condition: Complete
+
+
+
+
+Kubernetes by default only keeps the last 3 successful and last 1 failed Jobs from a CronJob to avoid cluttering the cluster with too many 
+historical Jobs and pods. This behavior is controlled by the successfulJobsHistoryLimit and failedJobsHistoryLimit fields in the CronJob spec.
+
+-----------------------------------------------
+
+
+

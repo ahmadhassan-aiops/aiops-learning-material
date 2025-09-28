@@ -1,0 +1,102 @@
+
+[root@master-ansible terraform]# terraform validate
+Success! The configuration is valid.
+
+
+
+[root@master-ansible terraform]# terraform fmt
+instance.tf
+
+(means this file is not properly formatted!!)
+
+
+
+=====================================================================================
+
+
+
+[root@master-ansible terraform]# cat sg.tf
+resource "aws_security_group" "my_sg" {
+  name        = "terraform-sg"
+  description = "Allow SSH and HTTP inbound traffic"
+
+  ingress {
+    description = "Allow SSH"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "Allow HTTP"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "terraform-sg"
+  }
+}
+
+
+=====================================================================================
+
+
+vim sg_loop.tf
+
+variable "ports" {
+  default = [22, 80, 443]
+}
+
+resource "aws_security_group" "loop_sg" {
+  name        = "loop-sg"
+  description = "Allow multiple ports using loop"
+
+  dynamic "ingress" {
+    for_each = var.ports
+    content {
+      from_port   = ingress.value
+      to_port     = ingress.value
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "loop-sg"
+  }
+}
+
+=====================================================================================
+
+(the egress aspect makes sure that our machine will be able to access the internet as well!!!)
+
+=====================================================================================
+
+terraform init
+terraform validate
+terraform fmt
+terraform plan
+terraform apply -auto-approve
+
+
+
+=====================================================================================
+

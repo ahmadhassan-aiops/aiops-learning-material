@@ -1,0 +1,24 @@
+
+To provision files in Vagrant, first create a project folder, run `vagrant init` with your desired box (e.g., `ubuntu/bionic64`), 
+and place the file you want to copy (e.g., `myfile.txt`) in the same folder as the `Vagrantfile`. 
+Open the `Vagrantfile` and within the `Vagrant.configure("2") do |config|` block, add 
+
+`config.vm.provision "file", source: "myfile.txt", destination: "/home/vagrant/myfile.txt"` 
+
+to specify the file transfer from host to guest. Then run `vagrant up` to create and provision the VM, or `vagrant provision` 
+if the VM is already running. Finally, use `vagrant ssh` to access the VM and verify the file exists at the target location.
+
+-----------------------------------------------
+
+(This is what I had done)
+config.vm.provision "file", source: "W:\Alnafi\Devops\Vagarant\vagrant os installation", destination: "/home/vagrant/mydir/test.txt"
+
+vagrant provision
+vagrant ssh
+
+vagrant@vagrant-ubuntu-trusty-64:~$ cd /home/vagrant/mydir/
+vagrant@vagrant-ubuntu-trusty-64:~/mydir$ ls
+test.txt  Vagrantfile
+vagrant@vagrant-ubuntu-trusty-64:~/mydir$ cat test.txt
+hello from outside
+ 

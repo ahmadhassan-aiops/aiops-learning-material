@@ -1,0 +1,12 @@
+
+first write java file path in system env variables by assigning name 'JAVA_HOME' and then within path write like '  %JAVA_HOME\bin  '
+
+
+=> Then in windows prompt navigate to selenium grid file  (W:\Alnafi\Devops\Python Selenium\selenium_grid)  and write this command:
+java -jar selenium-server-4.28.1.jar hub
+
+http://192.168.0.104:4444  (access through web server)
+
+
+Now we will create node:
+java -jar selenium-server-4.28.1.jar node --detect-drivers true --publish-events tcp://192.168.0.104:4442 --subscribe-events tcp://192.168.0.104:4443

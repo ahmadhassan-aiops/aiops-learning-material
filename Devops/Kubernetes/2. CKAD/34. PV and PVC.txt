@@ -1,0 +1,453 @@
+
+
+A **Persistent Volume (PV)** in Kubernetes is like a storage space provided by the cluster that keeps your data safe even if your container or 
+pod stops or restarts. Think of it as a USB drive or a hard disk that’s already plugged into the cluster and ready to be used when needed. 
+Unlike normal pod storage, which disappears when the pod is deleted, a PV keeps the data outside the pod so it can be reused by other pods 
+or restored later.
+
+A **Persistent Volume Claim (PVC)** is like a request or application for storage. When your application needs to store data, it sends a PVC asking for 
+a specific amount and type of storage. Kubernetes then finds a matching PV and connects it to your pod. This way, developers don’t need to worry about 
+where the actual storage is coming from—they just claim what they need, and Kubernetes handles the rest.
+
+
+=> To apply PV , PVC is mandatory!
+
+-----------------------------------------------
+
+
+cat pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: al-nafi-webapp
+spec:
+  containers:
+  - name: event-simulator
+    image: kodekloud/event-simulator
+    env:
+    - name: LOG_HANDLERS
+      value: file
+
+
+
+[ahmad@client1 volumes]$ kubectl apply -f pod.yaml
+pod/al-nafi-webapp created
+
+
+
+[ahmad@client1 volumes]$ kubectl get po
+NAME             READY   STATUS              RESTARTS   AGE
+al-nafi-webapp   0/1     ContainerCreating   0          27s
+
+
+
+-----------------------------------------------
+
+kubectl exec -it al-nafi-webapp -- /bin/sh
+/ #
+/ # ls
+bin                 event-simulator.py  log                 proc                sbin                tmp
+dev                 home                media               root                srv                 usr
+etc                 lib                 mnt                 run                 sys                 var
+/ # cd log
+/log # ls
+app.log
+
+
+
+
+kubectl exec al-nafi-webapp -- cat /log/app.log
+(We can see the logs untill our pod is running and as soon as the pod is resecheduled or terminated we will not be able to see the logs)
+
+
+-----------------------------------------------
+
+cat pod-with-volume
+apiVersion: v1
+kind: Pod
+metadata:
+  name: al-nafi-webapp
+spec:
+  containers:
+  - name: event-simulator
+    image: kodekloud/event-simulator
+    env:
+    - name: LOG_HANDLERS
+      value: file
+    volumeMounts:
+    - name: al-nafi-app-logs
+      mountPath: /log
+  volumes:
+  - name: al-nafi-app-logs
+    hostPath:
+      path: /tmp/logs
+      type: Directory
+
+
+
+[ahmad@client1 volumes]$ minikube ssh
+
+docker@minikube:~$ ls
+
+docker@minikube:~$ cd /
+
+docker@minikube:/$ ls
+CHANGELOG    bin   data  docker.key  home     kind  lib32  libx32  mnt  proc  run   srv  tmp  var
+Release.key  boot  dev   etc         kic.txt  lib   lib64  media   opt  root  sbin  sys  usr  version.json
+
+docker@minikube:/$ cd /tmp/
+
+docker@minikube:/tmp$ ls
+gvisor  h.1338  h.1393  hostpath-provisioner  hostpath_pv
+
+docker@minikube:/tmp$ mkdir logs
+
+docker@minikube:/tmp$ ls
+gvisor  h.1338  h.1393  hostpath-provisioner  hostpath_pv  logs
+
+
+(First we created the logs dir that is needed for volume storage)
+
+-----------------------------------------------
+
+kubectl apply -f pod-with-volume
+pod/al-nafi-webapp created
+[ahmad@client1 volumes]$ kubectl get po
+NAME             READY   STATUS    RESTARTS   AGE
+al-nafi-webapp   1/1     Running   0          4s
+
+
+
+
+kubectl exec al-nafi-webapp -- cat /log/app.log
+[2025-05-22 12:02:06,776] INFO in event-simulator: USER2 logged out
+[2025-05-22 12:02:07,777] INFO in event-simulator: USER1 is viewing page1
+[2025-05-22 12:02:08,778] INFO in event-simulator: USER3 logged in
+[2025-05-22 12:02:09,780] INFO in event-simulator: USER1 logged out
+[2025-05-22 12:02:10,781] INFO in event-simulator: USER1 is viewing page2
+[2025-05-22 12:02:11,783] WARNING in event-simulator: USER5 Failed to Login as the account is locked due to MANY FAILED ATTEMPTS.
+[2025-05-22 12:02:11,783] INFO in event-simulator: USER4 is viewing page3
+[2025-05-22 12:02:12,784] INFO in event-simulator: USER3 logged out
+[2025-05-22 12:02:13,787] INFO in event-simulator: USER1 is viewing page3
+[2025-05-22 12:02:14,789] WARNING in event-simulator: USER7 Order failed as the item is OUT OF STOCK.
+[2025-05-22 12:02:14,789] INFO in event-simulator: USER3 is viewing page3
+[2025-05-22 12:02:15,791] INFO in event-simulator: USER2 is viewing page3
+[2025-05-22 12:02:16,793] WARNING in event-simulator: USER5 Failed to Login as the account is locked due to MANY FAILED ATTEMPTS.
+[2025-05-22 12:02:16,794] INFO in event-simulator: USER4 logged out
+[2025-05-22 12:02:17,797] INFO in event-simulator: USER3 logged out
+[2025-05-22 12:02:18,799] INFO in event-simulator: USER2 is viewing page1
+[2025-05-22 12:02:19,802] INFO in event-simulator: USER3 is viewing page2
+[2025-05-22 12:02:20,804] INFO in event-simulator: USER1 logged out
+[2025-05-22 12:02:21,805] WARNING in event-simulator: USER5 Failed to Login as the account is locked due to MANY FAILED ATTEMPTS.
+[2025-05-22 12:02:21,806] INFO in event-simulator: USER1 is viewing page3
+[2025-05-22 12:02:22,807] WARNING in event-simulator: USER7 Order failed as the item is OUT OF STOCK.
+[2025-05-22 12:02:22,807] INFO in event-simulator: USER3 logged in
+[2025-05-22 12:02:23,810] INFO in event-simulator: USER1 logged out
+[2025-05-22 12:02:24,811] INFO in event-simulator: USER4 logged out
+[2025-05-22 12:02:25,813] INFO in event-simulator: USER1 logged in
+[2025-05-22 12:02:26,814] WARNING in event-simulator: USER5 Failed to Login as the account is locked due to MANY FAILED ATTEMPTS.
+[2025-05-22 12:02:26,814] INFO in event-simulator: USER3 is viewing page3
+[2025-05-22 12:02:27,816] INFO in event-simulator: USER1 is viewing page2
+[2025-05-22 12:02:28,816] INFO in event-simulator: USER1 logged out
+[2025-05-22 12:02:29,818] INFO in event-simulator: USER4 is viewing page3
+[2025-05-22 12:02:30,819] WARNING in event-simulator: USER7 Order failed as the item is OUT OF STOCK.
+[2025-05-22 12:02:30,820] INFO in event-simulator: USER4 is viewing page2
+[2025-05-22 12:02:31,821] WARNING in event-simulator: USER5 Failed to Login as the account is locked due to MANY FAILED ATTEMPTS.
+[2025-05-22 12:02:31,822] INFO in event-simulator: USER3 is viewing page3
+[2025-05-22 12:02:32,824] INFO in event-simulator: USER2 logged in
+[2025-05-22 12:02:33,825] INFO in event-simulator: USER4 logged out
+[2025-05-22 12:02:34,833] INFO in event-simulator: USER2 logged out
+[2025-05-22 12:02:35,833] INFO in event-simulator: USER1 logged in
+[2025-05-22 12:02:36,834] WARNING in event-simulator: USER5 Failed to Login as the account is locked due to MANY FAILED ATTEMPTS.
+[2025-05-22 12:02:36,835] INFO in event-simulator: USER4 is viewing page1
+[2025-05-22 12:02:37,835] INFO in event-simulator: USER4 logged in
+[2025-05-22 12:02:38,836] WARNING in event-simulator: USER7 Order failed as the item is OUT OF STOCK.
+[2025-05-22 12:02:38,836] INFO in event-simulator: USER2 is viewing page3
+[2025-05-22 12:02:39,837] INFO in event-simulator: USER3 logged out
+
+
+
+
+
+
+[ahmad@client1 ~]$ minikube ssh
+docker@minikube:~$ cd /
+docker@minikube:/$
+docker@minikube:/$
+docker@minikube:/$ cat tmp/logs/app.log
+[2025-05-22 12:02:06,776] INFO in event-simulator: USER2 logged out
+[2025-05-22 12:02:07,777] INFO in event-simulator: USER1 is viewing page1
+[2025-05-22 12:02:08,778] INFO in event-simulator: USER3 logged in
+[2025-05-22 12:02:09,780] INFO in event-simulator: USER1 logged out
+[2025-05-22 12:02:10,781] INFO in event-simulator: USER1 is viewing page2
+[2025-05-22 12:02:11,783] WARNING in event-simulator: USER5 Failed to Login as the account is locked due to MANY FAILED ATTEMPTS.
+
+
+
+
+(Means logs are created actually in the conatiner in the logs directory but also replicated in the minikube as well by use of persistent volume)
+
+-----------------------------------------------
+
+
+ kubectl delete po al-nafi-webapp
+pod "al-nafi-webapp" deleted
+
+[ahmad@client1 ~]$ kubectl exec al-nafi-webapp -- cat /log/app.log
+Error from server (NotFound): pods "al-nafi-webapp" not found
+
+
+[ahmad@client1 ~]$ minikube ssh
+
+
+docker@minikube:~$ cat /tmp/logs/app.log
+[2025-05-22 12:02:06,776] INFO in event-simulator: USER2 logged out
+[2025-05-22 12:02:07,777] INFO in event-simulator: USER1 is viewing page1
+[2025-05-22 12:02:08,778] INFO in event-simulator: USER3 logged in
+[2025-05-22 12:02:09,780] INFO in event-simulator: USER1 logged out
+[2025-05-22 12:02:10,781] INFO in event-simulator: USER1 is viewing page2
+[2025-05-22 12:02:11,783] WARNING in event-simulator: USER5 Failed to Login as the account is locked due to MANY FAILED ATTEMPTS.
+
+
+
+(Even after deleting pod the logs are still present in my cluster)
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------
+
+cat pv.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-log
+  labels:
+    name: vol
+spec:
+  persistentVolumeReclaimPolicy: Retain
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 100Mi
+  hostPath:
+    path: /mnt/data
+
+
+[ahmad@client1 ~]$ kubectl apply -f pv.yaml
+persistentvolume/pv-log created
+
+
+[ahmad@client1 ~]$ kubectl get pv
+NAME     CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+pv-log   100Mi      RWX            Retain           Available                          <unset>                          8s
+
+
+-----------------------------------------------
+
+vim pvc.yaml
+[ahmad@client1 ~]$ kubectl apply -f pvc.yaml
+persistentvolumeclaim/claim-log-1 created
+
+
+[ahmad@client1 ~]$ cat pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: claim-log-1
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Mi
+
+
+
+[ahmad@client1 ~]$ kubectl get pvc
+NAME          STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+claim-log-1   Bound    pvc-41e0c7b8-3374-4282-a90f-d8f9c808fb65   50Mi       RWX            standard       <unset>                 12s
+
+
+ kubectl get pv
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM                 STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+pv-log                                     100Mi      RWX            Retain           Available                                        <unset>                          6m44s
+pvc-41e0c7b8-3374-4282-a90f-d8f9c808fb65   50Mi       RWX            Delete           Bound       default/claim-log-1   standard       <unset>                          2m42s
+
+
+
+
+
+Your manually created PersistentVolume (pv-log) is not bound to the PVC (claim-log-1) because the PVC was dynamically provisioned by Kubernetes using a 
+default storage class (standard), while your static PV has no storageClassName set. For a PVC to bind to a specific PV, both must match on accessModes, 
+storage requirements, and storageClassName. Since your PV has <unset> as its storage class and the PVC requests one (standard), Kubernetes ignores your 
+static PV and dynamically creates a new one that matches. To fix this, either remove storageClassName from the PVC or explicitly 
+set storageClassName: "" in both PV and PVC to ensure static binding.
+
+-----------------------------------------------
+
+
+minikube addons disable default-storageclass
+* "The 'default-storageclass' addon is disabled
+
+
+
+kubectl delete pvc claim-log-1
+persistentvolumeclaim "claim-log-1" deleted
+
+
+kubectl get pv
+NAME     CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+pv-log   100Mi      RWX            Retain           Available                          <unset>                          12m
+
+
+(Automatically provisioned pv is also deleted)
+
+-----------------------------------------------
+
+cat pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: claim-log-1
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Mi
+
+
+( i changed the accessModes:)
+
+
+kubectl apply -f pvc.yaml
+persistentvolumeclaim/claim-log-1 created
+[ahmad@client1 ~]$ kubectl get pv,pvc
+NAME                      CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+persistentvolume/pv-log   100Mi      RWX            Retain           Available                          <unset>                          14m
+
+NAME                                STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/claim-log-1   Pending                                                     <unset>                 14s
+
+
+(Status is pending for our pvc as accessModes is not matched)
+
+
+-----------------------------------------------
+
+kubectl delete pvc claim-log-1
+persistentvolumeclaim "claim-log-1" deleted
+[ahmad@client1 ~]$ cat pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: claim-log-1
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Mi
+
+
+[ahmad@client1 ~]$ kubectl apply -f pvc.yaml
+persistentvolumeclaim/claim-log-1 created
+
+
+
+[ahmad@client1 ~]$ kubectl get pvc
+NAME          STATUS   VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+claim-log-1   Bound    pv-log   100Mi      RWX                           <unset>                 5s
+
+
+ kubectl get pv
+NAME     CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                 STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+pv-log   100Mi      RWX            Retain           Bound    default/claim-log-1                  <unset>                          17m
+
+
+
+-----------------------------------------------
+
+
+
+kubectl delete pvc claim-log-1
+persistentvolumeclaim "claim-log-1" deleted
+
+
+[ahmad@client1 ~]$ kubectl get pv
+NAME     CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS     CLAIM                 STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+pv-log   100Mi      RWX            Retain           Released   default/claim-log-1                  <unset>                          19m
+
+
+
+-----------------------------------------------
+
+kubectl apply -f pvc.yaml
+persistentvolumeclaim/claim-log-1 unchanged
+
+
+ kubectl get pvc
+NAME          STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+claim-log-1   Pending                                                     <unset>                 80s
+
+
+
+The PVC is not binding again because the PV pv-log is in the Released state. Although it still physically exists, Kubernetes marks it as unusable 
+until it is manually recycled or cleaned. This happens because the persistentVolumeReclaimPolicy was set to Retain, meaning the PV holds onto the 
+data even after the PVC is deleted. This is useful in scenarios where data must be preserved after the pod or claim is deleted, such as logs, backups, 
+or audit records. To reuse the PV, an admin must manually clean the data on the hostPath and reset the PV’s status back to Available by editing or 
+recreating it, ensuring safe data handling and preventing accidental reuse.
+-----------------------------------------------
+
+
+cp pv.yaml pv2.yaml
+[ahmad@client1 ~]$ vim pv2.yaml
+
+
+[ahmad@client1 ~]$ kubectl apply -f pv2.yaml
+persistentvolume/pv-log-2 created
+
+
+
+[ahmad@client1 ~]$ cat pv2.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-log-2
+  labels:
+    name: vol
+spec:
+  persistentVolumeReclaimPolicy: Retain
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 100Mi
+  hostPath:
+    path: /mnt/data
+
+
+
+[ahmad@client1 ~]$ kubectl get pvc
+NAME          STATUS   VOLUME     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+claim-log-1   Bound    pv-log-2   100Mi      RWX                           <unset>                 6m1s
+
+
+kubectl get pv
+NAME       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS     CLAIM                 STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+pv-log     100Mi      RWX            Retain           Released   default/claim-log-1                  <unset>                          27m
+pv-log-2   100Mi      RWX            Retain           Bound      default/claim-log-1                  <unset>                          56s
+
+
+
+Since the original pv-log was in a Released state (and Kubernetes doesn't reuse Released volumes without manual cleanup), when you created a new 
+PV pv-log-2 with matching specs (RWX, 100Mi, etc.), Kubernetes automatically bound your existing PVC claim-log-1 to this new available PV.
+
+This behavior is useful because it ensures data safety and intentional reuse. It avoids auto-binding to old volumes that might still contain sensitive 
+or unwanted leftover data. You essentially gave the PVC a fresh, clean volume to use — just what it needed!
+
+-----------------------------------------------
+

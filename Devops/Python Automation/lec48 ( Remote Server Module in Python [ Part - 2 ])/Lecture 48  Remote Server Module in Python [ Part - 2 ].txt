@@ -1,0 +1,97 @@
+Lecture 48 : Remote Server Module in Python [ Part - 2 ]
+
+
+
+#WINDOWS :-
+#pip install paramiko
+#python
+>>>import paramiko
+
+
+
+
+Windows --> Linux
+Linux --> Windows
+Linux --> Linux
+Windows --> Windows
+
+
+#How to install paramiko module in linux machine
+root@abdeali:~# pip3 install paramiko
+
+#mkdir /home/aadmin/lect48
+
+
+>>> import paramiko
+/usr/local/lib/python3.6/dist-packages/paramiko/transport.py:33: CryptographyDeprecationWarning: Python 3.6 is no longer supported by the Python core team. Therefore, support for it is deprecated in cryptography and will be removed in a future release.
+from cryptography.hazmat.backends import default_backend
+>>> import paramiko
+
+
+
+We are working on windows machine as of now , and we will access linux machine via remote
+
+
+#Windows :-
+
+#We are missing key to add in SSH
+import paramiko
+hostname="192.168.0.102"
+username="ahmad"
+password="12345"
+
+client= paramiko.SSHClient()
+
+client.connect(hostname=hostname,username=username,password=password)
+
+mycmd="df -h"
+
+
+stdout = client.exec_command(mycmd)
+print(stdout)
+
+
+We are added key policy into paramiko
+import paramiko
+hostname="192.168.1.8"
+username="aadmin"
+password="123@abd"
+
+client= paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+client.connect(hostname=hostname,username=username,password=password)
+
+mycmd="df -h"
+
+
+stdout = client.exec_command(mycmd)
+print(stdout)
+
+O/p:-
+(<paramiko.ChannelFile from <paramiko.Channel 0 (open) window=2097152 -> <paramiko.Transport at 0x94d26e60 (cipher aes128-ctr, 128 bits) (active; 1 open channel(s))>>>, <paramiko.ChannelFile from <paramiko.Channel 0 (open) window=2097152 -> <paramiko.Transport at 0x94d26e60 (cipher aes128-ctr, 128 bits) (active; 1 open channel(s))>>>, <paramiko.ChannelFile from <paramiko.Channel 0 (open) window=2097152 -> <paramiko.Transport at 0x94d26e60 (cipher aes128-ctr, 128 bits) (active; 1 open channel(s))>>>)
+
+
+
+(Final code)
+
+
+import paramiko
+hostname="192.168.1.8"
+username="aadmin"
+password="123@abd"
+
+client= paramiko.SSHClient()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+client.connect(hostname=hostname,username=username,password=password)
+
+mycmd="df -h"
+
+
+stdin, stdout, stderr = client.exec_command(mycmd)
+
+mycmdout=stdout.read()
+print(mycmdout)
+
+
+
+b'Filesystem                         Size  Used Avail Use% Mounted on\nudev                               953M     0  953M   0% /dev\ntmpfs                              197M  696K  197M   1% /run\n/dev/mapper/ubuntu--vg-ubuntu--lv  8.9G  5.8G  2.7G  69% /\ntmpfs                              985M     0  985M   0% /dev/shm\ntmpfs                              5.0M     0  5.0M   0% /run/lock\ntmpfs                              985M     0  985M   0% /sys/fs/cgroup\n/dev/sda2                          875M  149M  665M  19% /boot\ntmpfs                              197M     0  197M   0% /run/user/1000\n'

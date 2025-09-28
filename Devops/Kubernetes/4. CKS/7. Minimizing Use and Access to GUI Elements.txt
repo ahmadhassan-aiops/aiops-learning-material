@@ -1,0 +1,99 @@
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+kubectl port-forward -n kubernetes-dashboard svc/kubernetes-dashboard 8443:443
+
+
+
+
+
+-------------------------------------------------------------
+
+minikube addons list
+(dashboard and metric server are disabled)
+
+
+[ahmad@client1 ~]$ minikube addons enable metrics-server
+* metrics-server is an addon maintained by Kubernetes. For any concerns contact minikube on GitHub.
+You can view the list of minikube maintainers at: https://github.com/kubernetes/minikube/blob/master/OWNERS
+  - Using image registry.k8s.io/metrics-server/metrics-server:v0.7.2
+* The 'metrics-server' addon is enabled
+
+
+
+[ahmad@client1 ~]$ minikube addons enable dashboard
+* dashboard is an addon maintained by Kubernetes. For any concerns contact minikube on GitHub.
+You can view the list of minikube maintainers at: https://github.com/kubernetes/minikube/blob/master/OWNERS
+  - Using image docker.io/kubernetesui/dashboard:v2.7.0
+  - Using image docker.io/kubernetesui/metrics-scraper:v1.0.8
+* Some dashboard features require the metrics-server addon. To enable all features please run:
+
+        minikube addons enable metrics-server
+
+* The 'dashboard' addon is enabled
+
+
+
+
+kubectl get pods -n kubernetes-dashboard
+NAME                                         READY   STATUS    RESTARTS   AGE
+dashboard-metrics-scraper-5d59dccf9b-cdsj9   1/1     Running   0          13m
+kubernetes-dashboard-7779f9b69b-l7j9v        1/1     Running   0          13m
+
+
+
+
+-------------------------------------------------------------
+
+=> when you see dashboard page create a user
+
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-user
+  namespace: kubernetes-dashboard
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kubernetes-dashboard
+EOF
+
+
+
+
+kubectl proxy
+
+-------------------------------------------------------------
+
+# now create  a token as you have created a user and paste this token in the firefox and your kubernetes dasboard is ready
+kubectl -n kubernetes-dashboard create token admin-user
+-------------------------------------------------------------
+
+http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/
+
+
+-------------------------------------------------------------
+
+In this setup, you enabled the Kubernetes Dashboard and metrics-server addons using Minikube, then securely accessed the Dashboard through a proxy. 
+Instead of exposing the dashboard openly or allowing broad access, you followed best practices by creating a dedicated admin-user ServiceAccount and 
+binding it to the cluster-admin role via a ClusterRoleBinding. This setup ensures that only this specific admin user has full access to the dashboard, 
+effectively restricting GUI access to authorized personnel only. By generating and using a one-time access token for this user, 
+you avoided insecure login methods. This approach aligns with the principle of least privilege and supports the security objective of minimizing use 
+and access to GUI elements, ensuring the dashboard is used only when needed and only by trusted administrators.
+
+
+
+-------------------------------------------------------------
+
+
+
+

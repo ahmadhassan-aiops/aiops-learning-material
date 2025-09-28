@@ -1,0 +1,74 @@
+Allows you to automatically install the software, to modify config and to handle the process
+
+  vim vagrantfile
+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine and only allow access
+  # via 127.0.0.1 to disable public access
+  config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "192.168.0.105"
+
+
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+  config.vm.network "public_network" , ip: "192.168.0.106" , bridge: "Intel(R) Wi-Fi 6 AX201 160MHz"
+
+
+
+vagrant ssh
+sudo apt-get update
+
+------------------------
+Sometimes we have to uncomment this 54th line in
+vim gai.conf (for turning off ip6 version)
+precedence ::ffff:0:0/96  100
+
+sudo apt-get install apache2
+
+vagrant@vagrant-ubuntu-trusty-64:~$ service apache2 status
+ * apache2 is running
+
+vagrant@vagrant-ubuntu-trusty-64:~$ cd /var/www/html/
+vagrant@vagrant-ubuntu-trusty-64:/var/www/html$ ls
+index.html
+vagrant@vagrant-ubuntu-trusty-64:/var/www/html$ mv index.html index.html_bkp
+mv: cannot move ‘index.html’ to ‘index.html_bkp’: Permission denied
+vagrant@vagrant-ubuntu-trusty-64:/var/www/html$ sudo mv index.html index.html_bkp
+vagrant@vagrant-ubuntu-trusty-64:/var/www/html$ ls
+index.html_bkp
+
+vagrant@vagrant-ubuntu-trusty-64:/var/www/html$ sudo vim index.html
+vagrant@vagrant-ubuntu-trusty-64:/var/www/html$ cat index.html
+<html>
+
+<h1> Hello from vagrant apache2 server <h1>
+
+<html>
+
+
+-------------------------------------
+
+sudo apt-get install php5
+sudo apt-get install php5-mysql
+
+
+vim info.php
+
+<?php
+phpinfo();
+?>
+
+
+vagrant@vagrant-ubuntu-trusty-64:/var/www/html$ ls
+index.html  index.html_bkp  info.php
+
+sudo service apache2 restart
+http://192.168.0.106/info.php
+
+------------------------------
+
+sudo apt-get install -y mysql-server
+
+
+
+

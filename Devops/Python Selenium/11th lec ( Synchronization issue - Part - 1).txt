@@ -1,0 +1,266 @@
+#FIREFOX with time module :-
+
+
+from selenium import webdriver
+from webdriver_manager.firefox import GeckoDriverManager
+from selenium.webdriver.common.by import By
+import time
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+driver.get('https://www.google.com/intl/en-GB/gmail/about/')
+driver.maximize_window()
+driver.find_element(By.PARTIAL_LINK_TEXT,'Sign in').click()
+driver.find_element(By.ID,'identifierId').send_keys("testautomation52786@gmail.com")
+
+#Next button for verifying your email address
+driver.find_element(By.XPATH,'/html/body/div[1]/div[1]/div[2]/div/c-wiz/div/div[2]/div/div[2]/div/div[1]/div/div/button/span').click()
+time.sleep(3)
+
+#Password typing
+driver.find_element(By.NAME,'Passwd').send_keys('Test@123')
+
+
+#Nest to login
+driver.find_element(By.XPATH,'/html/body/div[1]/div[1]/div[2]/div/c-wiz/div/div[2]/div/div[2]/div/div[1]/div/div/button/span').click()
+print("Login success")
+
+
+
+####
+FIREFOX mutliple time module :-
+
+from selenium import webdriver
+from webdriver_manager.firefox import GeckoDriverManager
+from selenium.webdriver.common.by import By
+import time
+
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+time.sleep(3)
+driver.get('https://www.google.com/intl/en-GB/gmail/about/')
+driver.maximize_window()
+
+driver.find_element(By.PARTIAL_LINK_TEXT,'Sign in').click()
+driver.find_element(By.ID,'identifierId').send_keys("testautomation52786@gmail.com")
+
+#Next button for verifying your email address
+driver.find_element(By.XPATH,'/html/body/div[1]/div[1]/div[2]/div/c-wiz/div/div[2]/div/div[2]/div/div[1]/div/div/button/span').click()
+time.sleep(10)
+
+#Password typing
+driver.find_element(By.NAME,'Passwd').send_keys('Test@123')
+
+
+#Nest to login
+driver.find_element(By.XPATH,'/html/body/div[1]/div[1]/div[2]/div/c-wiz/div/div[2]/div/div[2]/div/div[1]/div/div/button/span').click()
+print("Login success")
+
+time.sleep(5)
+driver.quit()
+
+######
+
+time module is not good way to recommended way.
+
+#GOOGLE script with time module 
+
+from selenium import webdriver
+from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+import time
+
+#Firefox
+#driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+#Google
+driver = webdriver.Chrome(executable_path=ChromeDriverManager().install())
+time.sleep(3)
+driver.get('https://www.google.com/intl/en-GB/gmail/about/')
+driver.maximize_window()
+
+driver.find_element(By.PARTIAL_LINK_TEXT,'Sign in').click()
+driver.find_element(By.ID,'identifierId').send_keys("testautomation52786@gmail.com")
+
+#Next button for verifying your email address
+driver.find_element(By.XPATH,'/html/body/div[1]/div[1]/div[2]/div/c-wiz/div/div[2]/div/div[2]/div/div[1]/div/div/button/span').click()
+time.sleep(10)
+
+#Password typing
+driver.find_element(By.NAME,'Passwd').send_keys('Test@123')
+
+
+#Nest to login
+driver.find_element(By.XPATH,'/html/body/div[1]/div[1]/div[2]/div/c-wiz/div/div[2]/div/div[2]/div/div[1]/div/div/button/span').click()
+print("Login success")
+time.sleep(15)
+
+
+
+
+
+
+
+
+
+##########
+
+There are two type of dynamic way of synchronization issue 
+1. Implicitly wait ()
+
+
+if you are putting 20 sec of implicitly wait then will take max 20 sec not more than , if your browser respond within 5 sec then it will go next page or next elements. 
+
+20 Sec --> 5 sec --> next page or next elements 
+20 sec --> 10 sec --> 10 sec --> next page or next elements 
+20 sec --> 1 sec --> 1 sec --> next page or next elements 
+
+in time module --> 
+import time 
+time.sleep(20)
+20  Sec --> 20 sec --> next page or next elements 
+20 sec --> 10 sec --> 20 sec --> next page or next elements 
+20 sec --> 1 sec --> 20 sec --> next page or next elements 
+
+
+
+--> one time declare in your code then it will be apply everywhere. 
+
+
+Implicitly wait (20)
+it will effect every line not single elements 
+
+
+--> If you are element is not exited from your dom page then it will take time of max second then wilkl show the error. 
+
+
+By.ID,"ABD"
+
+
+
+
+####
+There is issue in Firefix 
+
+CODE :-
+
+from selenium import webdriver
+from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+import time
+
+#Firefox
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+driver.implicitly_wait(10)
+#Google
+#driver = webdriver.Chrome(executable_path=ChromeDriverManager().install())
+
+driver.get('https://www.google.com/intl/en-GB/gmail/about/')
+driver.maximize_window()
+
+driver.find_element(By.PARTIAL_LINK_TEXT,'Sign in').click()
+driver.find_element(By.ID,'identifierId').send_keys("testautomation52786@gmail.com")
+
+#Next button for verifying your email address
+driver.find_element(By.XPATH,'/html/body/div[1]/div[1]/div[2]/div/c-wiz/div/div[2]/div/div[2]/div/div[1]/div/div/button/span').click()
+
+#Password typing
+driver.find_element(By.NAME,'Passwd').send_keys('Test@123')
+
+
+#Nest to login
+driver.find_element(By.XPATH,'/html/body/div[1]/div[1]/div[2]/div/c-wiz/div/div[2]/div/div[2]/div/div[1]/div/div/button/span').click()
+print("Login success")
+
+
+
+
+
+
+##GOOGLE chrome with implictly wait and time module 
+
+from selenium import webdriver
+from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+import time
+
+#Firefox
+#driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+
+#Google
+driver = webdriver.Chrome(executable_path=ChromeDriverManager().install())
+driver.implicitly_wait(10)
+driver.get('https://www.google.com/intl/en-GB/gmail/about/')
+driver.maximize_window()
+
+driver.find_element(By.PARTIAL_LINK_TEXT,'Sign in').click()
+driver.find_element(By.ID,'identifierId').send_keys("testautomation52786@gmail.com")
+
+#Next button for verifying your email address
+driver.find_element(By.XPATH,'/html/body/div[1]/div[1]/div[2]/div/c-wiz/div/div[2]/div/div[2]/div/div[1]/div/div/button/span').click()
+
+#Password typing
+driver.find_element(By.NAME,'Passwd').send_keys('Test@123')
+
+time.sleep(0.3)
+#Nest to login
+driver.find_element(By.XPATH,'/html/body/div[1]/div[1]/div[2]/div/c-wiz/div/div[2]/div/div[2]/div/div[1]/div/div/button/span').click()
+print("Login success")
+
+time.sleep(30)
+
+
+
+
+
+
+
+
+
+
+
+
+
+####
+
+
+
+
+Alnafi 
+from selenium import webdriver
+from webdriver_manager.firefox import GeckoDriverManager
+from selenium.webdriver.common.by import By
+import time
+driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+driver.implicitly_wait(10)
+driver.get("https://dev.alnafi.com/auth/signin")
+driver.maximize_window()
+
+my_username = driver.find_element(By.ID,"Username/ Email")
+my_username.send_keys("testuser")
+
+driver.find_element(By.ID,'Password').send_keys("123@test")
+
+my_button = driver.find_element(By.XPATH,'/html/body/div[1]/div/div/div[2]/div/form/div[3]/button')
+my_button.click()
+time.sleep(20)
+driver.quit()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

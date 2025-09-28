@@ -1,0 +1,181 @@
+
+
+NOTE: "" are used mostly when we are calling the variable, you can skip them file defining variables or reading file.
+But they are must to use when you want to call a variable
+
+
+
+how to read json files in ansible playbook
+
+# first i will define  a json file that contains my package name and state
+sudo vim package.json
+
+{
+	"package_info":
+	{
+		"package_name": "zip"
+		"package_state": "present"
+	}
+}
+
+
+now, as i have defined my package name and state in a key called package info.
+
+
+# creating a yml file to read the json file
+sudo vim read_json.yml
+
+---
+- name: this yml file read json file and use variables defined in it
+  hosts: ubuntu
+  become: yes
+
+  vars:
+    file_data: "package.json"   # declare var outside tasks
+
+  tasks:
+    - name: reading file
+      include_vars:
+        file: "{{ file_data }}"
+
+    - name: now installing the packages as our file has been read
+      apt:                     # since you used ubuntu
+        name: "{{ package_info.package_name }}"
+        state: "{{ package_info.package_state }}"
+      when: ansible_os_family == "Debian"
+
+    - name: now installing the packages as our file has been read (for CentOS/RedHat)
+      yum:
+        name: "{{ package_info.package_name }}"
+        state: "{{ package_info.package_state }}"
+      when: ansible_os_family == "RedHat"
+
+
+
+
+
+
+
+[jhon@master-ansible ansible]$ ansible-playbook read_json.yml
+
+PLAY [this yml file read json file and use variables defined in it] **********************************************************
+
+TASK [Gathering Facts] *******************************************************************************************************
+ok: [54.166.4.83]
+
+TASK [reading file] **********************************************************************************************************
+ok: [54.166.4.83]
+
+TASK [now installing the packages as our file has been read] *****************************************************************
+ok: [54.166.4.83]
+
+TASK [now installing the packages as our file has been read (for CentOS/RedHat)] *********************************************
+skipping: [54.166.4.83]
+
+PLAY RECAP *******************************************************************************************************************
+54.166.4.83                : ok=3    changed=0    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0
+
+
+
+
+
+
+
+when I read my file, its variables are now avaialble, so as I am calling the package name and state now.
+
+
+# we can also directly read the file
+
+---
+- name: this yml file read json file and use variables defined in it
+  hosts: ubuntu
+  become: yes
+
+  tasks:
+    - name: reading file
+      include_vars:
+        file: "package.json"
+
+    - name: now installing the packages as our file has been read
+      apt:
+        name: "{{ package_info.package_name }}"
+        state: "{{ package_info.package_state }}"
+
+
+
+
+
+
+[jhon@master-ansible ansible]$ ansible-playbook direct_read_json.yml
+
+PLAY [this yml file read json file and use variables defined in it] **********************************************************
+
+TASK [Gathering Facts] *******************************************************************************************************
+ok: [54.166.4.83]
+
+TASK [reading file] **********************************************************************************************************
+ok: [54.166.4.83]
+
+TASK [now installing the packages as our file has been read] *****************************************************************
+ok: [54.166.4.83]
+
+PLAY RECAP *******************************************************************************************************************
+54.166.4.83                : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+
+
+
+
+
+=====================================
+
+reading packages from yml file instead of json file.
+make sure to keep dictionary format in json and yml file.
+
+vim package.yml
+
+---
+packages:
+  package_wget:
+    name: wget
+    state: absent
+  package_vim:
+    name: vim
+    state: present
+
+
+
+creating a yml file now
+
+
+---
+- name: Readiing yml file from playbook
+  hosts: rhel
+  gather_facts: false
+  become: yes
+  tasks:
+  - name: Reading the yml file 
+    include_vars:
+      file: package.yml
+
+  - name: Installation wget
+    yum:
+      name: "{{ packages.package_wget.name }}"
+      state: "{{ packages.package_wget.state }}"
+
+
+
+
+
+[jhon@master-ansible ansible]$ ansible-playbook yml_reading_file.yml
+
+PLAY [Readiing yml file from playbook] ***************************************************************************************
+
+TASK [Reading the yml file] **************************************************************************************************
+ok: [54.166.4.83]
+
+TASK [Installation wget] *****************************************************************************************************
+changed: [54.166.4.83]
+
+PLAY RECAP *******************************************************************************************************************
+54.166.4.83                : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
