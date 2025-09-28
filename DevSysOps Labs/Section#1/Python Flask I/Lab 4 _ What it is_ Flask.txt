@@ -1,0 +1,31 @@
+Skip to main content
+ 
+
+Let's break down each of these libraries and understand their roles:
+
+ 
+
+Flask:
+
+ 
+
+What it is: Flask is a lightweight web framework written in Python. It is designed to make creating web applications simple and easy.
+
+Why you need it: The primary reason you're installing Flask is to create and run a web application using Python. It provides the tools and libraries you need to set up routes, handle requests, and render responses.
+
+psycopg2-binary:
+
+ 
+
+What it is: psycopg2 is the most popular PostgreSQL adapter for Python. The -binary variant is a stand-alone package that includes the psycopg2 package and its C dependencies.
+
+Why you need it: If your application interacts with a PostgreSQL database, psycopg2 (or psycopg2-binary) is necessary to establish connections, send SQL queries, and handle results. It acts as a bridge between your Python application and the PostgreSQL database.
+
+Flask-SQLAlchemy:
+
+ 
+
+What it is: Flask-SQLAlchemy is an extension for Flask that integrates SQLAlchemy, an Object-Relational Mapping (ORM) tool. ORM allows developers to interact with databases using Python classes and objects instead of writing raw SQL queries.
+
+Why you need it: While psycopg2 provides the low-level database connection capability, Flask-SQLAlchemy gives your Flask app a higher-level, more Pythonic way to define database models, query data, and perform database operations. It simplifies database interactions by abstracting them into Python code.
+

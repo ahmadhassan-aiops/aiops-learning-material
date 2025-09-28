@@ -1,0 +1,114 @@
+Step # 1 You should have a aws user that have AmazonElaticContainerRegistryFullAccess this policy or authority
+you can create a user for example " docker-mastery" to perform this lab
+
+now create access key for this user so you could access this user from ubuntu cli
+store the access key and secret key in a file.
+
+
+Access key =        AKIARRRVNJ2P5CCDZUKX
+secret access key = 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
+
+
+Step # 2
+Create a Elastic Container Registry repository by going into Elastic Container Registry section in AWS
+
+
+Step # 3 Make sure you have docker and aws cli installed in ubuntu
+
+# docker installation
+sudo apt update
+sudo apt install -y docker.io
+sudo usermod -aG docker $USER
+newgrp docker
+docker version
+
+
+# aws cli installation
+cd /tmp
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+aws --version
+
+
+Step # 4 cofigure the user docker mastery in the aws cli in ubunt run aws configure command
+
+# command to run, it will ask you 4 questions access key,secret key, region and output format
+# give docker mastery user access key and secret key, region is given in aws regions and output format is json
+aws configure
+
+
+Step # 5 Connect Docker with Elastic Container Registry of AWS, make sure to give correct region and useraccount
+# click on repository view push command in AWS lastic Cotainer Repository. It will give you following command to connect the docker
+(my ecr name is docker-mastery)
+
+# command that gets passwrod of aws account of region us-east-1 and pass the credentials to docker to connect
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 106412461727.dkr.ecr.us-east-1.amazonaws.com
+
+# in this section of command 985539800682.dkr.ecr.us-east-1.amazonaws.com, your account id is 106412461727. Whenevr you work with chatgpt ot other llm make sure to use your account id
+account id: 106412461727
+
+
+
+Step # 6 Build Docke rimage
+
+# vim Dockerfile
+FROM alpine:3.20
+RUN echo 'Hello from aiopslab!' > /message.txt
+CMD ["cat", "/message.txt"]
+
+
+# create and test the image
+docker build -t docker-mastery .
+
+
+Step # 7 Tag the image with the repository URI and push to ECR
+
+# tagging the image with the repository URI in which to push the image, image will be deposited i repo ahmad/docker_mastery
+docker tag aiops-hello:1.0 985539800682.dkr.ecr.us-east-1.amazonaws.com/ahmad/docker_lab
+
+
+# adding tag to the image
+docker tag docker-mastery:latest 106412461727.dkr.ecr.us-east-1.amazonaws.com/docker-mastery:latest
+
+# push tagged image
+docker push 106412461727.dkr.ecr.us-east-1.amazonaws.com/docker-mastery:latest
+
+now when you check repositor ahmad/docker_mastery image will have tag latest
+
+
+
+ubuntu@ip-172-31-92-144:~$ docker run --rm 106412461727.dkr.ecr.us-east-1.amazonaws.com/docker-mastery:latest
+Hello from DevSysopslab!
+
+
+
+===============================================================================================
+
+				(2nd iamge where i will run app server which use tcp)
+
+vim dockerfile
+
+# Use a lightweight Nginx image
+FROM nginx:alpine
+
+# Copy your static website files into Nginx's default HTML directory
+COPY . /usr/share/nginx/html
+
+# Expose port 8080 for external access
+EXPOSE 8080
+
+# Start Nginx in the foreground
+CMD ["nginx", "-g", "daemon off;"]
+
+
+
+
+=================================
+
+I used the same commands for this setup as well. Though for this case I have used nginx tetsing as my tag!!
+
+
+
+
+

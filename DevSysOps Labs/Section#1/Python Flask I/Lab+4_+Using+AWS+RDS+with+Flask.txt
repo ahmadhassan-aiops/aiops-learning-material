@@ -1,0 +1,46 @@
+**Lab 4: Using AWS RDS with Flask** 
+**Objective**: Integrate AWS RDS to store data for the Flask app. 
+**Tasks**: 1. Create an RDS PostgreSQL instance. 2. Modify the Flask app to connect to this database and perform CRUD operations. 
+
+ 
+
+Task1: create rds through management console 
+
+Task2: ===> three files will be created 1-config.py 2-models.py 3-app.py ============ 
+pip install Flask psycopg2-binary Flask-SQLAlchemy ==================== # config.py 
+# Replace these values with your RDS endpoint and credentials DATABASE_URL = "postgresql://<USERNAME>:<PASSWORD>@<RDS-ENDPOINT>:5432/<DB-NAME>" =================================================================  Flask-SQLAlchemy is an extension for Flask that simplifies database interactions by providing an Object-Relational Mapping (ORM) layer between your application and the database. 
+
+# models.py 
+from flask_sqlalchemy import SQLAlchemy 
+db = SQLAlchemy() 
+class User(db.Model):    id = db.Column(db.Integer, primary_key=True)    name = db.Column(db.String(80), unique=True, nullable=False) 
+===================== =============================================================== # app.py 
+from flask import Flask, jsonify, request, abort from models import db, User import config 
+app = Flask(__name__) app.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_URL 
+db.init_app(app) 
+# Create: Add a new user @app.route('/add_user', methods=['POST']) def add_user():    name = request.json.get('name')    if not name:        abort(400, "Name is required!")     user = User(name=name)    db.session.add(user)    db.session.commit()    return jsonify({"message": f"User {name} added!", "user_id": user.id}) 
+# Read: Get a list of all users @app.route('/get_users', methods=['GET']) def get_users():    users = User.query.all()    return jsonify([{"id": u.id, "name": u.name} for u in users]) 
+# Update: Modify an existing user's name @app.route('/update_user/<int:id>', methods=['PUT']) def update_user(id):    user = User.query.get(id)    if not user:        abort(404, "User not found!")     new_name = request.json.get('name')    if not new_name:        abort(400, "Name is required!")        user.name = new_name    db.session.commit()    return jsonify({"message": f"User {id} updated!", "new_name": new_name}) 
+# Delete: Remove a user by ID @app.route('/delete_user/<int:id>', methods=['DELETE']) def delete_user(id):    user = User.query.get(id)    if not user:        abort(404, "User not found!")     db.session.delete(user)    db.session.commit()    return jsonify({"message": f"User {id} deleted!"}) 
+
+with app.app_context():    db.create_all() 
+
+ if __name__ == "__main__":      app.run(debug=True, host='0.0.0.0') ===================================================== 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ sudo apt-get update sudo apt-get install postgresql-client 
+
+psql -h <RDS-ENDPOINT> -U <USERNAME> -d <DB-NAME> -p 5432 
+
+ 
+curl -X POST -H "Content-Type: application/json" -d '{"name":"John"}' http://localhost:5000/add_user 
+curl -X PUT -H "Content-Type: application/json" -d '{"name":"Jane"}' http://localhost:5000/update_user/1 curl -X DELETE http://localhost:5000/delete_user/1 
+
+ 

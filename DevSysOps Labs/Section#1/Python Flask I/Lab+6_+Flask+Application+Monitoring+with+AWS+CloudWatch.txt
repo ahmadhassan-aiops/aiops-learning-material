@@ -1,0 +1,35 @@
+
+**Lab 6: Flask Application Monitoring with AWS CloudWatch** 
+**Objective**: Monitor the Flask application's health and performance using AWS CloudWatch. 
+**Tasks**: 1. Integrate Flask logging with CloudWatch. 2. Set up alarms for specific events. 
+
+ 
+
+ from flask import Flask import logging import boto3 from botocore.exceptions import NoCredentialsError import time 
+app = Flask(__name__) 
+LOGGING_FORMAT = '%(asctime)s - %(levelname)s - %(message)s'  # timestamp, log level, actual log logging.basicConfig(level=logging.DEBUG, format=LOGGING_FORMAT)  #loggin module configuration logger = logging.getLogger() #create instance 
+# Create a CloudWatch Logs client logs = boto3.client('logs') 
+def push_to_cloudwatch(log_group, log_stream, message):    try:        logs.create_log_group(logGroupName=log_group)    except logs.exceptions.ResourceAlreadyExistsException:        pass     try:        logs.create_log_stream(            logGroupName=log_group,            logStreamName=log_stream        )    except logs.exceptions.ResourceAlreadyExistsException:        pass     timestamp = int(time.time() * 1000)    logs.put_log_events(        logGroupName=log_group,        logStreamName=log_stream,        logEvents=[            {                'timestamp': timestamp,                'message': message            },        ]    ) 
+@app.route('/') def hello():    logger.debug("ok,endpoint hit!") # debugger message used to log message    push_to_cloudwatch("pythonFlaskLogs", "FlaskEndpointLogs", "ok,endpoint hit!")    return "Hello, World!" 
+
+if __name__ == '__main__':    app.run(host='0.0.0.0', port=5000, debug=True) 
+
+task 2 create filter set alarm set sns configuration make sns subscription simple notification service  
+
+eps to Set Up Metric Filter and Alarm: 
+Metric Filter: 
+->Go to CloudWatch Console. ->In the navigation pane, choose Logs. ->In the Log groups section, select your log group FlaskAppLogs. ->Choose Create Metric Filter and use the filter pattern that matches your log, for example, Hello endpoint hit!. ->Assign a metric name, say HelloEndpointHitCount, with a namespace, say FlaskAppMetrics. ->For every log event that matches the pattern, you can increment the metric value by 1. 
+
+ ->Alarm: Once you have the custom metric set up, go to Alarms in the CloudWatch Console. Choose Create Alarm. Select the custom metric (FlaskAppMetrics/HelloEndpointHitCount). Set the threshold conditions. For instance, if you want to be notified when the endpoint is hit more than 100 times in 5 minutes, set the condition as Static, Greater than threshold, with a threshold value of 100, and a period of 5 minutes. Action: 
+Configure actions like sending a notification to an SNS topic when the alarm state is triggered. Additional Details: 
+Provide a name, description, and other details for the alarm. Create the Alarm. 
+
+ 
+
+ 
+
+ 
+FlaskApp/Metrics 
+
+ 
+EndpointHits: How many times a particular endpoint is accessed. ErrorEvents: The number of errors logged by the application. Latency: How long a particular operation takes.

@@ -1,0 +1,20 @@
+
+    "BackupPlanName": "MyEKSBackupPlan",
+    "Rules": [
+        {
+            "RuleName": "Daily",
+            "TargetBackupVaultName": "MyBackupVault",
+            "ScheduleExpression": "cron(0 5 ? * * *)",
+            "StartWindowMinutes": 480,
+            "CompletionWindowMinutes": 10080,
+            "Lifecycle": {
+                "MoveToColdStorageAfterDays": 30,
+                "DeleteAfterDays": 365
+            },
+            "RecoveryPointTags": {
+                "Purpose": "EKSBackup"
+            }
+        }
+    ]
+}
+

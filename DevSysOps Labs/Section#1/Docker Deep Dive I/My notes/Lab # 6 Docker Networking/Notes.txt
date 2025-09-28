@@ -1,0 +1,43 @@
+How many types of network docker has?
+Docker has seven types of network:
+1) Default Bridge
+2) Host Bridge
+3) None Network
+4) Macvlan Network
+5) Custom network
+6) Overlay Network
+7) Ipvlan Network
+
+When you install docker how many types of network does docker has?
+When we install docker it has 3 types of network bridge, host, and null.
+
+When we run docker container by default it uses bridge networking.
+
+# command to inspect a docker network to se ehow many contianers it has
+docker inspect bridge  --> inspect bridge command
+
+
+When w euse bridge network which docker uses by default for containers, we need to map or bind container port with host port to access th econtianer from outside internet.
+If we do not do port mappig or binding we wont be able to access the container from outside world by using host ip address.
+
+
+When we use host network to run a docker container we do not need to do port mapping or binding, as we are running docker container on host network we can simply access container by using host ip address.
+# command to run a container using host network
+docker run -d --name docker_lab --network host nginx:latest
+
+# now container created by above command is using host network and you can access it from outside world or internet by using host ip
+
+
+When we use host network to run docker container, so container is assigned an ip address or not?
+No, ip address is not assigned to docker container because we are using host network. So, host ip address is the ip of docker container. To access it we need to use host ip.
+
+When we use bridge network to run containers, so ip is assigned to container or not?
+Yes, when we use bridge networking to run a docker container ip assigned to that container.
+
+
+When you run dcker containe rby using none network, it cannot be accessed from outside world or internet becaus eits network is NONE.
+
+
+Custom network is that which we create and it uses bridge network. 
+# command to create custom network
+docker network create alnafi

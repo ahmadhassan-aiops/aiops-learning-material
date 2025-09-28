@@ -1,0 +1,157 @@
+Dockerfile
+
+FROM python:3.8-slim
+
+
+
+WORKDIR /app
+
+
+
+COPY . /app
+
+
+
+RUN pip install flask mysql-connector-python
+
+
+
+CMD ["python", "app.py"]
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+##ap.py##
+
+from flask import Flask, jsonify
+
+import mysql.connector
+
+
+
+app = Flask(__name__)
+
+
+
+@app.route('/')
+
+def index():
+
+    return "Welcome to Alnafi"
+
+
+
+@app.route('/data')
+
+def data():
+
+    conn = mysql.connector.connect(
+
+        host='rds-eks.c3ogfbfieeet.us-east-2.rds.amazonaws.com',
+
+        user='admin',
+
+        password='root$1122',
+
+        database='eks'
+
+    )
+
+
+
+    cursor = conn.cursor()
+
+    cursor.execute('SELECT * FROM your-table')  # Yaad rahe "your-table" ko sahi table name se replace karna hoga
+
+    results = cursor.fetchall()
+
+
+
+    cursor.close()
+
+    conn.close()
+
+
+
+    return jsonify(results)
+
+
+
+if __name__ == '__main__':
+
+    app.run(host='0.0.0.0', port=5000)
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+###deployment.yaml
+
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+
+  name: your-app-name
+
+spec:
+
+  replicas: 3
+
+  selector:
+
+    matchLabels:
+
+      app: your-app-name
+
+  template:
+
+    metadata:
+
+      labels:
+
+        app: your-app-name
+
+    spec:
+
+      containers:
+
+      - name: your-app-name
+
+        image: alnafidocker/eks-vpc
+
+        imagePullPolicy: IfNotPresent
+
+        ports:
+
+        - containerPort: 5000
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+##service.yaml
+
+apiVersion: v1
+
+kind: Service
+
+metadata:
+
+  name: your-app-name-service
+
+spec:
+
+  selector:
+
+    app: your-app-name
+
+  ports:
+
+    - protocol: TCP
+
+      port: 80
+
+      targetPort: 5000
+
+  type: LoadBalancer

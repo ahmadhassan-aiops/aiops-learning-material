@@ -1,0 +1,37 @@
+Skip to main content
+Lab 1: Setting up AWS EC2 for Selenium Development
+
+Objective: Set up an AWS EC2 instance for Python Selenium-based automation tasks.
+
+Tasks:
+
+1. Launch an EC2 instance.
+
+2. SSH into the instance.
+
+3. Install Python, Selenium, and required web drivers.
+
+Documentation:
+
+- Introduction to EC2.
+
+- Installing Python and Selenium on EC2.
+
+- Configuring web drivers.
+
+Prerequisites:
+
+1- An AWS account with administrative access.
+
+2- Python Automation
+
+3- Python Selenium
+
+4- Bash Script Deep Dive Course
+
+Implementation Documentation:
+
+Introduction to EC2
+
+Amazon Elastic Compute Cloud (EC2) is a web service that provides resizable compute capacity in the cloud. It is designed to make web-scale cloud computing easier for developers. EC2 instances can be used for a wide variety of applications, including hosting websites, running applications, and processing data.
+

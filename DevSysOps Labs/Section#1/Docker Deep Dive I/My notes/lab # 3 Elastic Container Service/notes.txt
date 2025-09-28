@@ -1,0 +1,27 @@
+
+In this lab we will see how to manage dockercontianers through elastic container service.
+
+
+Step # 1 Go to Elastic Container Service or ECS and create a cluster.
+Creating a cluster in ECS (docker-mastery)
+
+
+Step # 2
+Go inside the cluster and select task definition and define your task.
+mastery:nginx-testing  (my-name)
+
+here you need to define the task, give image URI from ECR and mention the PORT that you exposed in your image
+host_port should be same as container port. (8080 in my case)
+
+106412461727.dkr.ecr.us-east-1.amazonaws.com/docker-mastery:ngnix-testing
+
+
+
+Step # 3 
+Go to the cluster again and create a task from tasks tab, mention the task definition you want to use and deploy it.
+
+	(i used 80 and 80)
+
+Step # 4
+Make sure the security group attached to the task allows public access, modify inbound rules to security group depending upto your container ports.
+i.e in my case i have to create custom tcp where I provided port 80 access to myip/all traffic!

@@ -1,0 +1,29 @@
+Skip to main content
+Objective:
+
+Prepare an AWS EC2 instance for Flask-based applications.
+
+**Tasks**:
+
+1. Launch an EC2 instance.
+
+2. SSH into the instance.
+
+3. Install Python and Flask.
+
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+
+def hello_world():
+
+return 'Hello World!'
+
+if __name__ == '__main__':
+
+app.run(debug=True, host='0.0.0.0')
+
+Note by default it runs on 5000 port, else you can specify the port
+

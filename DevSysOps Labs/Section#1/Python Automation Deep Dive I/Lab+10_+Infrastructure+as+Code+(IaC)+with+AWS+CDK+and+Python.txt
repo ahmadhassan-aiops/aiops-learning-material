@@ -1,0 +1,66 @@
+**Lab 10: Infrastructure as Code (IaC) with AWS CDK and Python** 
+**Objective**: Develop a cloud stack using AWS CDK and Python. 
+**Tasks**: 1. Install and configure AWS CDK. 2. Develop a stack (e.g., an S3 bucket, Lambda function) using Python. 
+
+ 
+The CDK provides higher-level components called constructs, which encapsulate AWS cloud resources. These constructs can be assembled to create stacks of resources, and these stacks can be deployed or updated using the CDK command-line interface. 
+
+ =======================task1================= 
+
+first install nodejs 
+
+sudo apt update sudo apt upgrade sudo apt install -y curl 
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - 
+sudo apt install -y nodejs 
+
+==>install and configure cdk 
+
+ 
+npm install -g aws-cdk 
+
+pip install virtualenv virtualenv venv source venv/bin/activate  cdk init app --language=python 
+
+pip install aws-cdk.aws-s3 aws-cdk.aws-lambda 
+
+ 
+from aws_cdk import core from aws_cdk import aws_s3 as s3 from aws_cdk import aws_lambda as _lambda 
+class MyCdkAppStack(core.Stack):     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:        super().__init__(scope, id, **kwargs)         # Create an S3 bucket        bucket = s3.Bucket(self,            "MyFirstBucket",            versioned=True,            removal_policy=core.RemovalPolicy.DESTROY        )         # Create a Lambda function        lambda_function = _lambda.Function(self, "MyLambdaFunction",            runtime=_lambda.Runtime.PYTHON_3_8,            handler="index.handler",            code=_lambda.Code.from_asset("lambda")         )         # Grant the Lambda function read/write permissions to the bucket        bucket.grant_read_write(lambda_function) 
+
+#index.py 
+def handler(event, context):    print("Lambda function triggered!")    return {        'statusCode': 200,        'body': 'Hello from Lambda!'    }
+
+
+
+
+
+
+
+
+=======================================
+
+
+Skip to main content
+1. Introduction to AWS CDK:
+
+The AWS Cloud Development Kit (AWS CDK) is an open-source software development framework provided by AWS to define cloud infrastructure in code and provision it through AWS CloudFormation. Unlike traditional CloudFormation, which uses YAML or JSON, CDK allows developers to use familiar programming languages such as TypeScript, JavaScript, Python, C#, and Java.
+
+The CDK provides higher-level components called constructs, which encapsulate AWS cloud resources. These constructs can be assembled to create stacks of resources, and these stacks can be deployed or updated using the CDK command-line interface.
+
+2. Importance of IaC in DevOps:
+
+Infrastructure as Code (IaC) is a key component of modern DevOps practices. IaC treats infrastructure setup and configuration as software code. Here's why it's essential:
+
+Version Control: Like any codebase, your infrastructure can be version-controlled. This provides a history of changes, facilitating easy rollbacks and ensuring consistency.
+
+Consistency: By using IaC, you eliminate manual configurations, which reduces human errors, ensuring that every environment setup is consistent.
+
+Automation: IaC enables automation of infrastructure provisioning and deployment, leading to faster deployments and reduced manual efforts.
+
+Documentation: The code acts as documentation, providing clarity on the exact setup of the infrastructure.
+
+Cost Savings: Automated and consistent setups reduce the time and resources required for infrastructure management.
+
+
+
+
+

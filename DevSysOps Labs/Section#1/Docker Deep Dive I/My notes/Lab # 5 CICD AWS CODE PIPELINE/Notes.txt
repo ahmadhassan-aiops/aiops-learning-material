@@ -1,0 +1,69 @@
+In this project we will build end-to-end CICD pipeline.
+
+
+Step # 1
+Create  CodeBuild Project and Integrate your github repository containing the code with codebuild and make CI pipeline.
+
+You need to modify your buildspec.yml file 
+
+You need to mention the container name in it.
+
+
+Step # 2
+Go to Amazon Elastic Container Service.
+
+Create  a cluster > Task Definition Using an already available image from ECR > Create a service and attach the task definition.
+
+
+
+Step # 3
+Create AWS Code Pipeline which has three stages Source > Build > Deploy
+
+In source section attach the github repository which will act as source for pipeline whenever a change is made to source, pipeline will be triggered. In source input artifact is source or github.
+
+In build section use AWS CodeBuild. Input artifact here is source
+
+
+In Deploy section enter the cluster name and service name. Also mention imagedefinitions.yml file. Input artifact here is build.
+
+the role that will be created automatically should be provided with AWSCodePipeline_FullAccess 
+
+
+Step # 4
+Deploy the pipeline and if you get any error see the buildspec file and make the changes it need for a pipeline.
+
+
+
+
+===============================================
+
+updated buildspec.yml
+
+-------------------------
+
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin <your-account-id>.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - REPOSITORY_URI=<your-account-id>.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/node-app
+      - IMAGE_TAG=$CODEBUILD_RESOLVED_SOURCE_VERSION
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - docker build -t $REPOSITORY_URI:latest .
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker images...
+      - docker push $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - echo Writing imagedefinitions.json file...
+      - printf '[{"name":"docker-aws-code-pipeline","imageUri":"%s"}]' $REPOSITORY_URI:latest > imagedefinitions.json
+artifacts:
+  files:
+    - imagedefinitions.json

@@ -1,0 +1,86 @@
+In this lab we created continous integration of github code with aws codebuild.
+
+Step # 1
+Whatever code you have push it to github.
+make sure you have buildspec.yml file as it has configurations of your aws account, accountid and ecr repository.
+
+
+Step # 2
+Create  a repository in aws ecr and copy the URI of repository and use it in above setup buildspec file
+
+#Create a project in codebuild in aws.
+
+Project Configuration Section:
+Write name of your project
+
+
+Source Section:
+Here you can mention any source in the given options. I used github
+Link your github account through the ways given by aws. I used OAuth token.
+Make sure to copy and paste the url of github repository
+
+
+
+Webhook Section:
+Tick the option
+Rebuild everytime a code change is pushed to repository
+
+chose single build
+Event Type: PUSH
+
+
+
+
+Environment Section:
+Use on demand options on the left side all of them 
+
+
+Use Managed Image
+
+use ubuntu operating system 
+
+Chose new service role option
+
+in the additional information section you will see following option tick the check box
+Privileged:
+Enable this flag if you want to build Docker images or want your builds to get elevated privileges
+
+
+
+
+Buildspec section:
+select use buildspec file option
+
+
+Artifacts section: 
+if you want to keep backup then you can chose s3 bucket or else leave it
+
+
+
+Logs Section:
+you can ue cloudwatch if it is your requirement
+
+
+Step # 3
+Now, you have build the project but DO NOT CLICK ON START BUILD.
+
+You created a service role if you remember.
+
+GO to IAM > ROLES > SELECT YOUR ROLE OR CLICK ON IT > ADD PERMISSIONS >
+Following three permissions you need to add:
+1) AmazonEC2ContainerRegistryFullAccess
+2) AmazonEC2ContainerRegistryPowerUser
+3) CodeBuildAdminAccess (for basic lab use)
+4) AmazonS3FullAccess
+
+
+Now, after adding permission to the role, start building the project
+
+Once all steps have been executed successfully, you can verify the presence of image in the ecr repository you gave in buildspec file.
+
+
+Step # 4
+Now, modify your code on github and see if another image of the updated code is created in your ecr repository.
+
+If new image is created after modifying code on github then your Continous Integration Have Been Done
+
