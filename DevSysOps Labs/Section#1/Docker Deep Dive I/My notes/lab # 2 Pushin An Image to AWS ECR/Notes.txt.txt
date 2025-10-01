@@ -5,8 +5,8 @@ now create access key for this user so you could access this user from ubuntu cl
 store the access key and secret key in a file.
 
 
-Access key =        AKIARRRVNJ2P5CCDZUKX
-secret access key = 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
+Access key =        *********************
+secret access key = **********************
 
 
 Step # 2
